@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Modules\InventoryMovementsStatistics\src\InventoryMovementsStatisticsServiceProvider;
 use App\Modules\InventoryTotals\src\InventoryTotalsServiceProvider;
-use App\Modules\Maintenance\src\Jobs\CopyInventoryMovementsToNewTableJob;
+use App\Modules\MagentoApi\database\seeders\MagentoSeeder;
 use App\Modules\QueueMonitor\src\QueueMonitorServiceProvider;
 use Illuminate\Database\Seeder;
 
@@ -47,7 +47,7 @@ class DatabaseSeeder extends Seeder
 
             PrintNodeClientSeeder::class,
             Modules\Slack\ConfigurationSeeder::class,
-
+            MagentoSeeder::class,
 //            DpdIrelandSeeder::class,
 //            ProductAliasSeeder::class,
 //            ProductTagsSeeder::class,

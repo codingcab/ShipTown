@@ -12,14 +12,20 @@ class MagentoApi extends BaseApi
         return $this->get('/orders');
     }
 
+    public function getProduct($sku): ?Response
+    {
+        $endpoint = implode('/', ['products', $sku]);
+
+        return $this->get($endpoint);
+    }
+
     public function postProducts($sku, $name): ?Response
     {
         return $this->post('/products', [
-            'products' => [
-                [
-                    'sku' => $sku,
-                    'name' => $name,
-                ],
+            'product' => [
+                'sku' => $sku,
+                'name' => $name,
+                'attribute_set_id' => '4',
             ],
         ]);
     }
