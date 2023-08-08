@@ -3,9 +3,9 @@
 namespace App\Modules\MagentoApi\src\Services;
 
 use App\Modules\MagentoApi\src\Api\MagentoApi;
+use App\Modules\MagentoApi\src\Models\MagentoConnection;
 use App\Modules\MagentoApi\src\Models\MagentoProduct;
 use Exception;
-use Grayloon\Magento\Magento;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
@@ -13,7 +13,9 @@ class MagentoService
 {
     public static function api(): MagentoApi
     {
-        return new MagentoApi(new Magento());
+        /** @var MagentoConnection $magentoConnection */
+        $magentoConnection = MagentoConnection::first();
+        return new MagentoApi($magentoConnection);
     }
 
     public static function updateBasePrice(string $sku, float $price, int $store_id)
