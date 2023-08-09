@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\Log;
 
 class MagentoService
 {
-    public static function api(): MagentoApi
+    public static function api(MagentoConnection $magentoConnection = null): MagentoApi
     {
         /** @var MagentoConnection $magentoConnection */
-        $magentoConnection = MagentoConnection::first();
+        $magentoConnection = $magentoConnection ?? MagentoConnection::first();
         return new MagentoApi($magentoConnection);
     }
 

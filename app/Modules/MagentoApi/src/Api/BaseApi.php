@@ -23,7 +23,7 @@ class BaseApi extends AbstractApi
         parent::__construct(new Magento($magentoConnection->base_url, $magentoConnection->api_access_token));
     }
 
-    protected function get($path, $parameters = []): ?Response
+    public function get($path, $parameters = []): ?Response
     {
         $version = 'V1';
 
@@ -79,7 +79,7 @@ class BaseApi extends AbstractApi
         return $response;
     }
 
-    protected function post($path, $parameters = []): ?Response
+    public function post($path, $parameters = []): ?Response
     {
         try {
             $response = parent::post($path, $parameters);
@@ -132,7 +132,7 @@ class BaseApi extends AbstractApi
         return $response;
     }
 
-    protected function put($path, $parameters = [])
+    public function put($path, $parameters = [])
     {
         try {
             $response = parent::put($path, $parameters);
@@ -184,7 +184,7 @@ class BaseApi extends AbstractApi
         return $response;
     }
 
-    protected function delete($path, $parameters = [])
+    public function delete($path, $parameters = [])
     {
         try {
             $response = parent::delete($path, $parameters);
