@@ -68,7 +68,7 @@ class MagentoApi extends BaseApi
 
     public function getStockItems($sku): ?Response
     {
-        return $this->get('/stockItems/'.$sku);
+        return $this->get('stockItems/'.$sku);
     }
 
     public function getInventorySourceItems($sku, $storeCode): ?Response
