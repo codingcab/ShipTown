@@ -15,6 +15,8 @@ class BaseApi extends AbstractApi
     private string $baseUrl;
     private string $apiAccessToken;
 
+    private string $version = 'V1';
+
     public function __construct(MagentoConnection $magentoConnection)
     {
         $this->baseUrl = $magentoConnection->base_url;
@@ -25,12 +27,10 @@ class BaseApi extends AbstractApi
 
     public function get($path, $parameters = []): ?Response
     {
-        $version = 'V1';
-
-        $url = implode('/', [$this->baseUrl, 'rest', $version, $path]);
+        $url = implode('/', [$this->baseUrl, 'rest/default', $this->version, $path]);
 
         try {
-            $response = Http::withToken($this->apiAccessToken)->get($url);
+            $response = Http::withToken($this->apiAccessToken)->get($url, $parameters);
         } catch (Exception $e) {
             Log::error(implode(' ', [
                 'MAGENTO2API GET',
@@ -81,8 +81,10 @@ class BaseApi extends AbstractApi
 
     public function post($path, $parameters = []): ?Response
     {
+        $url = implode('/', [$this->baseUrl, 'rest/default', $this->version, $path]);
+
         try {
-            $response = parent::post($path, $parameters);
+            $response = Http::withToken($this->apiAccessToken)->post($url, $parameters);
         } catch (Exception $e) {
             Log::error(implode(' ', [
                 'MAGENTO2API POST',
@@ -90,7 +92,7 @@ class BaseApi extends AbstractApi
                 $e->getMessage()
             ]), [
                 'response' => $e->getMessage(),
-                'url' => $this->constructRequest() . $path,
+                'url' => $url,
                 'path' => $path,
                 'parameters' => $parameters,
             ]);
@@ -107,7 +109,7 @@ class BaseApi extends AbstractApi
                 $response->reason()
             ]), [
                 'response' => implode(' ', [$response->status(), $response->reason()]),
-                'url' => $this->constructRequest() . $path,
+                'url' => $url,
                 'path' => $path,
                 'json' => $response->json(),
                 'parameters' => $parameters,
@@ -123,7 +125,7 @@ class BaseApi extends AbstractApi
             $response->reason()
         ]), [
             'response' => implode(' ', [$response->status(), $response->reason()]),
-            'url' => $this->constructRequest() . $path,
+            'url' => $url,
             'path' => $path,
             'json' => $response->json(),
             'parameters' => $parameters,

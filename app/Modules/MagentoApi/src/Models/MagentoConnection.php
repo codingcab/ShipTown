@@ -5,6 +5,7 @@ namespace App\Modules\MagentoApi\src\Models;
 use App\BaseModel;
 use App\Models\Warehouse;
 use App\Traits\HasTagsTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Crypt;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -14,6 +15,9 @@ use Spatie\QueryBuilder\QueryBuilder;
  * @property string $api_access_token
  * @property integer $magento_store_id
  * @property integer inventory_source_warehouse_tag_id
+ * @property Carbon $deleted_at
+ * @property Carbon $updated_at
+ * @property Carbon $created_at
  */
 class MagentoConnection extends BaseModel
 {
