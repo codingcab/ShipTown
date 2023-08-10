@@ -70,7 +70,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="access_token_encrypted">Access Token</label>
                                 <ValidationProvider vid="access_token_encrypted" name="access_token_encrypted" v-slot="{ errors }">
-                                    <input v-model="config.access_token_encrypted" :class="{
+                                    <input v-model="config.access_token_encrypted" type="password" :class="{
                                         'form-control': true,
                                         'is-invalid': errors.length > 0,
                                     }" id="create-access_token_encrypted" required>
