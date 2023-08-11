@@ -69,10 +69,6 @@ export default {
 
     mixins: [api, Loading],
 
-    components: {
-        ValidationObserver, ValidationProvider
-    },
-
     mounted() {
         this.fetchWarehouses();
         this.fetchTags();
@@ -98,7 +94,7 @@ export default {
                 base_url: newVal.base_url,
                 magento_inventory_source_code: newVal.magento_inventory_source_code ?? '',
                 magento_store_id: newVal.magento_store_id,
-                inventory_source_warehouse_tag_id: newVal.inventory_source_warehouse_tag_id,
+                inventory_source_warehouse_tag_id: newVal.inventory_source_warehouse_tag_id ?? '',
                 pricing_source_warehouse_id: newVal.pricing_source_warehouse_id ?? '',
                 api_access_token: newVal.api_access_token
             };
@@ -106,10 +102,6 @@ export default {
     },
 
     methods: {
-        modalShown() {
-            console.log('modal shown');
-        },
-
         fetchTags: function () {
             this.apiGetTags({
                 'filter[model]': 'App\\Models\\Warehouse',
