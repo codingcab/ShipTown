@@ -35,6 +35,11 @@ export default {
                     return;
                 }
 
+                if (error.response.status === 401) {
+                    this.notifyError(JSON.stringify(error.response.data));
+                    return;
+                }
+
                 if (error.response.status === 422) {
                     this.notifyError(JSON.stringify(error.response.data));
                     return;
@@ -319,6 +324,10 @@ export default {
                 return axios.post('/api/settings/modules/automations/run', {
                     'automation_id': id
                 });
+            },
+
+            apiGetTags: function (params) {
+                return axios.get('/api/tags', {params: params});
             },
 
             apiGetWarehouses: function (params) {

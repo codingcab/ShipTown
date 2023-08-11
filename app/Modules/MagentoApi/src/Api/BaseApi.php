@@ -30,7 +30,7 @@ class BaseApi extends AbstractApi
         $url = implode('/', [$this->baseUrl, 'rest/default', $this->version, $path]);
 
         try {
-            $response = Http::withToken($this->apiAccessToken)->get($url, $parameters);
+            $response = Http::withToken($this->apiAccessToken)->acceptJson()->get($url, $parameters);
         } catch (Exception $e) {
             Log::error(implode(' ', [
                 'MAGENTO2API GET',
