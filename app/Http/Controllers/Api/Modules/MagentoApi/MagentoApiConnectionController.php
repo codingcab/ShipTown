@@ -42,8 +42,14 @@ class MagentoApiConnectionController extends Controller
         $connection->update($request->validated());
 
         if ($request->has('inventory_source_warehouse_tag_id')) {
-            $tag = Tag::query()->find($request->get('inventory_source_warehouse_tag_id'));
-            $connection->syncTags([$tag]);
+            $var = $request->get('inventory_source_warehouse_tag_id');
+
+            if ($var) {
+                $tag = Tag::query()->find($var);
+                $connection->syncTags([$tag]);
+            } else {
+                $connection->syncTags([]);
+            }
         }
 
         return MagentoConnectionResource::make($connection);
