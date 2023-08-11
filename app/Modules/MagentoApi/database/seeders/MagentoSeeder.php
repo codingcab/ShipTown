@@ -21,7 +21,7 @@ class MagentoSeeder extends Seeder
 
         MagentoConnection::create([
             'base_url' => env('TEST_MODULES_MAGENTO_BASE_URL'),
-            'access_token' => env('TEST_MODULES_MAGENTO_ACCESS_TOKEN'),
+            'api_access_token' => env('TEST_MODULES_MAGENTO_ACCESS_TOKEN'),
         ]);
 
         EventServiceProviderBase::enableModule();
