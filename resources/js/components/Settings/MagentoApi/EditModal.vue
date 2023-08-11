@@ -6,81 +6,45 @@
                     <h5 class="modal-title">Edit Magento Api Connection</h5>
                 </div>
                 <div class="modal-body">
-                    <ValidationObserver ref="form">
-                        <form class="form" @submit.prevent="submit" ref="loadingContainer">
-
                             <div class="form-group">
                                 <label class="form-label" for="base_url">Base URL</label>
-                                <ValidationProvider vid="base_url" name="base_url" v-slot="{ errors }">
-                                    <input v-model="config.base_url" :class="{
-                                            'form-control': true,
-                                            'is-invalid': errors.length > 0,
-                                        }" id="create-base_url" type="url" required>
-                                    <div class="invalid-feedback">
-                                        {{ errors[0] }}
-                                    </div>
-                                </ValidationProvider>
+                                <input v-model="config.base_url" :class="{'form-control': true}" id="base_url" type="url" required>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label" for="magento_store_id">Store ID</label>
-                                <ValidationProvider vid="magento_store_id" name="magento_store_id" v-slot="{ errors }">
-                                    <input v-model="config.magento_store_id" :class="{
-                                        'form-control': true,
-                                        'is-invalid': errors.length > 0,
-                                    }" id="create-magento_store_id" type="number" required>
-                                    <div class="invalid-feedback">
-                                        {{ errors[0] }}
-                                    </div>
-                                </ValidationProvider>
+                                <label class="form-label" for="magento_inventory_source_code">Magento Inventory Source Code</label>
+                                <input v-model="config.magento_inventory_source_code" :class="{'form-control': true}" id="magento_inventory_source_code" type="text" required>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label" for="tag">Inventory source warehouse tag</label>
-                                <ValidationProvider vid="tag" name="tag" v-slot="{ errors }">
-                                    <input v-model="config.tag" :class="{
-                                        'form-control': true,
-                                        'is-invalid': errors.length > 0,
-                                    }" id="create-tag" required>
-                                    <div class="invalid-feedback">
-                                        {{ errors[0] }}
-                                    </div>
-                                </ValidationProvider>
+                                <label class="form-label" for="magento_store_id">Magento Store ID</label>
+                                <input v-model="config.magento_store_id" :class="{'form-control': true}" id="magento_store_id" type="number" required>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label" for="pricing_source_warehouse_id">Pricing source warehouse</label>
-                                <ValidationProvider vid="pricing_source_warehouse_id" name="pricing_source_warehouse_id" v-slot="{ errors }">
-                                    <select v-model="config.pricing_source_warehouse_id" :class="{
-                                        'form-control': true,
-                                        'is-invalid': errors.length > 0,
-                                    }" id="create-pricing_source_warehouse_id" required>
-                                        <option v-for="warehouse in warehouses"
-                                                :value="warehouse.id" :key="warehouse.id"
-                                        >
-                                            {{ warehouse.name }}
-                                        </option>
-                                    </select>
-                                    <div class="invalid-feedback">
-                                        {{ errors[0] }}
-                                    </div>
-                                </ValidationProvider>
+                                <label class="form-label">Inventory source warehouse tag</label>
+                                <select v-model="config.inventory_source_warehouse_tag_id" :class="{'form-control': true}" id="inventory_source_tag_id">
+                                    <option value="">Do not sync inventory</option>
+                                    <option v-for="tag in tags"  :value="tag.id" :key="tag.id">
+                                       {{ tag.name.en }}
+                                    </option>
+                                </select>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label" for="access_token_encrypted">Access Token</label>
-                                <ValidationProvider vid="access_token_encrypted" name="access_token_encrypted" v-slot="{ errors }">
-                                    <input v-model="config.access_token_encrypted" type="password" :class="{
-                                        'form-control': true,
-                                        'is-invalid': errors.length > 0,
-                                    }" id="create-access_token_encrypted" required>
-                                    <div class="invalid-feedback">
-                                        {{ errors[0] }}
-                                    </div>
-                                </ValidationProvider>
+                                <label class="form-label">Pricing source warehouse</label>
+                                <select v-model="config.pricing_source_warehouse_id" :class="{'form-control': true}" id="pricing_source_warehouse_id">
+                                    <option value="">Do not sync prices</option>
+                                    <option v-for="warehouse in warehouses"  :value="warehouse.id" :key="warehouse.id">
+                                        {{ warehouse.name }}
+                                    </option>
+                                </select>
                             </div>
-                        </form>
-                    </ValidationObserver>
+
+                            <div class="form-group">
+                                <label class="form-label" for="api_access_token">Access Token</label>
+                                <input v-model="config.api_access_token" type="password" :class="{'form-control': true}" id="api_access_token" required>
+                            </div>
                 </div>
                 <div class="modal-footer" style="justify-content:space-between">
                     <button type="button" @click.prevent="confirmDelete" class="btn btn-outline-danger float-left">Delete</button>
@@ -110,7 +74,8 @@ export default {
     },
 
     mounted() {
-        this.fetchWarehouses()
+        this.fetchWarehouses();
+        this.fetchTags();
     },
 
     data() {
@@ -118,7 +83,8 @@ export default {
             config: {
                 base_url: location.protocol + '//' + location.host
             },
-            warehouses: []
+            warehouses: [],
+            tags: [],
         }
     },
 
@@ -130,15 +96,30 @@ export default {
         connection: function(newVal) {
             this.config = {
                 base_url: newVal.base_url,
+                magento_inventory_source_code: newVal.magento_inventory_source_code ?? '',
                 magento_store_id: newVal.magento_store_id,
-                tag: newVal.tags.length ? newVal.tags[0].name : '',
-                pricing_source_warehouse_id: newVal.pricing_source_warehouse_id,
-                access_token_encrypted: newVal.access_token
+                inventory_source_warehouse_tag_id: newVal.inventory_source_warehouse_tag_id,
+                pricing_source_warehouse_id: newVal.pricing_source_warehouse_id ?? '',
+                api_access_token: newVal.api_access_token
             };
         }
     },
 
     methods: {
+        modalShown() {
+            console.log('modal shown');
+        },
+
+        fetchTags: function () {
+            this.apiGetTags({
+                'filter[model]': 'App\\Models\\Warehouse',
+                'per_page': 10,
+                'sort': 'name'
+            })
+            .then(({data}) => {
+                this.tags = data.data;
+            })
+        },
 
         fetchWarehouses: function () {
             this.apiGetWarehouses({
@@ -159,11 +140,7 @@ export default {
                     this.$emit('onUpdated', data.data);
                 })
                 .catch((error) => {
-                    if (error.response) {
-                        if (error.response.status === 422) {
-                            this.$refs.form.setErrors(error.response.data.errors);
-                        }
-                    }
+                    this.displayApiCallError(error);
                 })
                 .finally(this.hideLoading);
         },
@@ -184,9 +161,9 @@ export default {
                                     this.closeModal();
                                     this.$emit('onUpdated');
                                 })
-                                .catch(() => {
-                                    this.$snotify.error('Error occurred while deleting.');
-                                });
+                                .catch((error) => {
+                                    this.displayApiCallError(error);
+                                })
                             this.$snotify.remove(toast.id);
                         }
                     },

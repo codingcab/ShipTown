@@ -39,17 +39,14 @@ class MagentoApiConnectionController extends Controller
 
     public function update(MagentoApiConnectionUpdateRequest $request, MagentoConnection $connection): MagentoConnectionResource
     {
-        $connection->fill($request->validated());
+        $connection->update($request->validated());
 
-        if ($request->has('tag')) {
-            $tag = Tag::findOrCreate($request->get('tag'));
-            $connection->inventory_source_warehouse_tag_id = $tag->getKey();
-            $connection->tags()->sync([$tag->getKey()]);
+        if ($request->has('inventory_source_warehouse_tag_id')) {
+            $tag = Tag::query()->find($request->get('inventory_source_warehouse_tag_id'));
+            $connection->syncTags([$tag]);
         }
 
-        $connection->save();
-
-        return new MagentoConnectionResource($connection);
+        return MagentoConnectionResource::make($connection);
     }
 
     public function destroy(MagentoApiConnectionDestroyRequest $request, MagentoConnection $connection): JsonResponse
