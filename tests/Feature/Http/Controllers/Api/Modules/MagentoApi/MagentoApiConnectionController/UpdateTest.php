@@ -5,13 +5,11 @@ namespace Tests\Feature\Http\Controllers\Api\Modules\MagentoApi\MagentoApiConnec
 use App\Models\Warehouse;
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Tags\Tag;
 use Tests\TestCase;
 
 class UpdateTest extends TestCase
 {
-    use RefreshDatabase;
-
     /** @test */
     public function test_success_config_create()
     {
@@ -21,20 +19,28 @@ class UpdateTest extends TestCase
 
         $connection = MagentoConnection::create([
             'base_url' => 'https://magento2.test',
+            'magento_inventory_source_code' => 'default',
             'magento_store_id' => 123456,
             'pricing_source_warehouse_id' => 1,
             'access_token_encrypted' => 'some-token',
+            'api_access_token' => 'some-token',
         ]);
 
-        $warehouse = Warehouse::firstOrCreate(['code' => '999'], ['name' => '999']);
+        $warehouse = Warehouse::query()->firstOrCreate(['code' => 'DUB'], ['name' => 'Dublin']);
+
+        $warehouse->attachTag('source_dublin');
+
+        $tag = Tag::findOrCreate('source_dublin');
 
         $response = $this->actingAs($user, 'api')
             ->json('put', route('api.modules.magento-api.connections.update', $connection), [
                 'base_url'                          => 'https://magento2.test',
+                'magento_inventory_source_code' => 'default',
                 'magento_store_id'                  => 123456,
                 'tag'                               => 'some-tag',
+                'inventory_source_warehouse_tag_id' => $tag->getKey(),
                 'pricing_source_warehouse_id'       => $warehouse->id,
-                'access_token_encrypted'            => 'some-token',
+                'api_access_token'                  => 'some-token',
             ]);
 
         $response->assertSuccessful();
@@ -51,7 +57,7 @@ class UpdateTest extends TestCase
             'base_url' => 'https://magento2.test',
             'magento_store_id' => 123456,
             'pricing_source_warehouse_id' => 1,
-            'access_token_encrypted' => 'some-token',
+            'api_access_token' => 'some-token',
         ]);
 
         $response = $this->actingAs($user, 'api')
@@ -62,9 +68,7 @@ class UpdateTest extends TestCase
         $response->assertJsonValidationErrors([
             'base_url',
             'magento_store_id',
-            // 'tag',
-            // 'pricing_source_warehouse_id',
-            'access_token_encrypted',
+            'api_access_token',
         ]);
     }
 }
