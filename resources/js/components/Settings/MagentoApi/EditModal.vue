@@ -105,7 +105,7 @@ export default {
         fetchTags: function () {
             this.apiGetTags({
                 'filter[model]': 'App\\Models\\Warehouse',
-                'per_page': 10,
+                'per_page': 100,
                 'sort': 'name'
             })
             .then(({data}) => {
