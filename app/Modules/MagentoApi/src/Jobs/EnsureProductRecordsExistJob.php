@@ -41,8 +41,10 @@ class EnsureProductRecordsExistJob implements ShouldQueue
             INNER JOIN products ON products.id = taggables.taggable_id
             WHERE taggables.tag_id = ?
             AND taggables.taggable_type = ?
-            AND taggables.taggable_id NOT IN (
-                SELECT modules_magento2api_products.product_id FROM modules_magento2api_products
+            AND NOT EXISTS (
+                SELECT 1 FROM modules_magento2api_products
+                WHERE connection_id = modules_magento2api_connections.id
+                  AND product_id = taggables.taggable_id
             )
         ", [$tag->first()->getKey(), \App\Models\Product::class]);
     }
