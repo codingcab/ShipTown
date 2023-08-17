@@ -16,6 +16,7 @@ class MagentoConnectionResource extends JsonResource
             'id' => $this->id,
             'base_url' => $this->base_url,
             'magento_store_id' => $this->magento_store_id,
+            'magento_store_code' => $this->magento_store_code,
             'magento_inventory_source_code' => $this->magento_inventory_source_code,
             'inventory_source_warehouse_tag_id' => $this->inventory_source_warehouse_tag_id,
             'pricing_source_warehouse_id' => $this->pricing_source_warehouse_id,
