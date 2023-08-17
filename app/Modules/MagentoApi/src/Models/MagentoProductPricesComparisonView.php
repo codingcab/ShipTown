@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property MagentoProduct $magentoProduct
+ * @property MagentoConnection $magentoConnection
  * @property integer $magento_store_id
  * @property string $sku
  * @property double $expected_price
@@ -31,5 +32,10 @@ class MagentoProductPricesComparisonView extends BaseModel
     public function magentoProduct(): BelongsTo
     {
         return $this->belongsTo(MagentoProduct::class, 'modules_magento2api_products_id');
+    }
+
+    public function magentoConnection(): BelongsTo
+    {
+        return $this->belongsTo(MagentoConnection::class, 'modules_magento2api_connection_id');
     }
 }
