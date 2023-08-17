@@ -18,13 +18,14 @@ class MagentoService
         return new MagentoApi($magentoConnection);
     }
 
-    public static function updateBasePrice(string $sku, float $price, int $store_id)
+    public static function updateBasePrice(MagentoConnection $magentoConnection, string $sku, float $price, int $store_id)
     {
-        self::api()->postProductsBasePrices(
-            $sku,
-            $price,
-            $store_id
-        );
+        self::api($magentoConnection)
+            ->postProductsBasePrices(
+                $sku,
+                $price,
+                $store_id
+            );
     }
 
     public static function updateSalePrice(MagentoConnection $magentoConnection, string $sku, float $sale_price, $start_date, $end_date, int $store_id)
