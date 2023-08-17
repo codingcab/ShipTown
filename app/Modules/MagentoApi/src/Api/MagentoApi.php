@@ -61,7 +61,7 @@ class MagentoApi extends BaseApi
 
     public function putStockItems($sku, $params)
     {
-        return $this->put('/products/'.$sku.'/stockItems/0', [
+        return $this->put('products/'.$sku.'/stockItems/0', [
             'stockItem' => $params,
         ]);
     }
@@ -99,12 +99,12 @@ class MagentoApi extends BaseApi
         ]);
     }
 
-    public function postInventorySourceItems($sku, $storeCode, $quantity): ?Response
+    public function postInventorySourceItems($sku, $source_code, $quantity): ?Response
     {
         return $this->post('/inventory/source-items', [
             'sourceItems' => [
                 [
-                    'source_code' => $storeCode,
+                    'source_code' => $source_code,
                     'sku' => $sku,
                     'quantity' => $quantity,
                     'status' => 1,

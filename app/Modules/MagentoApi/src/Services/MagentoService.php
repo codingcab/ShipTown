@@ -109,24 +109,24 @@ class MagentoService
         self::fetchFromInventorySourceItems($magentoProduct);
     }
 
-    public static function updateInventory(string $sku, float $quantity)
+    public static function updateInventory(MagentoConnection $magentoConnection, string $sku, float $quantity)
     {
         if (config('magento.store_code') === 'all') {
-            self::updateStockItems($sku, $quantity);
+            self::updateStockItems($magentoConnection, $sku, $quantity);
             return;
         }
 
-        self::updateInventorySourceItems($sku, $quantity);
+        self::updateInventorySourceItems($magentoConnection, $sku, $quantity);
     }
 
-    private static function updateStockItems(string $sku, float $quantity): void
+    private static function updateStockItems(MagentoConnection $magentoConnection, string $sku, float $quantity): void
     {
         $params = [
             'is_in_stock' => $quantity > 0,
             'qty' => $quantity,
         ];
 
-        $response = self::api()->putStockItems($sku, $params);
+        $response = self::api($magentoConnection)->putStockItems($sku, $params);
 
         Log::debug('MagentoApi: stockItem update', [
             'sku'                  => $sku,
@@ -136,9 +136,10 @@ class MagentoService
         ]);
     }
 
-    private static function updateInventorySourceItems(string $sku, float $quantity): void
+    private static function updateInventorySourceItems(MagentoConnection $magentoConnection, string $sku, float $quantity): void
     {
-        $response = self::api()->postInventorySourceItems($sku, config('magento.store_code'), $quantity);
+        $response = self::api($magentoConnection)
+            ->postInventorySourceItems($sku, $magentoConnection->magento_inventory_source_code, $quantity);
 
         Log::debug('MagentoApi: updateInventorySourceItems', [
             'sku'                  => $sku,
