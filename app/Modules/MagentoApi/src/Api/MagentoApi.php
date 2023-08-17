@@ -118,9 +118,9 @@ class MagentoApi extends BaseApi
         return $this->post('products/base-prices', [
             'prices' => [
                 [
-                'sku' => $sku,
-                'price' => $price,
-                'store_id' => $store_id,
+                    'sku' => $sku,
+                    'price' => $price,
+                    'store_id' => $store_id,
                 ]
             ]
         ]);
