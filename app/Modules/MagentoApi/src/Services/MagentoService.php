@@ -49,9 +49,17 @@ class MagentoService
         $response = self::api($magentoProduct->magentoConnection)
             ->postProductsSpecialPriceInformation($magentoProduct->product->sku);
 
-        if ($response === null || $response->failed()) {
-            Log::error('Failed to fetch sale prices for product '.$magentoProduct->product->sku);
+        if ($response === null) {
+            throw new Exception('RMSAPI api call returned null'.$magentoProduct->product->sku);
+        }
+
+        if ($response->notFound()) {
+            $magentoProduct->update(['exists_in_magento' => false]);
             return;
+        }
+
+        if ($response->failed()) {
+            throw new Exception('Failed to fetch sale prices for product '.$magentoProduct->product->sku);
         }
 
         $specialPrices = collect($response->json())
@@ -84,9 +92,17 @@ class MagentoService
         $response = self::api($magentoProduct->magentoConnection)
             ->postProductsBasePricesInformation($magentoProduct->product->sku);
 
-        if ($response === null || $response->failed()) {
-            Log::error('Failed to fetch base prices for product '.$magentoProduct->product->sku);
+        if ($response === null) {
+            throw new Exception('RMSAPI api call returned null'.$magentoProduct->product->sku);
+        }
+
+        if ($response->notFound()) {
+            $magentoProduct->update(['exists_in_magento' => false]);
             return;
+        }
+
+        if ($response->failed()) {
+            throw new Exception('Failed to fetch base prices for product '.$magentoProduct->product->sku);
         }
 
         $magentoProduct->base_prices_fetched_at = now();
@@ -193,7 +209,16 @@ class MagentoService
         $response = self::api($magentoProduct->magentoConnection)
             ->getInventorySourceItems($magentoProduct->product->sku, $magentoProduct->magentoConnection->magento_store_code ?? 'all');
 
-        if ($response === null || $response->failed()) {
+        if ($response === null) {
+            throw new Exception('RMSAPI api call returned null'.$magentoProduct->product->sku);
+        }
+
+        if ($response->notFound()) {
+            $magentoProduct->update(['exists_in_magento' => false]);
+            return;
+        }
+
+        if ($response->failed()) {
             throw new Exception('Failed to fetch stock items for product '.$magentoProduct->product->sku);
         }
 
