@@ -27,15 +27,16 @@ class MagentoService
         );
     }
 
-    public static function updateSalePrice(string $sku, float $sale_price, $start_date, $end_date, int $store_id)
+    public static function updateSalePrice(MagentoConnection $magentoConnection, string $sku, float $sale_price, $start_date, $end_date, int $store_id)
     {
-        $response = self::api()->postProductsSpecialPrice(
-            $sku,
-            $store_id,
-            $sale_price,
-            $start_date,
-            $end_date
-        );
+        $response = self::api($magentoConnection)
+            ->postProductsSpecialPrice(
+                $sku,
+                $store_id,
+                $sale_price,
+                $start_date,
+                $end_date
+            );
 
         if (! $response->successful()) {
             Log::error('Failed to fetch sale prices for product '.$sku);

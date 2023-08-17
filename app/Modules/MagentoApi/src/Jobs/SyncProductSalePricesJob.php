@@ -29,9 +29,8 @@ class SyncProductSalePricesJob implements ShouldQueue
     public function handle()
     {
         MagentoProductPricesComparisonView::query()
-            ->whereRaw('special_prices_fetched_at IS NOT NULL
-
-            AND (
+            ->whereNotNull('special_prices_fetched_at')
+            ->whereRaw('(
                 IFNULL(magento_sale_price, 0) != expected_sale_price
                 OR magento_sale_price_start_date != expected_sale_price_start_date
                 OR magento_sale_price_end_date != expected_sale_price_end_date
@@ -39,9 +38,11 @@ class SyncProductSalePricesJob implements ShouldQueue
                 OR magento_sale_price_start_date IS NULL
                 OR magento_sale_price_end_date IS NULL
             )')
+            ->with('magentoConnection')
             ->chunkById(100, function ($products) {
                 collect($products)->each(function (MagentoProductPricesComparisonView $comparison) {
                     MagentoService::updateSalePrice(
+                        $comparison->magentoConnection,
                         $comparison->sku,
                         $comparison->expected_sale_price,
                         $comparison->expected_sale_price_start_date->format('Y-m-d H:i:s'),
