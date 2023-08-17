@@ -4,7 +4,6 @@ namespace App\Modules\MagentoApi\src\Listeners;
 
 use App\Modules\MagentoApi\src\Jobs\EnsureProductRecordsExistJob;
 use App\Modules\MagentoApi\src\Jobs\FetchBasePricesJob;
-use App\Modules\MagentoApi\src\Jobs\FetchOrdersJob;
 use App\Modules\MagentoApi\src\Jobs\FetchSpecialPricesJob;
 use App\Modules\MagentoApi\src\Jobs\FetchStockItemsJob;
 use App\Modules\MagentoApi\src\Jobs\SyncProductBasePricesJob;
