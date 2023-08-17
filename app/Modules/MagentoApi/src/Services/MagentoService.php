@@ -130,7 +130,8 @@ class MagentoService
             'qty' => $quantity,
         ];
 
-        $response = self::api($magentoConnection)->putStockItems($sku, $params);
+        $response = self::api($magentoConnection)
+            ->putStockItems($sku, $params);
 
         Log::debug('MagentoApi: stockItem update', [
             'sku'                  => $sku,
@@ -155,10 +156,10 @@ class MagentoService
     /**
      * @throws Exception
      */
-    private static function fetchStockItem(MagentoProduct $product)
+    private static function fetchStockItem(MagentoProduct $magentoProduct)
     {
-        $response = self::api($product->magentoConnection)
-            ->getStockItems($product->product->sku);
+        $response = self::api($magentoProduct->magentoConnection)
+            ->getStockItems($magentoProduct->product->sku);
 
         if ($response === null) {
             throw new Exception('Magento API call returned null '.$product->product->sku);
@@ -170,41 +171,41 @@ class MagentoService
         }
 
         if ($response->failed()) {
-            throw new Exception('Failed to fetch stock items for product '.$product->product->sku);
+            throw new Exception('Failed to fetch stock items for product '.$magentoProduct->product->sku);
         }
 
-        $product->stock_items_raw_import    = $response->json();
-        $product->stock_items_fetched_at    = now();
-        $product->quantity                  = null;
+        $magentoProduct->stock_items_raw_import    = $response->json();
+        $magentoProduct->stock_items_fetched_at    = now();
+        $magentoProduct->quantity                  = null;
 
         if (Arr::has($response->json(), 'qty')) {
-            $product->quantity = data_get($response->json(), 'qty') ?: 0;
+            $magentoProduct->quantity = data_get($response->json(), 'qty') ?: 0;
         }
 
-        $product->save();
+        $magentoProduct->save();
     }
 
     /**
      * @throws Exception
      */
-    private static function fetchFromInventorySourceItems(MagentoProduct $product)
+    private static function fetchFromInventorySourceItems(MagentoProduct $magentoProduct)
     {
-        $response = self::api($product->magentoConnection)
-            ->getInventorySourceItems($product->product->sku, config('magento.store_code'));
+        $response = self::api($magentoProduct->magentoConnection)
+            ->getInventorySourceItems($magentoProduct->product->sku, config('magento.store_code'));
 
         if ($response === null || $response->failed()) {
-            throw new Exception('Failed to fetch stock items for product '.$product->product->sku);
+            throw new Exception('Failed to fetch stock items for product '.$magentoProduct->product->sku);
         }
 
-        $product->stock_items_fetched_at = now();
-        $product->stock_items_raw_import = data_get($response->json(), 'items.0');
+        $magentoProduct->stock_items_fetched_at = now();
+        $magentoProduct->stock_items_raw_import = data_get($response->json(), 'items.0');
 
         if (data_get($response->json(), 'items.0')) {
-            $product->quantity = data_get($response->json(), 'items.0.quantity') ?: 0;
+            $magentoProduct->quantity = data_get($response->json(), 'items.0.quantity') ?: 0;
         } else {
-            $product->quantity = null;
+            $magentoProduct->quantity = null;
         }
 
-        $product->save();
+        $magentoProduct->save();
     }
 }
