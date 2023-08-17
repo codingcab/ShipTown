@@ -7,6 +7,8 @@ use App\Events\Product\ProductTagAttachedEvent;
 use App\Events\Product\ProductTagDetachedEvent;
 use App\Events\SyncRequestedEvent;
 use App\Modules\BaseModuleServiceProvider;
+use App\Modules\MagentoApi\src\Models\MagentoConnection;
+use App\Modules\MagentoApi\src\Observers\MagentoConnectionObserver;
 
 /**
  * Class EventServiceProviderBase.
@@ -55,4 +57,11 @@ class EventServiceProviderBase extends BaseModuleServiceProvider
             Listeners\ProductTagDetachedEventListener::class,
         ],
     ];
+
+    public function boot()
+    {
+        parent::boot();
+
+        MagentoConnection::observe(MagentoConnectionObserver::class);
+    }
 }
