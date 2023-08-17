@@ -43,7 +43,8 @@ return new class extends Migration
               AND products_prices.warehouse_id = modules_magento2api_connections.pricing_source_warehouse_id
 
             WHERE
-                modules_magento2api_products.exists_in_magento = 1
+                modules_magento2api_connections.pricing_source_warehouse_id IS NOT NULL
+                AND modules_magento2api_products.exists_in_magento = 1
         ');
 
         DB::statement("
@@ -76,9 +77,10 @@ return new class extends Migration
               on products.id = modules_magento2api_products.product_id
 
             WHERE
-                modules_magento2api_products.exists_in_magento = 1
+                modules_magento2api_connections.inventory_source_warehouse_tag_id IS NOT NULL
+                AND modules_magento2api_products.exists_in_magento = 1
 
-            group by modules_magento2api_products.id
+            GROUP BY modules_magento2api_products.id
         ");
     }
 };
