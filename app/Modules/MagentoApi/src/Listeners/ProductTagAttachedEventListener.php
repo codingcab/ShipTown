@@ -21,7 +21,7 @@ class ProductTagAttachedEventListener
             MagentoConnection::query()
                 ->get()
                 ->each(function (MagentoConnection $connection) use ($event) {
-                    MagentoProduct::firstOrCreate([
+                    MagentoProduct::query()->firstOrCreate([
                         'connection_id' => $connection->getKey(),
                         'product_id' => $event->product->id
                     ], []);
