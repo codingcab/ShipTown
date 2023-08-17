@@ -14,8 +14,9 @@ use Spatie\QueryBuilder\QueryBuilder;
 /**
  * @property integer $id
  * @property string $base_url
- * @property integer $magento_inventory_source_code
  * @property integer $magento_store_id
+ * @property string  $magento_store_code
+ * @property integer $magento_inventory_source_code
  * @property integer $inventory_source_warehouse_tag_id
  * @property integer $pricing_source_warehouse_id
  * @property string $api_access_token
@@ -34,8 +35,9 @@ class MagentoConnection extends BaseModel
 
     protected $fillable = [
         'base_url',
-        'magento_inventory_source_code',
         'magento_store_id',
+        'magento_store_code',
+        'magento_inventory_source_code',
         'inventory_source_warehouse_tag_id',
         'pricing_source_warehouse_id',
         'api_access_token',
