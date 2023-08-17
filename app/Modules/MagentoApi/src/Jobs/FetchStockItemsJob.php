@@ -32,6 +32,7 @@ class FetchStockItemsJob implements ShouldQueue
             ->whereRaw('IFNULL(exists_in_magento, 1) = 1')
             ->whereNull('stock_items_fetched_at')
             ->orWhereNull('stock_items_raw_import')
+            ->with('magentoConnection')
             ->chunkById(100, function ($products) {
                 collect($products)->each(function (MagentoProduct $product) {
                     try {

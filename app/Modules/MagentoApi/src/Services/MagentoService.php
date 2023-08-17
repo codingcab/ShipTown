@@ -46,7 +46,8 @@ class MagentoService
 
     public static function fetchSpecialPrices(MagentoProduct $magentoProduct)
     {
-        $response = self::api()->postProductsSpecialPriceInformation($magentoProduct->product->sku);
+        $response = self::api($magentoProduct->magentoConnection)
+            ->postProductsSpecialPriceInformation($magentoProduct->product->sku);
 
         if ($response === null || $response->failed()) {
             Log::error('Failed to fetch sale prices for product '.$magentoProduct->product->sku);
@@ -80,7 +81,8 @@ class MagentoService
 
     public static function fetchBasePrices(MagentoProduct $magentoProduct)
     {
-        $response = self::api()->postProductsBasePricesInformation($magentoProduct->product->sku);
+        $response = self::api($magentoProduct->magentoConnection)
+            ->postProductsBasePricesInformation($magentoProduct->product->sku);
 
         if ($response === null || $response->failed()) {
             Log::error('Failed to fetch base prices for product '.$magentoProduct->product->sku);
@@ -155,7 +157,8 @@ class MagentoService
      */
     private static function fetchStockItem(MagentoProduct $product)
     {
-        $response = self::api()->getStockItems($product->product->sku);
+        $response = self::api($product->magentoConnection)
+            ->getStockItems($product->product->sku);
 
         if ($response === null) {
             throw new Exception('Magento API call returned null '.$product->product->sku);
@@ -186,7 +189,8 @@ class MagentoService
      */
     private static function fetchFromInventorySourceItems(MagentoProduct $product)
     {
-        $response = self::api()->getInventorySourceItems($product->product->sku, config('magento.store_code'));
+        $response = self::api($product->magentoConnection)
+            ->getInventorySourceItems($product->product->sku, config('magento.store_code'));
 
         if ($response === null || $response->failed()) {
             throw new Exception('Failed to fetch stock items for product '.$product->product->sku);
