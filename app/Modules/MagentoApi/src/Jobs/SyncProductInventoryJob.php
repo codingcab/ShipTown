@@ -30,10 +30,11 @@ class SyncProductInventoryJob implements ShouldQueue
         MagentoProductInventoryComparisonView::query()
             ->whereNotNull('stock_items_fetched_at')
             ->whereRaw('IFNULL(magento_quantity, 0) != expected_quantity')
+            ->with('magentoConnection')
             ->chunkById(100, function ($products) {
                 collect($products)->each(function (MagentoProductInventoryComparisonView $comparison) {
-                    dd($comparison->magentoConnection);
                     MagentoService::updateInventory(
+                        $comparison->magentoConnection,
                         $comparison->magentoProduct->product->sku,
                         $comparison->expected_quantity
                     );
