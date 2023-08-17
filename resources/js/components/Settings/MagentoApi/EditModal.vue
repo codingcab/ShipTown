@@ -12,13 +12,13 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label" for="magento_inventory_source_code">Magento Inventory Source Code</label>
-                                <input v-model="config.magento_inventory_source_code" :class="{'form-control': true}" id="magento_inventory_source_code" type="text" required>
+                                <label class="form-label" for="magento_store_id">Magento Store Code</label>
+                                <input v-model="config.magento_store_code" :class="{'form-control': true}" id="magento_store_id" type="text" required>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label" for="magento_store_id">Magento Store ID</label>
-                                <input v-model="config.magento_store_id" :class="{'form-control': true}" id="magento_store_id" type="number" required>
+                                <label class="form-label" for="magento_inventory_source_code">Magento Inventory Source Code</label>
+                                <input v-model="config.magento_inventory_source_code" :class="{'form-control': true}" id="magento_inventory_source_code" type="text" required>
                             </div>
 
                             <div class="form-group">
@@ -93,7 +93,7 @@ export default {
             this.config = {
                 base_url: newVal.base_url,
                 magento_inventory_source_code: newVal.magento_inventory_source_code ?? '',
-                magento_store_id: newVal.magento_store_id,
+                magento_store_code: newVal.magento_store_code,
                 inventory_source_warehouse_tag_id: newVal.inventory_source_warehouse_tag_id ?? '',
                 pricing_source_warehouse_id: newVal.pricing_source_warehouse_id ?? '',
                 api_access_token: newVal.api_access_token

@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('modules_magento2api_connection', function (Blueprint $table) {
+        Schema::table('modules_magento2api_connections', function (Blueprint $table) {
             $table->string('magento_store_code')->nullable()->after('magento_store_id');
         });
     }

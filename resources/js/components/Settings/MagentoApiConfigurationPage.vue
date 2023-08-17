@@ -17,15 +17,15 @@
                     <thead>
                     <tr>
                         <th>URL</th>
-                        <th>Magento Store ID</th>
-                        <th>Connection Tag</th>
+                        <th>Magento Store Code</th>
+                        <th>Warehouse Tag</th>
                         <th>Pricing Source</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr v-for="connection in connections" :key="connection.id" @click.prevent="showEditForm(connection)">
                         <td>{{ connection.base_url }}</td>
-                        <td>{{ connection.magento_store_id }}</td>
+                        <td>{{ connection.magento_store_code }}</td>
                         <td>
                             <template v-for="tag in connection.tags">
                                 <a class="badge text-uppercase" :key="tag.id"> {{ tag.name }} </a>
