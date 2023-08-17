@@ -105,7 +105,7 @@ class MagentoService
 
     public static function fetchInventory(MagentoProduct $magentoProduct)
     {
-        if (config('magento.store_code') === 'all') {
+        if (($magentoProduct->magentoConnection->magento_store_code ?? 'all') === 'all') {
             self::fetchStockItem($magentoProduct);
             return;
         }
@@ -115,7 +115,7 @@ class MagentoService
 
     public static function updateInventory(MagentoConnection $magentoConnection, string $sku, float $quantity)
     {
-        if (config('magento.store_code') === 'all') {
+        if (($magentoProduct->magentoConnection->magento_store_code ?? 'all') === 'all') {
             self::updateStockItems($magentoConnection, $sku, $quantity);
             return;
         }
@@ -191,7 +191,7 @@ class MagentoService
     private static function fetchFromInventorySourceItems(MagentoProduct $magentoProduct)
     {
         $response = self::api($magentoProduct->magentoConnection)
-            ->getInventorySourceItems($magentoProduct->product->sku, config('magento.store_code'));
+            ->getInventorySourceItems($magentoProduct->product->sku, $magentoProduct->magentoConnection->magento_store_code ?? 'all');
 
         if ($response === null || $response->failed()) {
             throw new Exception('Failed to fetch stock items for product '.$magentoProduct->product->sku);
