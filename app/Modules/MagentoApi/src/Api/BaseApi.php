@@ -10,8 +10,12 @@ use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @property $magentoConnection
+ */
 class BaseApi extends AbstractApi
 {
+    private MagentoConnection $magentoConnection;
     private string $baseUrl;
     private string $apiAccessToken;
 
@@ -19,6 +23,8 @@ class BaseApi extends AbstractApi
 
     public function __construct(MagentoConnection $magentoConnection)
     {
+        $this->magentoConnection = $magentoConnection;
+
         $this->baseUrl = $magentoConnection->base_url;
         $this->apiAccessToken = $magentoConnection->api_access_token;
 
