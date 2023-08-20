@@ -3,6 +3,7 @@
 namespace App\Modules\MagentoApi\src\Jobs;
 
 use App\Modules\MagentoApi\src\Models\MagentoProduct;
+use App\Modules\MagentoApi\src\Models\MagentoProductInventoryComparisonView;
 use App\Modules\MagentoApi\src\Services\MagentoService;
 use Exception;
 use Illuminate\Bus\Queueable;
@@ -34,9 +35,9 @@ class FetchStockItemsJob implements ShouldQueue
             ->orWhereNull('stock_items_raw_import')
             ->with('magentoConnection')
             ->chunkById(100, function ($products) {
-                collect($products)->each(function (MagentoProduct $product) {
+                collect($products)->each(function (MagentoProductInventoryComparisonView $product) {
                     try {
-                        MagentoService::fetchInventory($product);
+                        MagentoService::fetchInventory($product->magentoProduct);
                     } catch (Exception $exception) {
                         report($exception);
                     }
