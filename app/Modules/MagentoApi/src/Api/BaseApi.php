@@ -4,18 +4,16 @@ namespace App\Modules\MagentoApi\src\Api;
 
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
 use Exception;
-use Grayloon\Magento\Api\AbstractApi;
-use Grayloon\Magento\Magento;
+use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 /**
- * @property $magentoConnection
+ *
  */
-class BaseApi extends AbstractApi
+class BaseApi
 {
-    private MagentoConnection $magentoConnection;
     private string $baseUrl;
     private string $apiAccessToken;
 
@@ -23,12 +21,8 @@ class BaseApi extends AbstractApi
 
     public function __construct(MagentoConnection $magentoConnection)
     {
-        $this->magentoConnection = $magentoConnection;
-
         $this->baseUrl = $magentoConnection->base_url;
         $this->apiAccessToken = $magentoConnection->api_access_token;
-
-        parent::__construct(new Magento($magentoConnection->base_url, $magentoConnection->api_access_token));
     }
 
     public function get($path, $parameters = []): ?Response
@@ -140,7 +134,7 @@ class BaseApi extends AbstractApi
         return $response;
     }
 
-    public function put($path, $parameters = [])
+    public function put($path, $parameters = []): ?Response
     {
         $url = implode('/', [$this->baseUrl, 'rest/default', $this->version, $path]);
 
@@ -153,7 +147,7 @@ class BaseApi extends AbstractApi
                 $e->getMessage()
             ]), [
                 'response' => $e->getMessage(),
-                'url' => $this->constructRequest() . $path,
+                'url' => $url,
                 'path' => $path,
                 'parameters' => $parameters,
             ]);
@@ -169,7 +163,7 @@ class BaseApi extends AbstractApi
                 $response->reason()
             ]), [
                 'response' => implode(' ', [$response->status(), $response->reason()]),
-                'url' => $this->constructRequest() . $path,
+                'url' => $url,
                 'path' => $path,
                 'json' => $response->json(),
                 'parameters' => $parameters,
@@ -185,7 +179,7 @@ class BaseApi extends AbstractApi
             $response->reason()
         ]), [
             'response' => implode(' ', [$response->status(), $response->reason()]),
-            'url' => $this->constructRequest() . $path,
+            'url' => $url,
             'path' => $path,
             'json' => $response->json(),
             'parameters' => $parameters,
@@ -194,7 +188,7 @@ class BaseApi extends AbstractApi
         return $response;
     }
 
-    public function delete($path, $parameters = [])
+    public function delete($path, $parameters = []): ?Response
     {
         $url = implode('/', [$this->baseUrl, 'rest/default', $this->version, $path]);
 
@@ -207,7 +201,7 @@ class BaseApi extends AbstractApi
                 $e->getMessage()
             ]), [
                 'response' => $e->getMessage(),
-                'url' => $this->constructRequest() . $path,
+                'url' => $url,
                 'path' => $path,
                 'parameters' => $parameters,
             ]);
@@ -224,7 +218,7 @@ class BaseApi extends AbstractApi
                 $response->reason()
             ]), [
                 'response' => implode(' ', [$response->status(), $response->reason()]),
-                'url' => $this->constructRequest() . $path,
+                'url' => $url,
                 'path' => $path,
                 'json' => $response->json(),
                 'parameters' => $parameters,
@@ -240,7 +234,7 @@ class BaseApi extends AbstractApi
             $response->reason()
         ]), [
             'response' => implode(' ', [$response->status(), $response->reason()]),
-            'url' => $this->constructRequest() . $path,
+            'url' => $url,
             'path' => $path,
             'json' => $response->json(),
             'parameters' => $parameters,
