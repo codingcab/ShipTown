@@ -4,7 +4,6 @@ namespace App\Modules\MagentoApi\src\Api;
 
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
 use Exception;
-use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
