@@ -3,6 +3,7 @@
 namespace App\Modules\MagentoApi\src\Jobs;
 
 use App\Modules\MagentoApi\src\Models\MagentoProduct;
+use App\Modules\MagentoApi\src\Models\MagentoProductPricesComparisonView;
 use App\Modules\MagentoApi\src\Services\MagentoService;
 use Exception;
 use Illuminate\Bus\Queueable;
@@ -31,11 +32,11 @@ class FetchSpecialPricesJob implements ShouldQueue
         MagentoProduct::query()
             ->whereRaw('IFNULL(exists_in_magento, 1) = 1')
             ->whereNull('special_prices_fetched_at')
-            ->orWhereNull('special_prices_raw_import')
+            ->orWhereNull('magento_sale_price')
             ->chunkById(100, function ($products) {
-                collect($products)->each(function (MagentoProduct $product) {
+                collect($products)->each(function (MagentoProductPricesComparisonView $product) {
                     try {
-                        MagentoService::fetchSpecialPrices($product);
+                        MagentoService::fetchSpecialPrices($product->magentoProduct);
                     } catch (Exception $exception) {
                         report($exception);
                     }
