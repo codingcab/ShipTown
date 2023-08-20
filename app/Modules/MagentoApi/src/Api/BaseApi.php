@@ -142,8 +142,10 @@ class BaseApi extends AbstractApi
 
     public function put($path, $parameters = [])
     {
+        $url = implode('/', [$this->baseUrl, 'rest/default', $this->version, $path]);
+
         try {
-            $response = parent::put($path, $parameters);
+            $response = Http::withToken($this->apiAccessToken)->put($url, $parameters);
         } catch (Exception $e) {
             Log::error(implode(' ', [
                 'MAGENTO2API PUT',
@@ -194,8 +196,10 @@ class BaseApi extends AbstractApi
 
     public function delete($path, $parameters = [])
     {
+        $url = implode('/', [$this->baseUrl, 'rest/default', $this->version, $path]);
+
         try {
-            $response = parent::delete($path, $parameters);
+            $response = Http::withToken($this->apiAccessToken)->delete($url, $parameters);
         } catch (Exception $e) {
             Log::error(implode(' ', [
                 'MAGENTO2API DELETE',
