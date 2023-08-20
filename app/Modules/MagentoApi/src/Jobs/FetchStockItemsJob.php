@@ -42,6 +42,6 @@ class FetchStockItemsJob implements ShouldQueue
                         report($exception);
                     }
                 });
-            });
+            }, 'modules_magento2api_products_id');
     }
 }
