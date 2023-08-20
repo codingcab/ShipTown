@@ -2,7 +2,7 @@
 
 namespace App\Modules\MagentoApi\src\Jobs;
 
-use App\Modules\MagentoApi\src\Models\MagentoProduct;
+use App\Modules\MagentoApi\src\Models\MagentoProductPricesComparisonView;
 use App\Modules\MagentoApi\src\Services\MagentoService;
 use Exception;
 use Illuminate\Bus\Queueable;
@@ -31,11 +31,11 @@ class FetchBasePricesJob implements ShouldQueue
         MagentoProduct::query()
             ->whereRaw('IFNULL(exists_in_magento, 1) = 1')
             ->whereNull('base_prices_fetched_at')
-            ->orWhereNull('base_prices_raw_import')
+            ->orWhereNull('magento_price')
             ->chunkById(100, function ($products) {
-                collect($products)->each(function (MagentoProduct $product) {
+                collect($products)->each(function (MagentoProductPricesComparisonView $product) {
                     try {
-                        MagentoService::fetchBasePrices($product);
+                        MagentoService::fetchBasePrices($product->magentoProduct);
                     } catch (Exception $exception) {
                         report($exception);
                     }
