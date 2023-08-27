@@ -11,7 +11,7 @@ use Tests\TestCase;
 class UpdateTest extends TestCase
 {
     /** @test */
-    public function test_success_config_create()
+    public function test_success_call()
     {
         /** @var User $user * */
         $user = User::factory()->create();
@@ -19,6 +19,7 @@ class UpdateTest extends TestCase
 
         $connection = MagentoConnection::create([
             'base_url' => 'https://magento2.test',
+            'magento_store_code' => 'default',
             'magento_inventory_source_code' => 'default',
             'magento_store_id' => 123456,
             'pricing_source_warehouse_id' => 1,
@@ -35,7 +36,8 @@ class UpdateTest extends TestCase
         $response = $this->actingAs($user, 'api')
             ->json('put', route('api.modules.magento-api.connections.update', $connection), [
                 'base_url'                          => 'https://magento2.test',
-                'magento_inventory_source_code' => 'default',
+                'magento_store_code'                => 'default',
+                'magento_inventory_source_code'     => 'default',
                 'magento_store_id'                  => 123456,
                 'tag'                               => 'some-tag',
                 'inventory_source_warehouse_tag_id' => $tag->getKey(),
@@ -56,6 +58,8 @@ class UpdateTest extends TestCase
         $connection = MagentoConnection::create([
             'base_url' => 'https://magento2.test',
             'magento_store_id' => 123456,
+            'magento_store_code' => 'default',
+            'magento_inventory_source_code'  => 'default',
             'pricing_source_warehouse_id' => 1,
             'api_access_token' => 'some-token',
         ]);
@@ -67,7 +71,7 @@ class UpdateTest extends TestCase
 
         $response->assertJsonValidationErrors([
             'base_url',
-            'magento_store_id',
+            'magento_store_code',
             'api_access_token',
         ]);
     }
