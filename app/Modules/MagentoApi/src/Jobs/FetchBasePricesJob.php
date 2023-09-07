@@ -2,6 +2,7 @@
 
 namespace App\Modules\MagentoApi\src\Jobs;
 
+use App\Modules\MagentoApi\src\Models\MagentoProduct;
 use App\Modules\MagentoApi\src\Models\MagentoProductPricesComparisonView;
 use App\Modules\MagentoApi\src\Services\MagentoService;
 use Exception;
@@ -40,6 +41,6 @@ class FetchBasePricesJob implements ShouldQueue
                         report($exception);
                     }
                 });
-            }, 'modules_magento2api_products_id');
+            }, 'product_id');
     }
 }

@@ -32,7 +32,7 @@ class FetchStockItemsJob implements ShouldQueue
         MagentoProduct::query()
             ->whereRaw('IFNULL(exists_in_magento, 1) = 1')
             ->whereNull('stock_items_fetched_at')
-            ->orWhereNull('magento_quantity')
+            ->orWhereNull('quantity')
             ->with('magentoConnection')
             ->chunkById(10, function ($products) {
                 collect($products)->each(function (MagentoProductInventoryComparisonView $product) {
@@ -42,6 +42,6 @@ class FetchStockItemsJob implements ShouldQueue
                         report($exception);
                     }
                 });
-            }, 'modules_magento2api_products_id');
+            }, 'product_id');
     }
 }
