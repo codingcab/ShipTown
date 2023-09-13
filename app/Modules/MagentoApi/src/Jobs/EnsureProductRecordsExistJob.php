@@ -2,29 +2,12 @@
 
 namespace App\Modules\MagentoApi\src\Jobs;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use App\Abstracts\UniqueJob;
 use Illuminate\Support\Facades\DB;
 use Spatie\Tags\Tag;
 
-/**
- * Class SyncCheckFailedProductsJob.
- */
-class EnsureProductRecordsExistJob implements ShouldQueue
+class EnsureProductRecordsExistJob extends UniqueJob
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
-
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle()
     {
         $tag = Tag::findOrCreate(['name' => 'Available Online']);

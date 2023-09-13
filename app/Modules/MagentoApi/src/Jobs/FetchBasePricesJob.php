@@ -2,31 +2,13 @@
 
 namespace App\Modules\MagentoApi\src\Jobs;
 
+use App\Abstracts\UniqueJob;
 use App\Modules\MagentoApi\src\Models\MagentoProduct;
-use App\Modules\MagentoApi\src\Models\MagentoProductPricesComparisonView;
 use App\Modules\MagentoApi\src\Services\MagentoService;
 use Exception;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 
-/**
- * Class SyncCheckFailedProductsJob.
- */
-class FetchBasePricesJob implements ShouldQueue
+class FetchBasePricesJob extends UniqueJob
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
-
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle()
     {
         MagentoProduct::query()
