@@ -34,9 +34,9 @@ class FetchSpecialPricesJob implements ShouldQueue
             ->whereNull('special_prices_fetched_at')
             ->orWhereNull('magento_sale_price')
             ->chunkById(10, function ($products) {
-                collect($products)->each(function (MagentoProductPricesComparisonView $product) {
+                collect($products)->each(function (MagentoProduct $magentoProduct) {
                     try {
-                        MagentoService::fetchSpecialPrices($product->magentoProduct);
+                        MagentoService::fetchSpecialPrices($magentoProduct);
                     } catch (Exception $exception) {
                         report($exception);
                     }
