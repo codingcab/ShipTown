@@ -14,7 +14,7 @@ class SyncProductInventoryJob extends UniqueJob
             ->whereNotNull('stock_items_fetched_at')
             ->whereRaw('IFNULL(magento_quantity, 0) != expected_quantity')
             ->with('magentoConnection')
-            ->chunkById(100, function ($products) {
+            ->chunkById(10, function ($products) {
                 collect($products)->each(function (MagentoProductInventoryComparisonView $comparison) {
                     MagentoService::updateInventory(
                         $comparison->magentoConnection,
