@@ -34,9 +34,9 @@ class FetchBasePricesJob implements ShouldQueue
             ->whereNull('base_prices_fetched_at')
             ->orWhereNull('magento_price')
             ->chunkById(10, function ($products) {
-                collect($products)->each(function (MagentoProductPricesComparisonView $product) {
+                collect($products)->each(function (MagentoProduct $magentoProduct) {
                     try {
-                        MagentoService::fetchBasePrices($product->magentoProduct);
+                        MagentoService::fetchBasePrices($magentoProduct);
                     } catch (Exception $exception) {
                         report($exception);
                     }

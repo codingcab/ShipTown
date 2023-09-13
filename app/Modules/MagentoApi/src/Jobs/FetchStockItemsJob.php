@@ -35,9 +35,9 @@ class FetchStockItemsJob implements ShouldQueue
             ->orWhereNull('quantity')
             ->with('magentoConnection')
             ->chunkById(10, function ($products) {
-                collect($products)->each(function (MagentoProductInventoryComparisonView $product) {
+                collect($products)->each(function (MagentoProduct $magentoProduct) {
                     try {
-                        MagentoService::fetchInventory($product->magentoProduct);
+                        MagentoService::fetchInventory($magentoProduct);
                     } catch (Exception $exception) {
                         report($exception);
                     }
