@@ -21,7 +21,7 @@ class SyncProductSalePricesJob extends UniqueJob
                 OR magento_sale_price_end_date IS NULL
             )')
             ->with('magentoConnection')
-            ->chunkById(100, function ($products) {
+            ->chunkById(10, function ($products) {
                 collect($products)->each(function (MagentoProductPricesComparisonView $comparison) {
                     MagentoService::updateSalePrice(
                         $comparison->magentoConnection,
