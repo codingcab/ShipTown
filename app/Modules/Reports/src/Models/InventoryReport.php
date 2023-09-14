@@ -33,7 +33,7 @@ class InventoryReport extends Report
             'quantity_required'     => 'inventory.quantity_required',
             'last_movement_at'      => 'inventory.last_movement_at',
             'first_received_at'     => 'inventory.first_received_at',
-            'last_received_at'      => DB::raw('IFNULL(inventory.last_received_at,"2000-01-01 00:00:00")'),
+            'last_received_at'      => DB::raw('IFNULL(inventory.last_received_at, "2000-01-01 00:00:00")'),
             'first_sold_at'         => 'inventory.first_sold_at',
             'last_sold_at'          => 'inventory.last_sold_at',
             'last_counted_at'       => 'inventory.last_counted_at',
