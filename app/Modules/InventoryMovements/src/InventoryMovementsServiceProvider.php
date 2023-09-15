@@ -46,6 +46,6 @@ class InventoryMovementsServiceProvider extends BaseModuleServiceProvider
 
     public static function disabling(): bool
     {
-        return false;
+        return true;
     }
 }
