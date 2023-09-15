@@ -6,6 +6,7 @@ use App\Models\Inventory;
 use App\Models\Product;
 use App\Models\Warehouse;
 use App\Modules\InventoryTotals\src\InventoryTotalsServiceProvider;
+use App\Modules\InventoryTotals\src\Jobs\EnsureTotalsByWarehouseTagRecordsExistJob;
 use App\Modules\InventoryTotals\src\Models\InventoryTotalByWarehouseTag;
 use App\Services\InventoryService;
 use Spatie\Tags\Tag;
@@ -13,6 +14,28 @@ use Tests\TestCase;
 
 class TotalsByWarehouseTagTest extends TestCase
 {
+    /** @test */
+    public function test_job()
+    {
+        InventoryTotalsServiceProvider::enableModule();
+
+        $warehouse1_withTag = Warehouse::factory()->create();
+        $warehouse1_withTag->attachTag('test_tag');
+
+        $product = Product::factory()->create();
+
+        InventoryTotalByWarehouseTag::query()->forceDelete();
+
+        EnsureTotalsByWarehouseTagRecordsExistJob::dispatch();
+
+        ray('inventory_totals_by_warehouse_tag', InventoryTotalByWarehouseTag::query()->first()->toArray());
+
+        $this->assertDatabaseHas('inventory_totals_by_warehouse_tag', [
+            'tag_id' => Tag::findFromString('test_tag')->getKey(),
+            'product_id' => $product->getKey(),
+        ]);
+    }
+
     /** @test */
     public function test_basic_scenario()
     {

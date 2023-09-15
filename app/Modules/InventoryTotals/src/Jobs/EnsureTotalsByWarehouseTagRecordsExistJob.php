@@ -31,7 +31,7 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
                     AND inventory_totals_by_warehouse_tag.tag_id = taggables.tag_id
 
                 WHERE
-                    taggables.taggable_type = 'App\\Models\\Warehouse'
+                    taggables.taggable_type = 'App\\\\Models\\\\Warehouse'
                     AND inventory_totals_by_warehouse_tag.id IS NULL
 
                 LIMIT 5000;
