@@ -69,6 +69,7 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
             ");
             $maxRounds--;
             Log::debug('EnsureTotalsByWarehouseTagRecordsExistJob: tempTable count ' . DB::table('tempTable')->count());
+            sleep(1);
         } while (DB::table('tempTable')->count() > 0 and $maxRounds > 0);
     }
 }
