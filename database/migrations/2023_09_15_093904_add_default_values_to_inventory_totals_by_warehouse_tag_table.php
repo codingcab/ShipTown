@@ -14,10 +14,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('product_id');
             $table->unsignedInteger('tag_id');
-            $table->unsignedBigInteger('quantity')->default(0);
-            $table->unsignedBigInteger('quantity_reserved')->default(0);
-            $table->unsignedBigInteger('quantity_available')->default(0);
-            $table->unsignedBigInteger('quantity_incoming')->default(0);
+            $table->decimal('quantity', 20)->default(0);
+            $table->decimal('quantity_reserved', 20)->default(0);
+            $table->decimal('quantity_available', 20)->default(0);
+            $table->decimal('quantity_incoming', 20)->default(0);
             $table->timestamp('max_inventory_updated_at')->useCurrent();
             $table->timestamps();
 

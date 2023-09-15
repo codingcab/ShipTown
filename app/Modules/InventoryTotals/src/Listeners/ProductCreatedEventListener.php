@@ -26,6 +26,7 @@ class ProductCreatedEventListener
                     'tag_id' => $tag->tag_id,
                     'product_id' => $event->product->getKey(),
                     'created_at' => now(),
+                    'updated_at' => now(),
                 ];
             })
             ->toArray();
