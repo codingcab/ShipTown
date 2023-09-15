@@ -15,6 +15,7 @@ use App\Models\OrderStatus;
 use App\Models\Product;
 use App\Models\ProductAlias;
 use App\Models\Session;
+use App\Models\Taggable;
 use App\Models\Warehouse;
 use App\Modules\Api2cart\src\Models\Api2cartConnection;
 use App\Modules\Api2cart\src\Models\Api2cartProductLink;
@@ -40,15 +41,11 @@ trait ResetsDatabase
     {
         parent::setUp();
 
-        ray()->clearAll();
-        ray()->className($this)->blue();
-
         Activity::query()->forceDelete();
 
         Product::query()->forceDelete();
         Inventory::query()->forceDelete();
         ProductAlias::query()->forceDelete();
-
         OrderProduct::query()->forceDelete();
         Order::query()->forceDelete();
         OrderStatus::query()->forceDelete();
