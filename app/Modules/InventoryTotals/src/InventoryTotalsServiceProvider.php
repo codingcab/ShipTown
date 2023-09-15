@@ -7,9 +7,6 @@ use App\Events\Inventory\InventoryUpdatedEvent;
 use App\Events\Product\ProductCreatedEvent;
 use App\Events\SyncRequestedEvent;
 use App\Modules\BaseModuleServiceProvider;
-use App\Modules\InventoryTotals\src\Jobs\EnsureTotalsByWarehouseTagRecordsExistJob;
-use App\Modules\InventoryTotals\src\Jobs\LastCountedAtJob;
-use App\Modules\InventoryTotals\src\Jobs\UpdateTotalsByWarehouseTagTableJob;
 
 /**
  * Class EventServiceProviderBase.
