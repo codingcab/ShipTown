@@ -41,6 +41,11 @@ trait ResetsDatabase
     {
         parent::setUp();
 
+        ray()->showApp();
+
+        ray()->clearAll();
+        ray()->className($this)->blue();
+
         Activity::query()->forceDelete();
 
         Product::query()->forceDelete();

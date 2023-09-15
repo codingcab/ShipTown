@@ -9,13 +9,10 @@ use App\Modules\InventoryTotals\src\InventoryTotalsServiceProvider;
 use App\Modules\InventoryTotals\src\Models\InventoryTotalByWarehouseTag;
 use App\Services\InventoryService;
 use Spatie\Tags\Tag;
-use Tests\ResetsDatabase;
 use Tests\TestCase;
 
 class TotalsByWarehouseTagTest extends TestCase
 {
-    use ResetsDatabase;
-
     /** @test */
     public function test_basic_scenario()
     {
