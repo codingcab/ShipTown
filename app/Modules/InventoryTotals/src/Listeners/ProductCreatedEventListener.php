@@ -25,10 +25,11 @@ class ProductCreatedEventListener
                 return [
                     'tag_id' => $tag->tag_id,
                     'product_id' => $event->product->getKey(),
+                    'created_at' => now(),
                 ];
             })
             ->toArray();
 
-        InventoryTotalByWarehouseTag::query()->insert($records);
+        InventoryTotalByWarehouseTag::query()->insertOrIgnore($records);
     }
 }
