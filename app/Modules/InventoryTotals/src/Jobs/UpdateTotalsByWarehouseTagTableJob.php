@@ -20,7 +20,7 @@ class UpdateTotalsByWarehouseTagTableJob extends UniqueJob
 
                LEFT JOIN taggables
                   ON taggables.tag_id = inventory_totals_by_warehouse_tag.tag_id
-                  AND taggables.taggable_type = 'App\\Models\\Warehouse'
+                  AND taggables.taggable_type = 'App\\\\Models\\\\Warehouse'
 
                INNER JOIN inventory
                     ON inventory.product_id = inventory_totals_by_warehouse_tag.product_id
@@ -47,7 +47,7 @@ class UpdateTotalsByWarehouseTagTableJob extends UniqueJob
 
                 LEFT JOIN taggables
                   ON taggables.tag_id = tempTable.tag_id
-                  AND taggables.taggable_type = 'App\\Models\\Warehouse'
+                  AND taggables.taggable_type = 'App\\\\Models\\\\Warehouse'
 
                 LEFT JOIN inventory
                   ON inventory.product_id = tempTable.product_id

@@ -14,5 +14,6 @@ class InventoryTotalByWarehouseTag extends BaseModel
         'quantity',
         'quantity_reserved',
         'quantity_incoming',
+        'max_inventory_updated_at'
     ];
 }
