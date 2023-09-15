@@ -9,6 +9,9 @@ class UpdateTotalsByWarehouseTagTableJob extends UniqueJob
 {
     public function handle()
     {
+        DB::statement("DROP TEMPORARY TABLE IF EXISTS tempTable;");
+        DB::statement("DROP TEMPORARY TABLE IF EXISTS tempInventoryTotalsByWarehouseTag;");
+
         DB::statement("
             CREATE TEMPORARY TABLE tempTable AS
                 SELECT
@@ -25,7 +28,9 @@ class UpdateTotalsByWarehouseTagTableJob extends UniqueJob
                     AND inventory.updated_at > inventory_totals_by_warehouse_tag.max_inventory_updated_at
 
                 LIMIT 100;
+        ");
 
+        DB::statement("
             CREATE TEMPORARY TABLE tempInventoryTotalsByWarehouseTag AS
                 SELECT
                      tempTable.tag_id as tag_id,
@@ -49,9 +54,13 @@ class UpdateTotalsByWarehouseTagTableJob extends UniqueJob
                   AND inventory.warehouse_id = taggables.taggable_id
 
                 GROUP BY tempTable.tag_id, tempTable.product_id;
+        ");
 
+        DB::statement("
             SELECT * FROM tempInventoryTotalsByWarehouseTag;
+        ");
 
+        DB::update("
             UPDATE inventory_totals_by_warehouse_tag
 
             INNER JOIN tempInventoryTotalsByWarehouseTag

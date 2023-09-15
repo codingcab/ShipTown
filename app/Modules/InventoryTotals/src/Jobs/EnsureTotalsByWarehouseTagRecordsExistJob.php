@@ -9,6 +9,8 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
 {
     public function handle()
     {
+        DB::statement("DROP TEMPORARY TABLE IF EXISTS tempTable;");
+
         DB::statement("
             CREATE TEMPORARY TABLE tempTable AS
             SELECT
@@ -27,7 +29,9 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
                 AND inventory_totals_by_warehouse_tag.id IS NULL
 
             LIMIT 10000;
+        ");
 
+        DB::insert("
             INSERT INTO inventory_totals_by_warehouse_tag (
                 tag_id,
                 product_id,

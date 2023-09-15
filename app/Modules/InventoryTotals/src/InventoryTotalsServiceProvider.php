@@ -5,7 +5,11 @@ namespace App\Modules\InventoryTotals\src;
 use App\Events\EveryDayEvent;
 use App\Events\Inventory\InventoryUpdatedEvent;
 use App\Events\Product\ProductCreatedEvent;
+use App\Events\SyncRequestedEvent;
 use App\Modules\BaseModuleServiceProvider;
+use App\Modules\InventoryTotals\src\Jobs\EnsureTotalsByWarehouseTagRecordsExistJob;
+use App\Modules\InventoryTotals\src\Jobs\LastCountedAtJob;
+use App\Modules\InventoryTotals\src\Jobs\UpdateTotalsByWarehouseTagTableJob;
 
 /**
  * Class EventServiceProviderBase.
@@ -33,6 +37,10 @@ class InventoryTotalsServiceProvider extends BaseModuleServiceProvider
      * @var array
      */
     protected $listen = [
+        SyncRequestedEvent::class => [
+            Listeners\SyncRequestedEventListener::class,
+        ],
+
         EveryDayEvent::class => [
             Listeners\DailyEventListener::class,
         ],
