@@ -56,10 +56,6 @@ class UpdateTotalsByWarehouseTagTableJob extends UniqueJob
                 GROUP BY tempTable.tag_id, tempTable.product_id;
         ");
 
-        DB::statement("
-            SELECT * FROM tempInventoryTotalsByWarehouseTag;
-        ");
-
         DB::update("
             UPDATE inventory_totals_by_warehouse_tag
 
