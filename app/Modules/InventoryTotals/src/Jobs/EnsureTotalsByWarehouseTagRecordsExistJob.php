@@ -64,6 +64,8 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
                 INNER JOIN inventory
                     ON inventory.product_id = tempTable.product_id
                     AND inventory.warehouse_id = tempTable.warehouse_id
+
+                GROUP BY tempTable.tag_id, tempTable.product_id;
             ");
             $maxRounds--;
             Log::debug('EnsureTotalsByWarehouseTagRecordsExistJob: tempTable count ' . DB::table('tempTable')->count());
