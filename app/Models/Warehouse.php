@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\BaseModel;
+use App\Events\Warehouse\WarehouseTagAttachedEvent;
 use App\Traits\HasTagsTrait;
 use App\Traits\LogsActivityTrait;
 use Barryvdh\LaravelIdeHelper\Eloquent;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -89,5 +89,15 @@ class Warehouse extends BaseModel
     public function address(): BelongsTo
     {
         return $this->belongsTo(OrderAddress::class);
+    }
+
+    protected function onTagAttached($tag)
+    {
+        WarehouseTagAttachedEvent::dispatch();
+    }
+
+    protected function onTagDetached($tag)
+    {
+        WarehouseTagAttachedEvent::dispatch();
     }
 }

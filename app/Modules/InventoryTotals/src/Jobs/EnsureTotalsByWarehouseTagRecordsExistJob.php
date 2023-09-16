@@ -35,8 +35,8 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
             Log::debug('Processing job', [
                 'job' => self::class,
                 'records created' => DB::table('tempTable')->count(),
-                'maxID' => $maxID,
                 'minID' => $minID,
+                'maxID' => $maxID,
             ]);
 
             $this->config->update(['totals_by_warehouse_tag_max_inventory_id_checked' => $maxID]);

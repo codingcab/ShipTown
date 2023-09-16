@@ -3,7 +3,6 @@
 namespace App\Events\Product;
 
 use App\Models\Product;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -33,7 +32,7 @@ class ProductTagDetachedEvent
         return $this->tag;
     }
 
-    public function broadcastOn()
+    public function broadcastOn(): PrivateChannel
     {
         return new PrivateChannel('channel-name');
     }

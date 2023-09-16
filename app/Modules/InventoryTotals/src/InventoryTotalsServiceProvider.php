@@ -6,6 +6,7 @@ use App\Events\EveryDayEvent;
 use App\Events\Inventory\InventoryUpdatedEvent;
 use App\Events\Product\ProductCreatedEvent;
 use App\Events\SyncRequestedEvent;
+use App\Events\Warehouse\WarehouseTagAttachedEvent;
 use App\Modules\BaseModuleServiceProvider;
 
 /**
@@ -48,6 +49,10 @@ class InventoryTotalsServiceProvider extends BaseModuleServiceProvider
 
         InventoryUpdatedEvent::class => [
             Listeners\InventoryUpdatedEventListener::class,
+        ],
+
+        WarehouseTagAttachedEvent::class => [
+            Listeners\WarehouseTagAttachedEventListener::class,
         ],
     ];
 }
