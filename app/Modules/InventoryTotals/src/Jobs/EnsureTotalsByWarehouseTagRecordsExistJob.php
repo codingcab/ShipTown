@@ -87,12 +87,6 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
                 INSERT INTO inventory_totals_by_warehouse_tag (
                     tag_id,
                     product_id,
-                    quantity,
-                    quantity_reserved,
-                    quantity_available,
-                    quantity_incoming,
-                    max_inventory_updated_at,
-                    calculated_at,
                     created_at,
                     updated_at
                 )
