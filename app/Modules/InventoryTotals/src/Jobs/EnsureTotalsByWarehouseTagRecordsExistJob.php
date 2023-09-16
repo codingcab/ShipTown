@@ -13,15 +13,8 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
 {
     public function handle()
     {
-        try {
-            $config = Configuration::query()->firstOrCreate([]);
-        } catch (Exception $e) {
-            Log::error('EnsureTotalsByWarehouseTagRecordsExistJob', ['error' => $e->getMessage()]);
-            return;
-        }
-
         // roundsLeft and batching are for performance reasons on large datasets
-        $roundsLeft = 100;
+        $roundsLeft = 1000;
 
         /** @var Configuration $config */
         $inventoryMaxId = Inventory::query()->max('id');
