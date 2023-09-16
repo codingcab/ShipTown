@@ -4,6 +4,7 @@ namespace App\Modules\InventoryTotals\src\Jobs;
 
 use App\Abstracts\UniqueJob;
 use App\Models\Inventory;
+use App\Modules\InventoryTotals\src\Models\Configuration;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -13,11 +14,16 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
     {
         // roundsLeft and batching are for performance reasons on large datasets
         $roundsLeft = 100;
-        $maxID = Inventory::query()->max('id');
-        $batchSize = max(ceil($maxID / $roundsLeft), 10000);
+
+        /** @var Configuration $config */
+        $config = Configuration::query()->firstOrCreate([]);
+        $inventoryMaxId = Inventory::query()->max('id');
+
+        $batchSize = max(ceil($inventoryMaxId / $roundsLeft), 10000);
 
         do {
-            $minID = max($maxID - $batchSize, 0);
+            $minID = $maxID ?? $config->totals_by_warehouse_tag_max_inventory_id_checked;
+            $maxID = $minID + $batchSize;
 
             Log::debug('EnsureTotalsByWarehouseTagRecordsExistJob', ['round' => $roundsLeft]);
 
@@ -80,9 +86,12 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
                 'minID' => $minID,
             ]);
 
+            $config->update([
+                'totals_by_warehouse_tag_max_inventory_id_checked' => $maxID,
+            ]);
+
             $roundsLeft--;
-            $maxID = $minID;
             sleep(1);
-        } while ($maxID > 0);
+        } while ($maxID < $inventoryMaxId);
     }
 }
