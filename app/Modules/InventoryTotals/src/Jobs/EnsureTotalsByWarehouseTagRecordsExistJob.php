@@ -57,6 +57,7 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
                     quantity_available,
                     quantity_incoming,
                     max_inventory_updated_at,
+                    calculated_at,
                     created_at,
                     updated_at
                 )
@@ -68,6 +69,7 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
                     SUM(inventory.quantity_available) as quantity_available,
                     SUM(inventory.quantity_incoming) as quantity_incoming,
                     MAX(inventory.updated_at) as max_inventory_updated_at,
+                    NOW() as calculated_at,
                     NOW() as created_at,
                     NOW() as updated_at
 
