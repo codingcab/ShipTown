@@ -12,25 +12,47 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
 {
     public function handle()
     {
-        $config = Configuration::query()->firstOrCreate([]);
-
-        // roundsLeft and batching are for performance reasons on large datasets
-        $roundsLeft = 1000;
+        $batchSize = 10000;
 
         /** @var Configuration $config */
-        $inventoryMaxId = Inventory::query()->max('id');
+        $config = Configuration::query()->firstOrCreate([]);
 
-        $batchSize = max(ceil($inventoryMaxId / $roundsLeft), 10000);
+        $inventoryMaxId = Inventory::query()->max('id');
 
         do {
             $minID = $maxID ?? $config->totals_by_warehouse_tag_max_inventory_id_checked;
             $maxID = $minID + $batchSize;
 
-            Log::debug('EnsureTotalsByWarehouseTagRecordsExistJob', ['round' => $roundsLeft]);
+            $this->insertMissingRecords($minID, $maxID);
 
-            DB::statement("DROP TEMPORARY TABLE IF EXISTS tempTable;");
+            Log::debug('Processing job', [
+                'job' => self::class,
+                'records created' => DB::table('tempTable')->count(),
+                'maxID' => $maxID,
+                'minID' => $minID,
+            ]);
 
-            DB::statement("
+            $config->update(['totals_by_warehouse_tag_max_inventory_id_checked' => $maxID]);
+
+            sleep(1);
+        } while ($maxID <= $inventoryMaxId);
+    }
+
+    public function fail($exception = null)
+    {
+        Log::error('EnsureTotalsByWarehouseTagRecordsExistJob', ['error' => $exception->getMessage()]);
+        report($exception);
+    }
+
+    /**
+     * @param mixed $minID
+     * @param mixed $maxID
+     */
+    private function insertMissingRecords(mixed $minID, mixed $maxID): void
+    {
+        DB::statement("DROP TEMPORARY TABLE IF EXISTS tempTable;");
+
+        DB::statement("
                 CREATE TEMPORARY TABLE tempTable AS
                 SELECT
                  DISTINCT taggables.tag_id, inventory.product_id, taggables.taggable_id as warehouse_id
@@ -49,7 +71,7 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
                 AND inventory_totals_by_warehouse_tag.id is null
             ", [$minID, $maxID]);
 
-            DB::insert("
+        DB::insert("
                 INSERT INTO inventory_totals_by_warehouse_tag (
                     tag_id,
                     product_id,
@@ -81,26 +103,5 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
 
                 GROUP BY tempTable.tag_id, tempTable.product_id;
             ");
-
-            Log::debug('EnsureTotalsByWarehouseTagRecordsExistJob:', [
-                'records created' => DB::table('tempTable')->count(),
-                'round' => $roundsLeft,
-                'maxID' => $maxID,
-                'minID' => $minID,
-            ]);
-
-            $config->update([
-                'totals_by_warehouse_tag_max_inventory_id_checked' => $maxID,
-            ]);
-
-            $roundsLeft--;
-            sleep(1);
-        } while ($maxID < $inventoryMaxId);
-    }
-
-    public function fail($exception = null)
-    {
-        Log::error('EnsureTotalsByWarehouseTagRecordsExistJob', ['error' => $exception->getMessage()]);
-        report($exception);
     }
 }
