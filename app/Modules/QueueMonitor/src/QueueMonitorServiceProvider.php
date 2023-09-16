@@ -34,6 +34,10 @@ class QueueMonitorServiceProvider extends BaseModuleServiceProvider
      */
     public static bool $autoEnable = false;
 
+    public static array $ignoredJobList = [
+        'Laravel\Telescope\Jobs\ProcessPendingUpdates',
+    ];
+
     /**
      * The event listener mappings for the application.
      *
