@@ -2,35 +2,18 @@
 
 namespace App\Jobs;
 
+use App\Abstracts\UniqueJob;
 use App\Events\SyncRequestedEvent;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-/**
- * Class RunHourlyListener.
- */
-class SyncRequestJob implements ShouldQueue
+class SyncRequestJob extends UniqueJob
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
-
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle()
     {
-        Log::info('SyncRequestedEvent dispatched');
+        Log::debug('SyncRequestedEvent dispatching');
 
         SyncRequestedEvent::dispatch();
 
-        Log::info('Every10minEvent dispatched');
+        Log::info('SyncRequestedEvent dispatched');
     }
 }
