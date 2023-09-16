@@ -8,6 +8,6 @@ class JobProcessingListener
 {
     public function handle($event)
     {
-        Log::debug('JobProcessingListener', ['event' => $event]);
+        Log::debug('Joh started', ['job' => $event->job->getName()]);
     }
 }
