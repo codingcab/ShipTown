@@ -54,7 +54,7 @@ class InventoryTotalsServiceProvider extends BaseModuleServiceProvider
 
     public static function enabling(): bool
     {
-        EnsureTotalsByWarehouseTagRecordsExistJob::dispatch();
+        EnsureTotalsByWarehouseTagRecordsExistJob::dispatchAfterResponse();
 
         return parent::enabling();
     }
