@@ -52,8 +52,6 @@ class UpdateTotalsTableJob extends UniqueJob
 
                 LEFT JOIN inventory
                     ON inventory.product_id = tempTable.product_id
-                    AND inventory.warehouse_id = taggables.taggable_id
-                    AND inventory.updated_at < tempTable.calculated_at
 
                 GROUP BY tempTable.product_id, tempTable.calculated_at;
         ");
@@ -62,8 +60,7 @@ class UpdateTotalsTableJob extends UniqueJob
             UPDATE inventory_totals
 
             INNER JOIN tempInventoryTotals
-                ON tempInventoryTotals.tag_id = inventory_totals.tag_id
-                AND tempInventoryTotals.product_id = inventory_totals.product_id
+                ON tempInventoryTotals.product_id = inventory_totals.product_id
 
             SET
                 inventory_totals.quantity = tempInventoryTotals.quantity,
