@@ -3,6 +3,7 @@
 namespace App\Modules\InventoryTotals\src\Jobs;
 
 use App\Abstracts\UniqueJob;
+use App\Models\Inventory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -11,8 +12,12 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
     public function handle()
     {
         $maxRounds = 100;
+        $maxID = Inventory::query()->max('id');
+        $batchSize = ceil($maxID / $maxRounds);
 
         do {
+            $minID = $maxID - $batchSize;
+
             Log::debug('EnsureTotalsByWarehouseTagRecordsExistJob: rounds left ' . $maxRounds);
 
             DB::statement("DROP TEMPORARY TABLE IF EXISTS tempTable;");
@@ -20,22 +25,21 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
             DB::statement("
                 CREATE TEMPORARY TABLE tempTable AS
                 SELECT
-                    distinct taggables.tag_id, inventory.product_id, taggables.taggable_id as warehouse_id
-                FROM taggables
+                 DISTINCT taggables.tag_id, inventory.product_id, taggables.taggable_id as warehouse_id
 
-                INNER JOIN inventory
-                    ON inventory.warehouse_id = taggables.taggable_id
+                FROM inventory
+
+                INNER JOIN taggables
+                  ON taggables.taggable_type = 'App\\\\Models\\\\Warehouse'
+                  AND taggables.taggable_id = inventory.warehouse_id
 
                 LEFT JOIN inventory_totals_by_warehouse_tag
-                    ON inventory_totals_by_warehouse_tag.product_id = inventory.product_id
-                    AND inventory_totals_by_warehouse_tag.tag_id = taggables.tag_id
+                  ON inventory_totals_by_warehouse_tag.tag_id = taggables.tag_id
+                  AND inventory_totals_by_warehouse_tag.product_id = inventory.product_id
 
-                WHERE
-                    taggables.taggable_type = 'App\\\\Models\\\\Warehouse'
-                    AND inventory_totals_by_warehouse_tag.id IS NULL
-
-                LIMIT 5000;
-            ");
+                WHERE inventory.id BETWEEN ? AND ?
+                AND inventory_totals_by_warehouse_tag.id is null
+            ", [$minID, $maxID]);
 
             DB::insert("
                 INSERT INTO inventory_totals_by_warehouse_tag (
@@ -68,7 +72,8 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
                 GROUP BY tempTable.tag_id, tempTable.product_id;
             ");
             $maxRounds--;
-            Log::debug('EnsureTotalsByWarehouseTagRecordsExistJob: tempTable count ' . DB::table('tempTable')->count());
+            $maxID = $minID;
+            Log::debug('EnsureTotalsByWarehouseTagRecordsExistJob: records created ' . DB::table('tempTable')->count());
             sleep(1);
         } while (DB::table('tempTable')->count() > 0 and $maxRounds > 0);
     }
