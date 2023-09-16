@@ -5,6 +5,7 @@ namespace App\Modules\InventoryTotals\src\Jobs;
 use App\Abstracts\UniqueJob;
 use App\Models\Inventory;
 use App\Modules\InventoryTotals\src\Models\Configuration;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -12,11 +13,17 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
 {
     public function handle()
     {
+        try {
+            $config = Configuration::query()->firstOrCreate([]);
+        } catch (Exception $e) {
+            Log::error('EnsureTotalsByWarehouseTagRecordsExistJob', ['error' => $e->getMessage()]);
+            return;
+        }
+
         // roundsLeft and batching are for performance reasons on large datasets
         $roundsLeft = 100;
 
         /** @var Configuration $config */
-        $config = Configuration::query()->firstOrCreate([]);
         $inventoryMaxId = Inventory::query()->max('id');
 
         $batchSize = max(ceil($inventoryMaxId / $roundsLeft), 10000);
