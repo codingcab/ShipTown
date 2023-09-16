@@ -10,9 +10,7 @@ class RunScheduledJobsController extends Controller
 {
     public function store(RunScheduledJobsRequest $request)
     {
-        SyncRequestJob::dispatch();
-
-        info('SyncRequestJob dispatched');
+        SyncRequestJob::dispatchAfterResponse();
 
         $this->respondOK200('Sync requested successfully');
     }
