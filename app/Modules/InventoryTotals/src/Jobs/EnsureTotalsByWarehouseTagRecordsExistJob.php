@@ -11,14 +11,15 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
 {
     public function handle()
     {
-        $maxRounds = 100;
+        // roundsLeft and batching are for performance reasons on large datasets
+        $roundsLeft = 100;
         $maxID = Inventory::query()->max('id');
-        $batchSize = ceil($maxID / $maxRounds);
+        $batchSize = max(ceil($maxID / $roundsLeft), 10000);
 
         do {
-            $minID = $maxID - $batchSize;
+            $minID = max($maxID - $batchSize, 0);
 
-            Log::debug('EnsureTotalsByWarehouseTagRecordsExistJob: rounds left ' . $maxRounds);
+            Log::debug('EnsureTotalsByWarehouseTagRecordsExistJob', ['round' => $roundsLeft]);
 
             DB::statement("DROP TEMPORARY TABLE IF EXISTS tempTable;");
 
@@ -71,10 +72,17 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
 
                 GROUP BY tempTable.tag_id, tempTable.product_id;
             ");
-            $maxRounds--;
+
+            Log::debug('EnsureTotalsByWarehouseTagRecordsExistJob:', [
+                'records created' => DB::table('tempTable')->count(),
+                'round' => $roundsLeft,
+                'maxID' => $maxID,
+                'minID' => $minID,
+            ]);
+
+            $roundsLeft--;
             $maxID = $minID;
-            Log::debug('EnsureTotalsByWarehouseTagRecordsExistJob: records created ' . DB::table('tempTable')->count());
             sleep(1);
-        } while (DB::table('tempTable')->count() > 0 and $maxRounds > 0);
+        } while ($maxID > 0);
     }
 }
