@@ -17,7 +17,7 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
 
     public function __construct()
     {
-        $this->batchSize = 500;
+        $this->batchSize = 1000;
 
         $this->config = Configuration::query()->firstOrCreate([]);
 
