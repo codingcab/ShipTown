@@ -7,6 +7,7 @@ use App\Events\Inventory\InventoryUpdatedEvent;
 use App\Events\Product\ProductCreatedEvent;
 use App\Events\SyncRequestedEvent;
 use App\Modules\BaseModuleServiceProvider;
+use App\Modules\InventoryTotals\src\Jobs\EnsureTotalsByWarehouseTagRecordsExistJob;
 
 /**
  * Class EventServiceProviderBase.
@@ -51,8 +52,10 @@ class InventoryTotalsServiceProvider extends BaseModuleServiceProvider
         ],
     ];
 
-    public static function disabling(): bool
+    public static function enabling(): bool
     {
-        return false;
+        EnsureTotalsByWarehouseTagRecordsExistJob::dispatch();
+
+        return parent::enabling();
     }
 }

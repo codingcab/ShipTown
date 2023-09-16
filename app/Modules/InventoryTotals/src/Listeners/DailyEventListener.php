@@ -2,6 +2,7 @@
 
 namespace App\Modules\InventoryTotals\src\Listeners;
 
+use App\Modules\InventoryTotals\src\Jobs\EnsureTotalsByWarehouseTagRecordsExistJob;
 use App\Modules\InventoryTotals\src\Jobs\FirstMovementAtJob;
 use App\Modules\InventoryTotals\src\Jobs\LastCountedAtJob;
 
@@ -11,5 +12,7 @@ class DailyEventListener
     {
         FirstMovementAtJob::dispatch();
         LastCountedAtJob::dispatch();
+
+        EnsureTotalsByWarehouseTagRecordsExistJob::dispatch();
     }
 }
