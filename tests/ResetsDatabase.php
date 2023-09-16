@@ -2,11 +2,13 @@
 
 namespace Tests;
 
+use App;
 use App\Models\DataCollection;
 use App\Models\DataCollectionRecord;
 use App\Models\Heartbeat;
 use App\Models\Inventory;
 use App\Models\InventoryMovement;
+use App\Models\InventoryTotal;
 use App\Models\Module;
 use App\Models\Order;
 use App\Models\OrderProduct;
@@ -15,7 +17,6 @@ use App\Models\OrderStatus;
 use App\Models\Product;
 use App\Models\ProductAlias;
 use App\Models\Session;
-use App\Models\Taggable;
 use App\Models\Warehouse;
 use App\Modules\Api2cart\src\Models\Api2cartConnection;
 use App\Modules\Api2cart\src\Models\Api2cartProductLink;
@@ -50,6 +51,9 @@ trait ResetsDatabase
 
         Product::query()->forceDelete();
         Inventory::query()->forceDelete();
+        InventoryTotal::query()->forceDelete();
+        App\Modules\InventoryTotals\src\Models\Configuration::query()->forceDelete();
+        App\Modules\InventoryTotals\src\Models\InventoryTotalByWarehouseTag::query()->forceDelete();
         ProductAlias::query()->forceDelete();
         OrderProduct::query()->forceDelete();
         Order::query()->forceDelete();

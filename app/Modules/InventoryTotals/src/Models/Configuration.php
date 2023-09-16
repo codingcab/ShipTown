@@ -16,4 +16,8 @@ class Configuration extends BaseModel
     protected $fillable = [
         'totals_by_warehouse_tag_max_inventory_id_checked',
     ];
+
+    protected $attributes = [
+        'totals_by_warehouse_tag_max_inventory_id_checked' => 0,
+    ];
 }

@@ -79,8 +79,6 @@ class TotalsByWarehouseTagTest extends TestCase
 
         EnsureTotalsByWarehouseTagRecordsExistJob::dispatch();
 
-        ray('inventory_totals_by_warehouse_tag', InventoryTotalByWarehouseTag::query()->first()->toArray());
-
         $this->assertDatabaseHas('inventory_totals_by_warehouse_tag', [
             'tag_id' => Tag::findFromString('test_tag')->getKey(),
             'product_id' => $product->getKey(),
