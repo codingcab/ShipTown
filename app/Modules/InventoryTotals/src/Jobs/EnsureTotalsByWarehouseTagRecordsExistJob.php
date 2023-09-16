@@ -71,8 +71,8 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
                   AND taggables.taggable_id = inventory.warehouse_id
 
                 LEFT JOIN inventory_totals_by_warehouse_tag
-                  ON inventory_totals_by_warehouse_tag.tag_id = taggables.tag_id
-                  AND inventory_totals_by_warehouse_tag.product_id = inventory.product_id
+                  ON inventory_totals_by_warehouse_tag.product_id = inventory.product_id
+                  AND inventory_totals_by_warehouse_tag.tag_id = taggables.tag_id
 
                 WHERE
                       inventory.id BETWEEN ? AND ?
@@ -86,15 +86,13 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
                     created_at,
                     updated_at
                 )
-                SELECT
+                SELECT DISTINCT
                     tempTable.tag_id as tag_id,
                     tempTable.product_id as product_id,
                     NOW() as created_at,
                     NOW() as updated_at
 
                 FROM tempTable
-
-                GROUP BY tempTable.tag_id, tempTable.product_id;
             ");
     }
 }
