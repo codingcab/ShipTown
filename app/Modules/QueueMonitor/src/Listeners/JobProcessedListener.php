@@ -9,6 +9,6 @@ class JobProcessedListener
 {
     public function handle(JobProcessed $event)
     {
-        Log::debug('Job finished', ['job' => $event->job->getName()]);
+        Log::debug('Job processed', ['job' => data_get($event->job->payload(), 'displayName')]);
     }
 }
