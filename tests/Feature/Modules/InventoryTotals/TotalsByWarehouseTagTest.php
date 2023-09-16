@@ -8,6 +8,7 @@ use App\Models\Warehouse;
 use App\Modules\InventoryTotals\src\InventoryTotalsServiceProvider;
 use App\Modules\InventoryTotals\src\Jobs\EnsureTotalsByWarehouseTagRecordsExistJob;
 use App\Modules\InventoryTotals\src\Jobs\UpdateTotalsByWarehouseTagTableJob;
+use App\Modules\InventoryTotals\src\Models\Configuration;
 use App\Modules\InventoryTotals\src\Models\InventoryTotalByWarehouseTag;
 use App\Services\InventoryService;
 use Spatie\Tags\Tag;
@@ -76,6 +77,7 @@ class TotalsByWarehouseTagTest extends TestCase
         $product = Product::factory()->create();
 
         InventoryTotalByWarehouseTag::query()->forceDelete();
+        Configuration::query()->forceDelete();
 
         EnsureTotalsByWarehouseTagRecordsExistJob::dispatch();
 
