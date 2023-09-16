@@ -3,6 +3,7 @@
 namespace App\Modules\InventoryTotals\src;
 
 use App\Events\EveryDayEvent;
+use App\Events\EveryTenMinutesEvent;
 use App\Events\Inventory\InventoryUpdatedEvent;
 use App\Events\Product\ProductCreatedEvent;
 use App\Events\SyncRequestedEvent;
@@ -37,6 +38,10 @@ class InventoryTotalsServiceProvider extends BaseModuleServiceProvider
     protected $listen = [
         SyncRequestedEvent::class => [
             Listeners\SyncRequestedEventListener::class,
+        ],
+
+        EveryTenMinutesEvent::class => [
+            Listeners\EveryTenMinutesEventListener::class,
         ],
 
         EveryDayEvent::class => [
