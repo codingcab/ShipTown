@@ -8,29 +8,25 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::dropIfExists('inventory_totals_by_warehouse_tag');
+        Schema::dropIfExists('inventory_totals');
 
-        Schema::create('inventory_totals_by_warehouse_tag', function (Blueprint $table) {
+        Schema::create('inventory_totals', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id');
-            $table->unsignedInteger('tag_id');
             $table->decimal('quantity', 20)->default(0);
             $table->decimal('quantity_reserved', 20)->default(0);
             $table->decimal('quantity_available', 20)->default(0);
             $table->decimal('quantity_incoming', 20)->default(0);
-            $table->timestamp('max_inventory_updated_at')->useCurrent();
+            $table->timestamp('max_inventory_updated_at')->default('2000-01-01 00:00:00');
+            $table->timestamp('calculated_at')->nullable();
             $table->timestamps();
 
-            $table->unique(['product_id', 'tag_id'], 'uk_product_tag');
+            $table->index('product_id');
+            $table->index('calculated_at');
 
-            $table->foreign('product_id', 'fk_inventory_totals_by_warehouse_tag_product_id')
+            $table->foreign('product_id')
                 ->references('id')
                 ->on('products')
-                ->cascadeOnDelete();
-
-            $table->foreign('tag_id', 'fk_inventory_totals_by_warehouse_tag_tag_id')
-                ->references('id')
-                ->on('tags')
                 ->cascadeOnDelete();
         });
     }

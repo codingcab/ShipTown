@@ -21,10 +21,31 @@ class InventoryUpdatedEventListener
         $quantityAvailableDelta = $inventory->quantity_available - $inventory->getOriginal('quantity_available');
         $quantityIncomingDelta = $inventory->quantity_incoming - $inventory->getOriginal('quantity_incoming');
 
-        $tags = Taggable::query()->where([
+        Product::query()
+            ->where(['id' => $event->inventory->product_id])
+            ->update([
+                'quantity' => DB::raw('quantity + ' . $quantityDelta),
+                'quantity_reserved' => DB::raw('quantity_reserved + ' . $quantityReservedDelta),
+                'updated_at' => now(),
+            ]);
+
+        InventoryTotal::query()
+            ->where('product_id', $inventory->product_id)
+            ->update([
+                'quantity' => DB::raw('quantity + ' . $quantityDelta),
+                'quantity_reserved' => DB::raw('quantity_reserved + ' . $quantityReservedDelta),
+                'quantity_available' => DB::raw('quantity_available + ' . $quantityAvailableDelta),
+                'quantity_incoming' => DB::raw('quantity_incoming + ' . $quantityIncomingDelta),
+                'max_inventory_updated_at' => $inventory->updated_at,
+                'updated_at' => now(),
+            ]);
+
+        $tags = Taggable::query()
+            ->where([
                 'taggable_type' => Warehouse::class,
                 'taggable_id' => $inventory->warehouse_id,
-            ])->get();
+            ])
+            ->get();
 
         InventoryTotalByWarehouseTag::query()
             ->where('product_id', $inventory->product_id)
@@ -35,24 +56,6 @@ class InventoryUpdatedEventListener
                 'quantity_available' => DB::raw('quantity_available + ' . $quantityAvailableDelta),
                 'quantity_incoming' => DB::raw('quantity_incoming + ' . $quantityIncomingDelta),
                 'max_inventory_updated_at' => $inventory->updated_at,
-                'updated_at' => now(),
-            ]);
-
-        InventoryTotal::query()
-            ->where('product_id', $inventory->product_id)
-            ->update([
-                'quantity' => DB::raw('quantity + ' . $quantityDelta),
-                'quantity_reserved' => DB::raw('quantity_reserved + ' . $quantityReservedDelta),
-                'quantity_incoming' => DB::raw('quantity_incoming + ' . $quantityIncomingDelta),
-                'updated_at' => now(),
-            ]);
-
-        Product::query()
-            ->where([
-                'id' => $event->inventory->product_id
-            ])->update([
-                'quantity' => DB::raw('quantity + ' . $quantityDelta),
-                'quantity_reserved' => DB::raw('quantity_reserved + ' . $quantityReservedDelta),
                 'updated_at' => now(),
             ]);
     }

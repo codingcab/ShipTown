@@ -11,29 +11,8 @@ class ProductCreatedEventListener
 {
     public function handle(ProductCreatedEvent $event)
     {
-        $this->createInventoryTotalRecord($event);
+        InventoryTotal::query()->insertOrIgnore(['product_id' => $event->product->getKey()]);
 
-        $this->insertInventoryTotalsByWarehouseTagRecords($event);
-    }
-
-    /**
-     * @param ProductCreatedEvent $event
-     */
-    private function createInventoryTotalRecord(ProductCreatedEvent $event): void
-    {
-        InventoryTotal::query()->create([
-            'product_id' => $event->product->getKey(),
-            'quantity' => 0,
-            'quantity_reserved' => 0,
-            'quantity_incoming' => 0,
-        ]);
-    }
-
-    /**
-     * @param ProductCreatedEvent $event
-     */
-    private function insertInventoryTotalsByWarehouseTagRecords(ProductCreatedEvent $event): void
-    {
         $records = Taggable::query()
             ->where(['taggable_type' => 'App\Models\Warehouse'])
             ->get()

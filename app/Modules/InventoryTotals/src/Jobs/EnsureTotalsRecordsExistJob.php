@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
+class EnsureTotalsRecordsExistJob extends UniqueJob
 {
     private int $batchSize;
     private Configuration|Model $config;
@@ -27,7 +27,7 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
     public function handle()
     {
         do {
-            $minID = $maxID ?? $this->config->totals_by_warehouse_tag_max_inventory_id_checked;
+            $minID = $maxID ?? $this->config->totals_max_product_id_checked;
             $maxID = $minID + $this->batchSize;
 
             $this->insertMissingRecords($minID, $maxID);
@@ -39,7 +39,7 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
                 'maxID' => $maxID,
             ]);
 
-            $this->config->update(['totals_by_warehouse_tag_max_inventory_id_checked' => $maxID]);
+            $this->config->update(['totals_max_inventory_id_checked' => $maxID]);
 
             usleep(100000); // 0.1 sec
         } while ($maxID <= $this->inventoryMaxId);
@@ -62,32 +62,25 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
         DB::statement("
                 CREATE TEMPORARY TABLE tempTable AS
                 SELECT
-                    DISTINCT taggables.tag_id, inventory.product_id
+                    products.id
 
-                FROM inventory
+                FROM products
 
-                INNER JOIN taggables
-                  ON taggables.taggable_type = 'App\\\\Models\\\\Warehouse'
-                  AND taggables.taggable_id = inventory.warehouse_id
-
-                LEFT JOIN inventory_totals_by_warehouse_tag
-                  ON inventory_totals_by_warehouse_tag.product_id = inventory.product_id
-                  AND inventory_totals_by_warehouse_tag.tag_id = taggables.tag_id
+                LEFT JOIN inventory_totals
+                  ON inventory_totals.product_id = products.id
 
                 WHERE
-                      inventory.id BETWEEN ? AND ?
-                    AND inventory_totals_by_warehouse_tag.id is null
+                    products.id BETWEEN ? AND ?
+                    AND inventory_totals.id is null
             ", [$minID, $maxID]);
 
         DB::insert("
-                INSERT INTO inventory_totals_by_warehouse_tag (
-                    tag_id,
+                INSERT INTO inventory_totals (
                     product_id,
                     created_at,
                     updated_at
                 )
                 SELECT
-                    tempTable.tag_id as tag_id,
                     tempTable.product_id as product_id,
                     NOW() as created_at,
                     NOW() as updated_at
