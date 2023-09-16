@@ -26,8 +26,6 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
 
     public function handle()
     {
-        Log::debug('Starting job', ['job' => self::class]);
-
         do {
             $minID = $maxID ?? $this->config->totals_by_warehouse_tag_max_inventory_id_checked;
             $maxID = $minID + $this->batchSize;
@@ -45,8 +43,6 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
 
             usleep(100000); // 0.1 sec
         } while ($maxID <= $this->inventoryMaxId);
-
-        Log::debug('Finished job', ['job' => self::class]);
     }
 
     public function fail($exception = null)

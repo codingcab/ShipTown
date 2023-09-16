@@ -10,8 +10,6 @@ class UpdateTotalsByWarehouseTagTableJob extends UniqueJob
 {
     public function handle()
     {
-        Log::debug('Starting UpdateTotalsByWarehouseTagTableJob');
-
         do {
             $recordsUpdated = $this->recalculateTotals();
 
@@ -19,8 +17,6 @@ class UpdateTotalsByWarehouseTagTableJob extends UniqueJob
 
             usleep(100000); // 0.1 sec
         } while ($recordsUpdated > 0);
-
-        Log::debug('Finished UpdateTotalsByWarehouseTagTableJob');
     }
 
     private function recalculateTotals(): int
