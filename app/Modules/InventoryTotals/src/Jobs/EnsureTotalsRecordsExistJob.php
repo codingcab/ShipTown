@@ -3,7 +3,7 @@
 namespace App\Modules\InventoryTotals\src\Jobs;
 
 use App\Abstracts\UniqueJob;
-use App\Models\Inventory;
+use App\Models\Product;
 use App\Modules\InventoryTotals\src\Models\Configuration;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +13,7 @@ class EnsureTotalsRecordsExistJob extends UniqueJob
 {
     private int $batchSize;
     private Configuration|Model $config;
-    private mixed $inventoryMaxId;
+    private mixed $productsMaxId;
 
     public function __construct()
     {
@@ -21,7 +21,7 @@ class EnsureTotalsRecordsExistJob extends UniqueJob
 
         $this->config = Configuration::query()->firstOrCreate([]);
 
-        $this->inventoryMaxId = Inventory::query()->max('id');
+        $this->productsMaxId = Product::query()->max('id');
     }
 
     public function handle()
@@ -42,7 +42,7 @@ class EnsureTotalsRecordsExistJob extends UniqueJob
             $this->config->update(['totals_max_inventory_id_checked' => $maxID]);
 
             usleep(100000); // 0.1 sec
-        } while ($maxID <= $this->inventoryMaxId);
+        } while ($maxID <= $this->productsMaxId);
     }
 
     public function fail($exception = null)
@@ -62,7 +62,7 @@ class EnsureTotalsRecordsExistJob extends UniqueJob
         DB::statement("
                 CREATE TEMPORARY TABLE tempTable AS
                 SELECT
-                    products.id
+                    products.id as product_id
 
                 FROM products
 
