@@ -64,6 +64,10 @@ class TotalsByWarehouseTagTest extends TestCase
             'product_id' => $product->getKey(),
             'quantity' => 15
         ]);
+
+        $this->assertDatabaseMissing('inventory_totals_by_warehouse_tag', [
+            'calculated_at' => null,
+        ]);
     }
 
     /** @test */
