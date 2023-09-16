@@ -5,23 +5,32 @@ namespace App\Modules\InventoryTotals\src\Jobs;
 use App\Abstracts\UniqueJob;
 use App\Models\Inventory;
 use App\Modules\InventoryTotals\src\Models\Configuration;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
 {
+    private int $batchSize;
+    private Configuration|Model $config;
+    private mixed $inventoryMaxId;
+
+    public function __construct()
+    {
+        $this->batchSize = 10000;
+
+        $this->config = Configuration::query()->firstOrCreate([]);
+
+        $this->inventoryMaxId = Inventory::query()->max('id');
+    }
+
     public function handle()
     {
-        $batchSize = 10000;
-
-        /** @var Configuration $config */
-        $config = Configuration::query()->firstOrCreate([]);
-
-        $inventoryMaxId = Inventory::query()->max('id');
+        Log::debug('Starting job', ['job' => self::class]);
 
         do {
-            $minID = $maxID ?? $config->totals_by_warehouse_tag_max_inventory_id_checked;
-            $maxID = $minID + $batchSize;
+            $minID = $maxID ?? $this->config->totals_by_warehouse_tag_max_inventory_id_checked;
+            $maxID = $minID + $this->batchSize;
 
             $this->insertMissingRecords($minID, $maxID);
 
@@ -32,10 +41,12 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
                 'minID' => $minID,
             ]);
 
-            $config->update(['totals_by_warehouse_tag_max_inventory_id_checked' => $maxID]);
+            $this->config->update(['totals_by_warehouse_tag_max_inventory_id_checked' => $maxID]);
 
             sleep(1);
-        } while ($maxID <= $inventoryMaxId);
+        } while ($maxID <= $this->inventoryMaxId);
+
+        Log::debug('Finished job', ['job' => self::class]);
     }
 
     public function fail($exception = null)
