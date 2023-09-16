@@ -93,11 +93,11 @@ class Warehouse extends BaseModel
 
     protected function onTagAttached($tag)
     {
-        WarehouseTagAttachedEvent::dispatch();
+        WarehouseTagAttachedEvent::dispatch($this, $tag);
     }
 
     protected function onTagDetached($tag)
     {
-        WarehouseTagAttachedEvent::dispatch();
+        WarehouseTagAttachedEvent::dispatch($this, $tag);
     }
 }
