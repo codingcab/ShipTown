@@ -14,8 +14,12 @@ class UpdateTotalsByWarehouseTagTableJob extends UniqueJob
 
         do {
             $recordsUpdated = $this->recalculateTotals();
-            Log::debug('Processing UpdateTotalsByWarehouseTagTableJob', ['records_updated' => $recordsUpdated]);
-            sleep(1);
+            Log::debug('Processing job UpdateTotalsByWarehouseTagTableJob', ['records_updated' => $recordsUpdated]);
+            Log::debug('Processing job', [
+                'job' => self::class,
+                'records_updated' => $recordsUpdated,
+            ]);
+            usleep(100000); // 0.1 sec
         } while ($recordsUpdated > 0);
 
         Log::debug('Finished UpdateTotalsByWarehouseTagTableJob');
@@ -34,7 +38,7 @@ class UpdateTotalsByWarehouseTagTableJob extends UniqueJob
 
                 WHERE calculated_at IS NULL
 
-                LIMIT 100;
+                LIMIT 500;
         ");
 
         DB::statement("
