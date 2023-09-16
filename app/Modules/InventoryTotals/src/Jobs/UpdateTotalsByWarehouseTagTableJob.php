@@ -58,7 +58,6 @@ class UpdateTotalsByWarehouseTagTableJob extends UniqueJob
                 LEFT JOIN inventory
                     ON inventory.product_id = tempTable.product_id
                     AND inventory.warehouse_id = taggables.taggable_id
-                    AND inventory.updated_at < tempTable.calculated_at
 
                 GROUP BY tempTable.tag_id, tempTable.product_id, tempTable.calculated_at;
         ");

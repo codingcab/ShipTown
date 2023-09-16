@@ -8,9 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (Schema::hasTable('inventory_totals_by_warehouse_tag')) {
-            return;
-        }
+        Schema::dropIfExists('inventory_totals_by_warehouse_tag');
 
         Schema::create('inventory_totals_by_warehouse_tag', function (Blueprint $table) {
             $table->id();
@@ -20,7 +18,7 @@ return new class extends Migration
             $table->decimal('quantity_reserved', 20)->default(0);
             $table->decimal('quantity_available', 20)->default(0);
             $table->decimal('quantity_incoming', 20)->default(0);
-            $table->timestamp('max_inventory_updated_at')->useCurrent();
+            $table->timestamp('max_inventory_updated_at')->default('2000-01-01 00:00:00');
             $table->timestamp('calculated_at')->nullable();
             $table->timestamps();
 
