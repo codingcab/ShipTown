@@ -62,7 +62,7 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
         DB::statement("
                 CREATE TEMPORARY TABLE tempTable AS
                 SELECT
-                    taggables.tag_id, inventory.product_id
+                    DISTINCT taggables.tag_id, inventory.product_id
 
                 FROM inventory
 
@@ -86,7 +86,7 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
                     created_at,
                     updated_at
                 )
-                SELECT DISTINCT
+                SELECT
                     tempTable.tag_id as tag_id,
                     tempTable.product_id as product_id,
                     NOW() as created_at,
