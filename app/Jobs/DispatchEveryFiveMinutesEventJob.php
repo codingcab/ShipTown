@@ -2,37 +2,17 @@
 
 namespace App\Jobs;
 
+use App\Abstracts\UniqueJob;
 use App\Events\EveryFiveMinutesEvent;
 use App\Models\Heartbeat;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class RunHourlyListener.
  */
-class DispatchEveryFiveMinutesEventJob implements ShouldQueue, ShouldBeUniqueUntilProcessing
+class DispatchEveryFiveMinutesEventJob extends UniqueJob
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
-
-    public int $uniqueFor = 120;
-
-    public function uniqueId(): string
-    {
-        return implode('-', [get_class($this)]);
-    }
-
     public function handle()
     {
-        Log::debug('Every Five Minutes Event - dispatching');
-
         EveryFiveMinutesEvent::dispatch();
 
         Heartbeat::query()->updateOrCreate([
@@ -41,7 +21,5 @@ class DispatchEveryFiveMinutesEventJob implements ShouldQueue, ShouldBeUniqueUnt
             'error_message' => 'Every Five Minutes Event heartbeat missed',
             'expires_at' => now()->addHour()
         ]);
-
-        Log::info('Every Five Minutes Event - dispatched successfully');
     }
 }

@@ -2,26 +2,11 @@
 
 namespace App\Jobs;
 
+use App\Abstracts\UniqueJob;
 use App\Models\Heartbeat;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 
-class HeartbeatJob implements ShouldQueue
+class HeartbeatJob extends UniqueJob
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
-
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle()
     {
         Heartbeat::query()->updateOrCreate([
@@ -30,7 +15,5 @@ class HeartbeatJob implements ShouldQueue
             'error_message' => 'Job heartbeat missed, please contact support',
             'expired_at' => now()->addHour()
         ]);
-
-        Log::info('heartbeat');
     }
 }
