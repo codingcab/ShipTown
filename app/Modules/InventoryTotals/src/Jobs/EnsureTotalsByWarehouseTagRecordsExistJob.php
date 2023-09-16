@@ -17,7 +17,7 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
 
     public function __construct()
     {
-        $this->batchSize = 10000;
+        $this->batchSize = 500;
 
         $this->config = Configuration::query()->firstOrCreate([]);
 
@@ -43,7 +43,7 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
 
             $this->config->update(['totals_by_warehouse_tag_max_inventory_id_checked' => $maxID]);
 
-            sleep(1);
+            usleep(100000); // 0.1 sec
         } while ($maxID <= $this->inventoryMaxId);
 
         Log::debug('Finished job', ['job' => self::class]);
@@ -66,7 +66,7 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
         DB::statement("
                 CREATE TEMPORARY TABLE tempTable AS
                 SELECT
-                 DISTINCT taggables.tag_id, inventory.product_id, taggables.taggable_id as warehouse_id
+                    taggables.tag_id, inventory.product_id
 
                 FROM inventory
 
@@ -78,8 +78,9 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
                   ON inventory_totals_by_warehouse_tag.tag_id = taggables.tag_id
                   AND inventory_totals_by_warehouse_tag.product_id = inventory.product_id
 
-                WHERE inventory.id BETWEEN ? AND ?
-                AND inventory_totals_by_warehouse_tag.id is null
+                WHERE
+                      inventory.id BETWEEN ? AND ?
+                    AND inventory_totals_by_warehouse_tag.id is null
             ", [$minID, $maxID]);
 
         DB::insert("
@@ -98,19 +99,10 @@ class EnsureTotalsByWarehouseTagRecordsExistJob extends UniqueJob
                 SELECT
                     tempTable.tag_id as tag_id,
                     tempTable.product_id as product_id,
-                    SUM(inventory.quantity) as quantity,
-                    SUM(inventory.quantity_reserved) as quantity_reserved,
-                    SUM(inventory.quantity_available) as quantity_available,
-                    SUM(inventory.quantity_incoming) as quantity_incoming,
-                    MAX(inventory.updated_at) as max_inventory_updated_at,
-                    NOW() as calculated_at,
                     NOW() as created_at,
                     NOW() as updated_at
 
                 FROM tempTable
-                INNER JOIN inventory
-                    ON inventory.product_id = tempTable.product_id
-                    AND inventory.warehouse_id = tempTable.warehouse_id
 
                 GROUP BY tempTable.tag_id, tempTable.product_id;
             ");
