@@ -5,7 +5,6 @@ namespace App\Modules\MagentoApi\src\Jobs;
 use App\Abstracts\UniqueJob;
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
 use App\Modules\MagentoApi\src\Models\MagentoProduct;
-use App\Modules\MagentoApi\src\Models\MagentoProductInventoryComparisonView;
 use App\Modules\MagentoApi\src\Services\MagentoService;
 use Exception;
 
@@ -21,13 +20,14 @@ class FetchSpecialPricesJob extends UniqueJob
             ->whereNull('special_prices_fetched_at')
             ->orWhereNull('magento_sale_price')
             ->chunkById(10, function ($products) {
-                collect($products)->each(function (MagentoProduct $magentoProduct) {
-                    try {
+                try {
+                    collect($products)->each(function (MagentoProduct $magentoProduct) {
                         MagentoService::fetchSpecialPrices($magentoProduct);
-                    } catch (Exception $exception) {
-                        report($exception);
-                    }
-                });
+                    });
+                } catch (Exception $exception) {
+                    report($exception);
+                    return false;
+                }
             }, 'product_id');
     }
 }

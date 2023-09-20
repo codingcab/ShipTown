@@ -5,9 +5,7 @@ namespace App\Modules\MagentoApi\src\Jobs;
 use App\Abstracts\UniqueJob;
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
 use App\Modules\MagentoApi\src\Models\MagentoProduct;
-use App\Modules\MagentoApi\src\Models\MagentoProductInventoryComparisonView;
 use App\Modules\MagentoApi\src\Services\MagentoService;
-use Exception;
 
 class FetchStockItemsJob extends UniqueJob
 {
@@ -23,12 +21,13 @@ class FetchStockItemsJob extends UniqueJob
             ->with('magentoConnection')
             ->chunkById(10, function ($products) {
                 collect($products)->each(function (MagentoProduct $magentoProduct) {
-                    try {
-                        MagentoService::fetchInventory($magentoProduct);
-                    } catch (Exception $exception) {
-                        report($exception);
-                    }
+                    MagentoService::fetchInventory($magentoProduct);
                 });
             }, 'product_id');
+    }
+
+    public function fail($exception = null)
+    {
+        report($exception);
     }
 }
