@@ -14,7 +14,7 @@ class SyncProductInventoryJob extends UniqueJob
         $connectionIds = MagentoConnection::query()->where(['is_enabled' => true])->get()->pluck('id');
 
         MagentoProductInventoryComparisonView::query()
-            ->whereIn('magento_connection_id', $connectionIds)
+            ->whereIn('modules_magento2api_connection_id', $connectionIds)
             ->whereNotNull('stock_items_fetched_at')
             ->whereRaw('IFNULL(magento_quantity, 0) != expected_quantity')
             ->with('magentoConnection')

@@ -15,7 +15,7 @@ class SyncProductSalePricesJob extends UniqueJob
         $connectionIds = MagentoConnection::query()->where(['is_enabled' => true])->get()->pluck('id');
 
         MagentoProductPricesComparisonView::query()
-            ->whereIn('magento_connection_id', $connectionIds)
+            ->whereIn('modules_magento2api_connection_id', $connectionIds)
             ->whereNotNull('special_prices_fetched_at')
             ->whereRaw('(
                 IFNULL(magento_sale_price, 0) != expected_sale_price

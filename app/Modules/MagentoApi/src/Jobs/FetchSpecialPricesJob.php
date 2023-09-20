@@ -16,7 +16,7 @@ class FetchSpecialPricesJob extends UniqueJob
         $connectionIds = MagentoConnection::query()->where(['is_enabled' => true])->get()->pluck('id');
 
         MagentoProduct::query()
-            ->whereIn('magento_connection_id', $connectionIds)
+            ->whereIn('connection_id', $connectionIds)
             ->whereRaw('IFNULL(exists_in_magento, 1) = 1')
             ->whereNull('special_prices_fetched_at')
             ->orWhereNull('magento_sale_price')

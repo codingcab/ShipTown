@@ -16,7 +16,7 @@ class FetchStockItemsJob extends UniqueJob
         $connectionIds = MagentoConnection::query()->where(['is_enabled' => true])->get()->pluck('id');
 
         MagentoProduct::query()
-            ->whereIn('magento_connection_id', $connectionIds)
+            ->whereIn('connection_id', $connectionIds)
             ->whereRaw('IFNULL(exists_in_magento, 1) = 1')
             ->whereNull('stock_items_fetched_at')
             ->orWhereNull('quantity')
