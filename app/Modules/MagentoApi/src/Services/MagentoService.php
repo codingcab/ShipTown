@@ -50,7 +50,11 @@ class MagentoService
             ->postProductsSpecialPriceInformation($magentoProduct->product->sku);
 
         if ($response === null) {
-            throw new Exception('Magento API call returned null'.$magentoProduct->product->sku);
+            Log::warning('Magento API call returned null', [
+                'sku' => $magentoProduct->product->sku,
+                'connection_id' => $magentoProduct->magentoConnection->id,
+            ]);
+            return;
         }
 
         if ($response->notFound()) {
@@ -93,7 +97,11 @@ class MagentoService
             ->postProductsBasePricesInformation($magentoProduct->product->sku);
 
         if ($response === null) {
-            throw new Exception('Magento API call returned null'.$magentoProduct->product->sku);
+            Log::warning('Magento API call returned null', [
+                'sku' => $magentoProduct->product->sku,
+                'connection_id' => $magentoProduct->magentoConnection->id,
+            ]);
+            return;
         }
 
         if ($response->notFound()) {
@@ -178,11 +186,14 @@ class MagentoService
             ->getStockItems($magentoProduct->product->sku);
 
         if ($response === null) {
-            throw new Exception('Magento API call returned null ' . $magentoProduct->product->sku);
+            Log::warning('Magento API call returned null', [
+                'sku' => $magentoProduct->product->sku
+            ]);
+            return;
         }
 
         if ($response->notFound()) {
-            $product->update(['exists_in_magento' => false]);
+            $magentoProduct->update(['exists_in_magento' => false]);
             return;
         }
 
@@ -210,7 +221,11 @@ class MagentoService
             ->getInventorySourceItems($magentoProduct->product->sku, $magentoProduct->magentoConnection->magento_store_code ?? 'all');
 
         if ($response === null) {
-            throw new Exception('Magento API call returned null'.$magentoProduct->product->sku);
+            Log::warning('Magento API call returned null', [
+                'sku' => $magentoProduct->product->sku,
+                'magento_store_code' => $magentoProduct->magentoConnection->magento_store_code ?? 'all',
+            ]);
+            return;
         }
 
         if ($response->notFound()) {
