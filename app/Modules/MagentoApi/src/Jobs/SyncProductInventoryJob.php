@@ -3,6 +3,7 @@
 namespace App\Modules\MagentoApi\src\Jobs;
 
 use App\Abstracts\UniqueJob;
+use App\Modules\MagentoApi\src\Models\MagentoConnection;
 use App\Modules\MagentoApi\src\Models\MagentoProductInventoryComparisonView;
 use App\Modules\MagentoApi\src\Services\MagentoService;
 
@@ -10,7 +11,10 @@ class SyncProductInventoryJob extends UniqueJob
 {
     public function handle()
     {
+        $connectionIds = MagentoConnection::query()->where(['is_enabled' => true])->get()->pluck('id');
+
         MagentoProductInventoryComparisonView::query()
+            ->whereIn('magento_connection_id', $connectionIds)
             ->whereNotNull('stock_items_fetched_at')
             ->whereRaw('IFNULL(magento_quantity, 0) != expected_quantity')
             ->with('magentoConnection')

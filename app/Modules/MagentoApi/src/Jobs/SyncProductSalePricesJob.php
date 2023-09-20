@@ -3,6 +3,8 @@
 namespace App\Modules\MagentoApi\src\Jobs;
 
 use App\Abstracts\UniqueJob;
+use App\Modules\MagentoApi\src\Models\MagentoConnection;
+use App\Modules\MagentoApi\src\Models\MagentoProductInventoryComparisonView;
 use App\Modules\MagentoApi\src\Models\MagentoProductPricesComparisonView;
 use App\Modules\MagentoApi\src\Services\MagentoService;
 
@@ -10,7 +12,10 @@ class SyncProductSalePricesJob extends UniqueJob
 {
     public function handle()
     {
+        $connectionIds = MagentoConnection::query()->where(['is_enabled' => true])->get()->pluck('id');
+
         MagentoProductPricesComparisonView::query()
+            ->whereIn('magento_connection_id', $connectionIds)
             ->whereNotNull('special_prices_fetched_at')
             ->whereRaw('(
                 IFNULL(magento_sale_price, 0) != expected_sale_price
