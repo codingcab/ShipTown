@@ -6,7 +6,6 @@ use App\Abstracts\UniqueJob;
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
 use App\Modules\MagentoApi\src\Models\MagentoProduct;
 use App\Modules\MagentoApi\src\Services\MagentoService;
-use Exception;
 
 class FetchBasePricesJob extends UniqueJob
 {
@@ -20,15 +19,14 @@ class FetchBasePricesJob extends UniqueJob
             ->whereNull('base_prices_fetched_at')
             ->orWhereNull('magento_price')
             ->chunkById(10, function ($products) {
-                try {
-                    collect($products)->each(function (MagentoProduct $magentoProduct) {
-                        MagentoService::fetchBasePrices($magentoProduct);
-                    });
-                } catch (Exception $exception) {
-                    report($exception);
-                    return false;
-                }
-                return true;
+                collect($products)->each(function (MagentoProduct $magentoProduct) {
+                    MagentoService::fetchBasePrices($magentoProduct);
+                });
             }, 'product_id');
+    }
+
+    public function fail($exception = null)
+    {
+        report($exception);
     }
 }

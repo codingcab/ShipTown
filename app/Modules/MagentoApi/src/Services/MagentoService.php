@@ -44,17 +44,16 @@ class MagentoService
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public static function fetchSpecialPrices(MagentoProduct $magentoProduct)
     {
         $response = self::api($magentoProduct->magentoConnection)
             ->postProductsSpecialPriceInformation($magentoProduct->product->sku);
 
         if ($response === null) {
-            Log::warning('Magento API call returned null', [
-                'sku' => $magentoProduct->product->sku,
-                'connection_id' => $magentoProduct->magentoConnection->id,
-            ]);
-            return;
+            throw new Exception('MAGENTO2API Failed to fetch sale prices for product '.$magentoProduct->product->sku);
         }
 
         if ($response->notFound()) {
@@ -91,17 +90,16 @@ class MagentoService
         $magentoProduct->save();
     }
 
+    /**
+     * @throws Exception
+     */
     public static function fetchBasePrices(MagentoProduct $magentoProduct)
     {
         $response = self::api($magentoProduct->magentoConnection)
             ->postProductsBasePricesInformation($magentoProduct->product->sku);
 
         if ($response === null) {
-            Log::warning('Magento API call returned null', [
-                'sku' => $magentoProduct->product->sku,
-                'connection_id' => $magentoProduct->magentoConnection->id,
-            ]);
-            return;
+            throw new Exception('MAGENTO2API call returned null');
         }
 
         if ($response->notFound()) {
@@ -157,7 +155,7 @@ class MagentoService
         $response = self::api($magentoConnection)
             ->putStockItems($sku, $params);
 
-        Log::debug('MagentoApi: stockItem update', [
+        Log::debug('MAGENTO2API: stockItem update', [
             'sku'                  => $sku,
             'response_status_code' => $response->status(),
             'response_body'        => $response->json(),
@@ -170,7 +168,7 @@ class MagentoService
         $response = self::api($magentoConnection)
             ->postInventorySourceItems($sku, $magentoConnection->magento_inventory_source_code, $quantity);
 
-        Log::debug('MagentoApi: updateInventorySourceItems', [
+        Log::debug('MAGENTO2API: updateInventorySourceItems', [
             'sku'                  => $sku,
             'response_status_code' => $response->status(),
             'response_body'        => $response->json(),
@@ -186,10 +184,7 @@ class MagentoService
             ->getStockItems($magentoProduct->product->sku);
 
         if ($response === null) {
-            Log::warning('Magento API call returned null', [
-                'sku' => $magentoProduct->product->sku
-            ]);
-            return;
+            throw new Exception('MAGENTO2API call returned null');
         }
 
         if ($response->notFound()) {
@@ -221,11 +216,7 @@ class MagentoService
             ->getInventorySourceItems($magentoProduct->product->sku, $magentoProduct->magentoConnection->magento_store_code ?? 'all');
 
         if ($response === null) {
-            Log::warning('Magento API call returned null', [
-                'sku' => $magentoProduct->product->sku,
-                'magento_store_code' => $magentoProduct->magentoConnection->magento_store_code ?? 'all',
-            ]);
-            return;
+            throw new Exception('MAGENTO2API call returned null');
         }
 
         if ($response->notFound()) {
