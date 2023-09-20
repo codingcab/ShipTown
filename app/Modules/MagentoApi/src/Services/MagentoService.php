@@ -50,7 +50,7 @@ class MagentoService
             ->postProductsSpecialPriceInformation($magentoProduct->product->sku);
 
         if ($response === null) {
-            throw new Exception('RMSAPI api call returned null'.$magentoProduct->product->sku);
+            throw new Exception('Magento API call returned null'.$magentoProduct->product->sku);
         }
 
         if ($response->notFound()) {
@@ -93,7 +93,7 @@ class MagentoService
             ->postProductsBasePricesInformation($magentoProduct->product->sku);
 
         if ($response === null) {
-            throw new Exception('RMSAPI api call returned null'.$magentoProduct->product->sku);
+            throw new Exception('Magento API call returned null'.$magentoProduct->product->sku);
         }
 
         if ($response->notFound()) {
@@ -178,7 +178,7 @@ class MagentoService
             ->getStockItems($magentoProduct->product->sku);
 
         if ($response === null) {
-            throw new Exception('Magento API call returned null '.$product->product->sku);
+            throw new Exception('Magento API call returned null ' . $magentoProduct->product->sku);
         }
 
         if ($response->notFound()) {
@@ -210,7 +210,7 @@ class MagentoService
             ->getInventorySourceItems($magentoProduct->product->sku, $magentoProduct->magentoConnection->magento_store_code ?? 'all');
 
         if ($response === null) {
-            throw new Exception('RMSAPI api call returned null'.$magentoProduct->product->sku);
+            throw new Exception('Magento API call returned null'.$magentoProduct->product->sku);
         }
 
         if ($response->notFound()) {
