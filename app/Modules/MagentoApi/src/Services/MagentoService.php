@@ -53,7 +53,7 @@ class MagentoService
             ->postProductsSpecialPriceInformation($magentoProduct->product->sku);
 
         if ($response === null) {
-            throw new Exception('MAGENTO2API Failed to fetch sale prices for product '.$magentoProduct->product->sku);
+            throw new Exception('MAGENTO2API fetchSpecialPrices returned null '.$magentoProduct->product->sku);
         }
 
         if ($response->notFound()) {
@@ -99,7 +99,7 @@ class MagentoService
             ->postProductsBasePricesInformation($magentoProduct->product->sku);
 
         if ($response === null) {
-            throw new Exception('MAGENTO2API call returned null');
+            throw new Exception('MAGENTO2API fetchBasePrices call returned null');
         }
 
         if ($response->notFound()) {
