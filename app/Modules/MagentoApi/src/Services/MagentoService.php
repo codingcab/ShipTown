@@ -213,7 +213,7 @@ class MagentoService
     private static function fetchFromInventorySourceItems(MagentoProduct $magentoProduct)
     {
         $response = self::api($magentoProduct->magentoConnection)
-            ->getInventorySourceItems($magentoProduct->product->sku, $magentoProduct->magentoConnection->magento_store_code ?? 'all');
+            ->getInventorySourceItems($magentoProduct->product->sku, $magentoProduct->magentoConnection->magento_inventory_source_code ?? 'all');
 
         if ($response === null) {
             throw new Exception('MAGENTO2API call returned null');
