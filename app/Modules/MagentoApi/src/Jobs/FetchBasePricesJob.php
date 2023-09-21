@@ -28,9 +28,4 @@ class FetchBasePricesJob extends UniqueJob
                 });
             }, 'product_id');
     }
-
-    public function fail($exception = null)
-    {
-        report($exception);
-    }
 }
