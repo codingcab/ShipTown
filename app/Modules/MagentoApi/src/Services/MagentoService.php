@@ -78,7 +78,10 @@ class MagentoService
             ->filter(function ($apiSpecialPriceRecord) use ($magentoProduct) {
                 Log::debug('Fetched special prices for product '.$magentoProduct->product->sku, [
                     '$apiSpecialPriceRecord' => $apiSpecialPriceRecord,
+                    '$apiSpecialPriceRecord[store_id]' => $apiSpecialPriceRecord['store_id'],
+                    '$magentoProduct->magentoConnection->magento_store_id' => $magentoProduct->magentoConnection->magento_store_id,
                 ]);
+
                 return $apiSpecialPriceRecord['store_id'] == $magentoProduct->magentoConnection->magento_store_id;
             });
 
