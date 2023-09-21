@@ -12,7 +12,11 @@ class SyncProductBasePricesJob extends UniqueJob
 {
     public function handle()
     {
-        $connectionIds = MagentoConnection::query()->where(['is_enabled' => true])->get()->pluck('id');
+        $connectionIds = MagentoConnection::query()
+            ->where(['is_enabled' => true])
+            ->whereNotNull('pricing_source_warehouse_id')
+            ->get()
+            ->pluck('id');
 
         MagentoProductPricesComparisonView::query()
             ->where(['product_id' => 406430])

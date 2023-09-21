@@ -11,7 +11,11 @@ class FetchBasePricesJob extends UniqueJob
 {
     public function handle()
     {
-        $connectionIds = MagentoConnection::query()->where(['is_enabled' => true])->get()->pluck('id');
+        $connectionIds = MagentoConnection::query()
+            ->where(['is_enabled' => true])
+            ->whereNotNull('pricing_source_warehouse_id')
+            ->get()
+            ->pluck('id');
 
         MagentoProduct::query()
             ->whereIn('connection_id', $connectionIds)

@@ -12,7 +12,11 @@ class FetchStockItemsJob extends UniqueJob
 {
     public function handle()
     {
-        $connectionIds = MagentoConnection::query()->where(['is_enabled' => true])->get()->pluck('id');
+        $connectionIds = MagentoConnection::query()
+            ->where(['is_enabled' => true])
+            ->whereNotNull('inventory_source_warehouse_tag_id')
+            ->get()
+            ->pluck('id');
 
         MagentoProduct::query()
             ->whereIn('connection_id', $connectionIds)
