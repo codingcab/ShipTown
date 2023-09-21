@@ -15,6 +15,7 @@ class SyncProductBasePricesJob extends UniqueJob
         $connectionIds = MagentoConnection::query()->where(['is_enabled' => true])->get()->pluck('id');
 
         MagentoProductPricesComparisonView::query()
+            ->where(['product_id' => 406430])
             ->whereIn('modules_magento2api_connection_id', $connectionIds)
             ->whereNotNull('base_prices_fetched_at')
             ->whereRaw('IFNULL(magento_price, 0) != expected_price')

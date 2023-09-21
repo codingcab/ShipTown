@@ -16,8 +16,8 @@ class FetchSpecialPricesJob extends UniqueJob
         MagentoProduct::query()
             ->whereIn('connection_id', $connectionIds)
             ->whereRaw('IFNULL(exists_in_magento, 1) = 1')
-            ->whereNull('special_prices_fetched_at')
-            ->orWhereNull('magento_sale_price')
+            ->whereRaw('special_prices_fetched_at IS NULL OR magento_sale_price IS NULL')
+            ->where(['product_id' => 406430])
             ->chunkById(10, function ($products) {
                 collect($products)->each(function (MagentoProduct $magentoProduct) {
                     MagentoService::fetchSpecialPrices($magentoProduct);
