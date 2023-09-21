@@ -8,24 +8,21 @@ use App\Modules\MagentoApi\src\Models\MagentoProduct;
 
 class ProductTagAttachedEventListener
 {
-    /**
-     * Handle the event.
-     *
-     * @param ProductTagAttachedEvent $event
-     *
-     * @return void
-     */
     public function handle(ProductTagAttachedEvent $event)
     {
-        if ($event->tag === 'Available Online') {
-            MagentoConnection::query()
-                ->get()
-                ->each(function (MagentoConnection $connection) use ($event) {
-                    MagentoProduct::query()->firstOrCreate([
-                        'connection_id' => $connection->getKey(),
-                        'product_id' => $event->product->id
-                    ], []);
-                });
+        if ($event->tag !== 'Available Online') {
+            return;
         }
+
+        $collection = MagentoConnection::query()
+            ->get('id')
+            ->map(function (MagentoConnection $connection) use ($event) {
+                return [
+                    'connection_id' => $connection->getKey(),
+                    'product_id' => $event->product->id
+                ];
+            });
+
+        MagentoProduct::query()->insert($collection->toArray());
     }
 }
