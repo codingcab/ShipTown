@@ -6,6 +6,7 @@ use App\Abstracts\UniqueJob;
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
 use App\Modules\MagentoApi\src\Models\MagentoProductInventoryComparisonView;
 use App\Modules\MagentoApi\src\Services\MagentoService;
+use Illuminate\Support\Facades\Log;
 
 class SyncProductInventoryJob extends UniqueJob
 {
@@ -33,6 +34,11 @@ class SyncProductInventoryJob extends UniqueJob
                         'quantity'               => null,
                     ]);
                 });
+
+                Log::debug('Job processing', [
+                    'job' => self::class,
+                    'products_updated' => $products->count(),
+                ]);
             }, 'modules_magento2api_products_id');
     }
 }

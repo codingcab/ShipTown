@@ -14,7 +14,7 @@ class EveryTenMinutesEventListener
 {
     public function handle()
     {
-        EnsureProductRecordsExistJob::dispatch();
+//        EnsureProductRecordsExistJob::dispatch();
 
 //        FetchOrdersJob::dispatch();
         FetchStockItemsJob::dispatch();
