@@ -137,7 +137,7 @@ class MagentoService
 
     public static function updateInventory(MagentoConnection $magentoConnection, string $sku, float $quantity)
     {
-        if (($magentoProduct->magentoConnection->magento_store_code ?? 'all') === 'all') {
+        if ($magentoConnection->magento_inventory_source_code === null) {
             self::updateStockItems($magentoConnection, $sku, $quantity);
             return;
         }
