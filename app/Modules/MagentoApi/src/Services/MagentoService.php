@@ -67,27 +67,11 @@ class MagentoService
 
         $collect = collect($response->json());
 
-        Log::debug('Fetched response '.$magentoProduct->product->sku, [
-            'response' => $collect,
-        ]);
-
-        Log::debug('Fetched special prices for product '.$magentoProduct->product->sku, [
-            'first' => $collect->first(),
-        ]);
         $specialPrices = $collect
             ->filter(function ($apiSpecialPriceRecord) use ($magentoProduct) {
-                Log::debug('Fetched special prices for product '.$magentoProduct->product->sku, [
-                    '$apiSpecialPriceRecord' => $apiSpecialPriceRecord,
-                    '$apiSpecialPriceRecord[store_id]' => $apiSpecialPriceRecord['store_id'],
-                    '$magentoProduct->magentoConnection->magento_store_code' => $magentoProduct->magentoConnection->magento_store_code,
-                ]);
-
                 return $apiSpecialPriceRecord['store_id'] == $magentoProduct->magentoConnection->magento_store_code;
             });
 
-        Log::debug('Fetched special prices for product '.$magentoProduct->product->sku, [
-            'special_prices' => $specialPrices->toArray(),
-        ]);
 
         // magento sometimes randomly returns multiple special prices for the same store,
         // so we need to filter them out but only one is valid
