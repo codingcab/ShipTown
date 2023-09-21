@@ -79,10 +79,10 @@ class MagentoService
                 Log::debug('Fetched special prices for product '.$magentoProduct->product->sku, [
                     '$apiSpecialPriceRecord' => $apiSpecialPriceRecord,
                     '$apiSpecialPriceRecord[store_id]' => $apiSpecialPriceRecord['store_id'],
-                    '$magentoProduct->magentoConnection->magento_store_id' => $magentoProduct->magentoConnection->magento_store_id,
+                    '$magentoProduct->magentoConnection->magento_store_id' => $magentoProduct->magentoConnection->magento_store_code,
                 ]);
 
-                return $apiSpecialPriceRecord['store_id'] == $magentoProduct->magentoConnection->magento_store_id;
+                return $apiSpecialPriceRecord['store_id'] == $magentoProduct->magentoConnection->magento_store_code;
             });
 
         Log::debug('Fetched special prices for product '.$magentoProduct->product->sku, [
