@@ -6,6 +6,7 @@ use App\Abstracts\UniqueJob;
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
 use App\Modules\MagentoApi\src\Models\MagentoProduct;
 use App\Modules\MagentoApi\src\Services\MagentoService;
+use Illuminate\Support\Facades\Log;
 
 class FetchStockItemsJob extends UniqueJob
 {
@@ -23,6 +24,10 @@ class FetchStockItemsJob extends UniqueJob
                 collect($products)->each(function (MagentoProduct $magentoProduct) {
                     MagentoService::fetchInventory($magentoProduct);
                 });
+                Log::debug('Job processing', [
+                    'job' => self::class,
+                    'products_fetched' => $products->count(),
+                ]);
             }, 'product_id');
     }
 
