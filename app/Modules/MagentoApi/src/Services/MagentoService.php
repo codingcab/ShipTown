@@ -79,6 +79,11 @@ class MagentoService
 
         $specialPrice = $specialPrices->first();
 
+        Log::debug('Fetched special prices for product '.$magentoProduct->product->sku, [
+            'special_prices' => $specialPrices->toArray(),
+            'special_price' => $specialPrice,
+        ]);
+
         if ($specialPrice) {
             $magentoProduct->magento_sale_price = $specialPrice['price'];
             $magentoProduct->magento_sale_price_start_date = $specialPrice['price_from'];
