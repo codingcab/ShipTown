@@ -76,6 +76,9 @@ class MagentoService
         ]);
         $specialPrices = $collect
             ->filter(function ($apiSpecialPriceRecord) use ($magentoProduct) {
+                Log::debug('Fetched special prices for product '.$magentoProduct->product->sku, [
+                    '$apiSpecialPriceRecord' => $apiSpecialPriceRecord,
+                ]);
                 return $apiSpecialPriceRecord['store_id'] == $magentoProduct->magentoConnection->magento_store_id;
             });
 
