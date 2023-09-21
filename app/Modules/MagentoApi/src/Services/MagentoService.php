@@ -65,10 +65,20 @@ class MagentoService
             throw new Exception('Failed to fetch sale prices for product '.$magentoProduct->product->sku);
         }
 
-        $specialPrices = collect($response->json())
+        $collect = collect($response->json());
+
+        Log::debug('Fetched response '.$magentoProduct->product->sku, [
+            'response' => $collect,
+        ]);
+
+        $specialPrices = $collect
             ->filter(function ($apiSpecialPriceRecord) use ($magentoProduct) {
                 return $apiSpecialPriceRecord['store_id'] == $magentoProduct->magentoConnection->magento_store_id;
             });
+
+        Log::debug('Fetched special prices for product '.$magentoProduct->product->sku, [
+            'special_prices' => $specialPrices->toArray(),
+        ]);
 
         // magento sometimes randomly returns multiple special prices for the same store,
         // so we need to filter them out but only one is valid
