@@ -69,7 +69,7 @@ class MagentoService
 
         $specialPrices = $collect
             ->filter(function ($apiSpecialPriceRecord) use ($magentoProduct) {
-                return $apiSpecialPriceRecord['store_id'] == $magentoProduct->magentoConnection->magento_store_code;
+                return $apiSpecialPriceRecord['store_id'] == $magentoProduct->magentoConnection->magento_store_id;
             });
 
 
