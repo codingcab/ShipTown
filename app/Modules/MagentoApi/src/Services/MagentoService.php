@@ -153,7 +153,7 @@ class MagentoService
             return;
         }
 
-        self::updateInventorySourceItems($magentoConnection, $sku, $quantity);
+        self::api($magentoConnection)->postInventorySourceItems($sku, $magentoConnection->magento_inventory_source_code, $quantity);
     }
 
     private static function updateStockItems(MagentoConnection $magentoConnection, string $sku, float $quantity): void
@@ -171,18 +171,6 @@ class MagentoService
             'response_status_code' => $response->status(),
             'response_body'        => $response->json(),
             'params'               => $params
-        ]);
-    }
-
-    private static function updateInventorySourceItems(MagentoConnection $magentoConnection, string $sku, float $quantity): void
-    {
-        $response = self::api($magentoConnection)
-            ->postInventorySourceItems($sku, $magentoConnection->magento_inventory_source_code, $quantity);
-
-        Log::debug('MAGENTO2API: updateInventorySourceItems', [
-            'sku'                  => $sku,
-            'response_status_code' => $response->status(),
-            'response_body'        => $response->json(),
         ]);
     }
 
