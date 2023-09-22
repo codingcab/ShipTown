@@ -25,7 +25,7 @@ class SyncProductSalePricesJob extends UniqueJob
                     magento_sale_price IS NULL
                     OR magento_sale_price_start_date IS NULL
                     OR magento_sale_price_end_date IS NULL
-                    OR magento_sale_price, 0 != expected_sale_price
+                    OR magento_sale_price != expected_sale_price
                     OR magento_sale_price_start_date != expected_sale_price_start_date
                     OR magento_sale_price_end_date != expected_sale_price_end_date
                 )
