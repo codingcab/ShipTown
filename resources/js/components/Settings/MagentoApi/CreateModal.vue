@@ -24,7 +24,7 @@
                 <div class="form-group">
                     <label class="form-label" for="api_access_token">Access Token</label>
                     <ValidationProvider vid="api_access_token" name="api_access_token" v-slot="{ errors }">
-                        <input v-model="config.api_access_token" :class="{
+                        <input type="password" v-model="config.api_access_token" :class="{
                             'form-control': true,
                             'is-invalid': errors.length > 0,
                         }" id="api_access_token" required>
