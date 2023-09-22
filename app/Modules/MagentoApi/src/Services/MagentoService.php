@@ -149,29 +149,15 @@ class MagentoService
     public static function updateInventory(MagentoConnection $magentoConnection, string $sku, float $quantity)
     {
         if ($magentoConnection->magento_inventory_source_code === null) {
-            self::updateStockItems($magentoConnection, $sku, $quantity);
+            self::api($magentoConnection)
+                ->putStockItems($sku, [
+                    'is_in_stock' => $quantity > 0,
+                    'qty' => $quantity,
+                ]);
             return;
         }
 
         self::api($magentoConnection)->postInventorySourceItems($sku, $magentoConnection->magento_inventory_source_code, $quantity);
-    }
-
-    private static function updateStockItems(MagentoConnection $magentoConnection, string $sku, float $quantity): void
-    {
-        $params = [
-            'is_in_stock' => $quantity > 0,
-            'qty' => $quantity,
-        ];
-
-        $response = self::api($magentoConnection)
-            ->putStockItems($sku, $params);
-
-        Log::debug('MAGENTO2API: stockItem update', [
-            'sku'                  => $sku,
-            'response_status_code' => $response->status(),
-            'response_body'        => $response->json(),
-            'params'               => $params
-        ]);
     }
 
     /**
