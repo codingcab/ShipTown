@@ -33,10 +33,10 @@ class BaseApi
         } catch (Exception $e) {
             Log::error(implode(' ', [
                 'MAGENTO2API GET',
-                $path,
-                $e->getCode()
+                $path
             ]), [
-                'response' => $e->getMessage(),
+                'exception_code'  => $e->getCode(),
+                'exception_message' => $e->getMessage(),
                 'url' => $url,
                 'path' => $path,
                 'parameters' => $parameters,
@@ -87,10 +87,10 @@ class BaseApi
         } catch (Exception $e) {
             Log::error(implode(' ', [
                 'MAGENTO2API POST',
-                $path,
-                $e->getCode()
+                $path
             ]), [
-                'response' => $e->getMessage(),
+                'exception_code'  => $e->getCode(),
+                'exception_message' => $e->getMessage(),
                 'url' => $url,
                 'path' => $path,
                 'parameters' => $parameters,
@@ -141,10 +141,10 @@ class BaseApi
         } catch (Exception $e) {
             Log::error(implode(' ', [
                 'MAGENTO2API PUT',
-                $path,
-                $e->getCode()
+                $path
             ]), [
-                'response' => $e->getMessage(),
+                'exception_code'  => $e->getCode(),
+                'exception_message' => $e->getMessage(),
                 'url' => $url,
                 'path' => $path,
                 'parameters' => $parameters,
@@ -195,10 +195,10 @@ class BaseApi
         } catch (Exception $e) {
             Log::error(implode(' ', [
                 'MAGENTO2API DELETE',
-                $path,
-                $e->getCode()
+                $path
             ]), [
-                'response' => $e->getMessage(),
+                'exception_code'  => $e->getCode(),
+                'exception_message' => $e->getMessage(),
                 'url' => $url,
                 'path' => $path,
                 'parameters' => $parameters,
