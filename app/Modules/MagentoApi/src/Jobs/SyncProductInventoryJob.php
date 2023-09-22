@@ -12,16 +12,16 @@ class SyncProductInventoryJob extends UniqueJob
 {
     public function handle()
     {
-        $connectionIds = MagentoConnection::query()
+        $enabledConnections = MagentoConnection::query()
             ->where(['is_enabled' => true])
             ->whereNotNull('inventory_source_warehouse_tag_id')
-            ->get()
-            ->pluck('id');
+            ->get();
 
         MagentoProductInventoryComparisonView::query()
-            ->whereIn('modules_magento2api_connection_id', $connectionIds)
+            ->whereIn('modules_magento2api_connection_id', $enabledConnections->pluck('id'))
             ->whereNotNull('stock_items_fetched_at')
-            ->whereRaw('IFNULL(magento_quantity, 0) != expected_quantity')
+            ->whereNotNull('magento_quantity')
+            ->whereRaw('magento_quantity != expected_quantity')
             ->with('magentoConnection')
             ->chunkById(10, function ($products) {
                 collect($products)->each(function (MagentoProductInventoryComparisonView $comparison) {

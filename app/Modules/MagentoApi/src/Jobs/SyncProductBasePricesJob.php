@@ -4,7 +4,6 @@ namespace App\Modules\MagentoApi\src\Jobs;
 
 use App\Abstracts\UniqueJob;
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
-use App\Modules\MagentoApi\src\Models\MagentoProductInventoryComparisonView;
 use App\Modules\MagentoApi\src\Models\MagentoProductPricesComparisonView;
 use App\Modules\MagentoApi\src\Services\MagentoService;
 
@@ -21,7 +20,8 @@ class SyncProductBasePricesJob extends UniqueJob
         MagentoProductPricesComparisonView::query()
             ->whereIn('modules_magento2api_connection_id', $connectionIds)
             ->whereNotNull('base_prices_fetched_at')
-            ->whereRaw('IFNULL(magento_price, 0) != expected_price')
+            ->whereNotNull('magento_price')
+            ->whereRaw('magento_price != expected_price')
             ->chunkById(10, function ($products) {
                 collect($products)->each(function (MagentoProductPricesComparisonView $comparison) {
                     MagentoService::updateBasePrice(

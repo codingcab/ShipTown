@@ -4,7 +4,6 @@ namespace App\Modules\MagentoApi\src\Jobs;
 
 use App\Abstracts\UniqueJob;
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
-use App\Modules\MagentoApi\src\Models\MagentoProductInventoryComparisonView;
 use App\Modules\MagentoApi\src\Models\MagentoProductPricesComparisonView;
 use App\Modules\MagentoApi\src\Services\MagentoService;
 
@@ -20,14 +19,16 @@ class SyncProductSalePricesJob extends UniqueJob
 
         MagentoProductPricesComparisonView::query()
             ->whereIn('modules_magento2api_connection_id', $connectionIds)
-            ->whereNotNull('special_prices_fetched_at')
+            ->whereNotNull([
+                'special_prices_fetched_at',
+                'magento_sale_price',
+                'magento_sale_price_start_date',
+                'magento_sale_price_end_date'
+            ])
             ->whereRaw('(
-                IFNULL(magento_sale_price, 0) != expected_sale_price
+                   magento_sale_price, 0 != expected_sale_price
                 OR magento_sale_price_start_date != expected_sale_price_start_date
                 OR magento_sale_price_end_date != expected_sale_price_end_date
-                OR magento_sale_price IS NULL
-                OR magento_sale_price_start_date IS NULL
-                OR magento_sale_price_end_date IS NULL
             )')
             ->with('magentoConnection')
             ->chunkById(10, function ($products) {
