@@ -210,12 +210,7 @@ class MagentoService
 
         $magentoProduct->stock_items_fetched_at = now();
         $magentoProduct->stock_items_raw_import = data_get($response->json(), 'items.0');
-
-        if (data_get($response->json(), 'items.0')) {
-            $magentoProduct->quantity = data_get($response->json(), 'items.0.quantity') ?: 0;
-        } else {
-            $magentoProduct->quantity = null;
-        }
+        $magentoProduct->quantity = data_get($response->json(), 'items.0.quantity');
 
         $magentoProduct->save();
     }
