@@ -48,11 +48,10 @@ class BaseApi
         if ($response->failed()) {
             Log::error(implode(' ', [
                 'MAGENTO2API GET',
-                $path,
-                $response->status(),
-                $response->reason()
+                $path
             ]), [
-                'response' => implode(' ', [$response->status(), $response->reason()]),
+                'status' => $response->status(),
+                'reason' => $response->reason(),
                 'url' => $url,
                 'path' => $path,
                 'json' => $response->json(),
@@ -64,11 +63,10 @@ class BaseApi
 
         Log::debug(implode(' ', [
             'MAGENTO2API GET',
-            $path,
-            $response->status(),
-            $response->reason()
+            $path
         ]), [
-            'response' => implode(' ', [$response->status(), $response->reason()]),
+            'status' => $response->status(),
+            'reason' => $response->reason(),
             'url' => $url,
             'path' => $path,
             'json' => $response->json(),
@@ -102,11 +100,10 @@ class BaseApi
         if ($response->failed()) {
             Log::warning(implode(' ', [
                 'MAGENTO2API POST',
-                $path,
-                $response->status(),
-                $response->reason()
+                $path
             ]), [
-                'response' => implode(' ', [$response->status(), $response->reason()]),
+                'status' => $response->status(),
+                'reason' => $response->reason(),
                 'url' => $url,
                 'path' => $path,
                 'json' => $response->json(),
@@ -118,11 +115,10 @@ class BaseApi
 
         Log::debug(implode(' ', [
             'MAGENTO2API POST',
-            $path,
-            $response->status(),
-            $response->reason()
+            $path
         ]), [
-            'response' => implode(' ', [$response->status(), $response->reason()]),
+            'status' => $response->status(),
+            'reason' => $response->reason(),
             'url' => $url,
             'path' => $path,
             'json' => $response->json(),
@@ -156,11 +152,10 @@ class BaseApi
         if ($response->failed()) {
             Log::error(implode(' ', [
                 'MAGENTO2API PUT',
-                $path,
-                $response->status(),
-                $response->reason()
+                $path
             ]), [
-                'response' => implode(' ', [$response->status(), $response->reason()]),
+                'status' => $response->status(),
+                'reason' => $response->reason(),
                 'url' => $url,
                 'path' => $path,
                 'json' => $response->json(),
@@ -172,11 +167,10 @@ class BaseApi
 
         Log::debug(implode(' ', [
             'MAGENTO2API PUT',
-            $path,
-            $response->status(),
-            $response->reason()
+            $path
         ]), [
-            'response' => implode(' ', [$response->status(), $response->reason()]),
+            'status' => $response->status(),
+            'reason' => $response->reason(),
             'url' => $url,
             'path' => $path,
             'json' => $response->json(),
@@ -207,15 +201,13 @@ class BaseApi
             return null;
         }
 
-
         if ($response->failed()) {
             Log::error(implode(' ', [
                 'MAGENTO2API DELETE',
-                $path,
-                $response->status(),
-                $response->reason()
+                $path
             ]), [
-                'response' => implode(' ', [$response->status(), $response->reason()]),
+                'status' => $response->status(),
+                'reason' => $response->reason(),
                 'url' => $url,
                 'path' => $path,
                 'json' => $response->json(),
@@ -227,11 +219,10 @@ class BaseApi
 
         Log::debug(implode(' ', [
             'MAGENTO2API DELETE',
-            $path,
-            $response->status(),
-            $response->reason()
+            $path
         ]), [
-            'response' => implode(' ', [$response->status(), $response->reason()]),
+            'status' => $response->status(),
+            'reason' => $response->reason(),
             'url' => $url,
             'path' => $path,
             'json' => $response->json(),
