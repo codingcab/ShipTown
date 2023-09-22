@@ -31,10 +31,7 @@ class BaseApi
         try {
             $response = Http::withToken($this->apiAccessToken)->acceptJson()->get($url, $parameters);
         } catch (Exception $e) {
-            Log::error(implode(' ', [
-                'MAGENTO2API GET',
-                $path
-            ]), [
+            Log::error('MAGENTO2API GET '. $path, [
                 'exception_code'  => $e->getCode(),
                 'exception_message' => $e->getMessage(),
                 'url' => $url,
@@ -46,10 +43,7 @@ class BaseApi
         }
 
         if ($response->failed()) {
-            Log::error(implode(' ', [
-                'MAGENTO2API GET',
-                $path
-            ]), [
+            Log::error('MAGENTO2API GET '. $path, [
                 'status' => $response->status(),
                 'reason' => $response->reason(),
                 'url' => $url,
@@ -61,10 +55,7 @@ class BaseApi
             return $response;
         }
 
-        Log::debug(implode(' ', [
-            'MAGENTO2API GET',
-            $path
-        ]), [
+        Log::debug('MAGENTO2API GET '. $path, [
             'status' => $response->status(),
             'reason' => $response->reason(),
             'url' => $url,
@@ -83,10 +74,7 @@ class BaseApi
         try {
             $response = Http::withToken($this->apiAccessToken)->post($url, $parameters);
         } catch (Exception $e) {
-            Log::error(implode(' ', [
-                'MAGENTO2API POST',
-                $path
-            ]), [
+            Log::error('MAGENTO2API POST '. $path, [
                 'exception_code'  => $e->getCode(),
                 'exception_message' => $e->getMessage(),
                 'url' => $url,
@@ -98,10 +86,7 @@ class BaseApi
         }
 
         if ($response->failed()) {
-            Log::warning(implode(' ', [
-                'MAGENTO2API POST',
-                $path
-            ]), [
+            Log::warning('MAGENTO2API POST '. $path, [
                 'status' => $response->status(),
                 'reason' => $response->reason(),
                 'url' => $url,
@@ -113,10 +98,7 @@ class BaseApi
             return $response;
         }
 
-        Log::debug(implode(' ', [
-            'MAGENTO2API POST',
-            $path
-        ]), [
+        Log::debug('MAGENTO2API POST '. $path, [
             'status' => $response->status(),
             'reason' => $response->reason(),
             'url' => $url,
@@ -135,10 +117,7 @@ class BaseApi
         try {
             $response = Http::withToken($this->apiAccessToken)->put($url, $parameters);
         } catch (Exception $e) {
-            Log::error(implode(' ', [
-                'MAGENTO2API PUT',
-                $path
-            ]), [
+            Log::error('MAGENTO2API PUT '. $path, [
                 'exception_code'  => $e->getCode(),
                 'exception_message' => $e->getMessage(),
                 'url' => $url,
@@ -150,10 +129,7 @@ class BaseApi
         }
 
         if ($response->failed()) {
-            Log::error(implode(' ', [
-                'MAGENTO2API PUT',
-                $path
-            ]), [
+            Log::error('MAGENTO2API PUT '. $path, [
                 'status' => $response->status(),
                 'reason' => $response->reason(),
                 'url' => $url,
@@ -165,10 +141,7 @@ class BaseApi
             return $response;
         }
 
-        Log::debug(implode(' ', [
-            'MAGENTO2API PUT',
-            $path
-        ]), [
+        Log::debug('MAGENTO2API PUT '. $path, [
             'status' => $response->status(),
             'reason' => $response->reason(),
             'url' => $url,
@@ -187,10 +160,7 @@ class BaseApi
         try {
             $response = Http::withToken($this->apiAccessToken)->delete($url, $parameters);
         } catch (Exception $e) {
-            Log::error(implode(' ', [
-                'MAGENTO2API DELETE',
-                $path
-            ]), [
+            Log::error('MAGENTO2API DELETE '. $path, [
                 'exception_code'  => $e->getCode(),
                 'exception_message' => $e->getMessage(),
                 'url' => $url,
@@ -202,10 +172,7 @@ class BaseApi
         }
 
         if ($response->failed()) {
-            Log::error(implode(' ', [
-                'MAGENTO2API DELETE',
-                $path
-            ]), [
+            Log::error('MAGENTO2API DELETE '. $path, [
                 'status' => $response->status(),
                 'reason' => $response->reason(),
                 'url' => $url,
@@ -217,10 +184,7 @@ class BaseApi
             return $response;
         }
 
-        Log::debug(implode(' ', [
-            'MAGENTO2API DELETE',
-            $path
-        ]), [
+        Log::debug('MAGENTO2API DELETE '. $path, [
             'status' => $response->status(),
             'reason' => $response->reason(),
             'url' => $url,
