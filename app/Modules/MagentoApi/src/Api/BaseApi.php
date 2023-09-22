@@ -34,7 +34,7 @@ class BaseApi
             Log::error(implode(' ', [
                 'MAGENTO2API GET',
                 $path,
-                $e->getMessage()
+                $e->getCode()
             ]), [
                 'response' => $e->getMessage(),
                 'url' => $url,
@@ -88,7 +88,7 @@ class BaseApi
             Log::error(implode(' ', [
                 'MAGENTO2API POST',
                 $path,
-                $e->getMessage()
+                $e->getCode()
             ]), [
                 'response' => $e->getMessage(),
                 'url' => $url,
@@ -99,9 +99,8 @@ class BaseApi
             return null;
         }
 
-
         if ($response->failed()) {
-            Log::error(implode(' ', [
+            Log::warning(implode(' ', [
                 'MAGENTO2API POST',
                 $path,
                 $response->status(),
@@ -143,7 +142,7 @@ class BaseApi
             Log::error(implode(' ', [
                 'MAGENTO2API PUT',
                 $path,
-                $e->getMessage()
+                $e->getCode()
             ]), [
                 'response' => $e->getMessage(),
                 'url' => $url,
@@ -197,7 +196,7 @@ class BaseApi
             Log::error(implode(' ', [
                 'MAGENTO2API DELETE',
                 $path,
-                $e->getMessage()
+                $e->getCode()
             ]), [
                 'response' => $e->getMessage(),
                 'url' => $url,
