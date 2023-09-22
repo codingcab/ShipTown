@@ -21,7 +21,6 @@ class FetchBasePricesJob extends UniqueJob
             ->whereIn('connection_id', $connectionIds)
             ->whereRaw('IFNULL(exists_in_magento, 1) = 1')
             ->whereRaw('(base_prices_fetched_at IS NULL OR magento_price IS NULL)')
-            ->where(['product_id' => 406430])
             ->chunkById(10, function ($products) {
                 collect($products)->each(function (MagentoProduct $magentoProduct) {
                     MagentoService::fetchBasePrices($magentoProduct);
