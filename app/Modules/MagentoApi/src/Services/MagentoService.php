@@ -204,11 +204,6 @@ class MagentoService
             throw new Exception('MAGENTO2API call returned null');
         }
 
-        if ($response->notFound()) {
-            $magentoProduct->update(['exists_in_magento' => false]);
-            return;
-        }
-
         if ($response->failed()) {
             throw new Exception('Failed to fetch stock items for product '.$magentoProduct->product->sku);
         }
