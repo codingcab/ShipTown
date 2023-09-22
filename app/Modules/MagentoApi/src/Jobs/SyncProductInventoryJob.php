@@ -20,8 +20,10 @@ class SyncProductInventoryJob extends UniqueJob
         MagentoProductInventoryComparisonView::query()
             ->whereIn('modules_magento2api_connection_id', $enabledConnections->pluck('id'))
             ->whereNotNull('stock_items_fetched_at')
-            ->whereNotNull('magento_quantity')
-            ->whereRaw('magento_quantity != expected_quantity')
+            ->whereRaw('(
+                magento_quantity IS NULL
+                OR magento_quantity != expected_quantity
+            )')
             ->with('magentoConnection')
             ->chunkById(10, function ($products) {
                 collect($products)->each(function (MagentoProductInventoryComparisonView $comparison) {

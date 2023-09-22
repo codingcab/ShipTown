@@ -20,8 +20,10 @@ class SyncProductBasePricesJob extends UniqueJob
         MagentoProductPricesComparisonView::query()
             ->whereIn('modules_magento2api_connection_id', $connectionIds)
             ->whereNotNull('base_prices_fetched_at')
-            ->whereNotNull('magento_price')
-            ->whereRaw('magento_price != expected_price')
+            ->whereRaw('(
+                magento_price IS NULL
+                OR magento_price != expected_price
+            )')
             ->chunkById(10, function ($products) {
                 collect($products)->each(function (MagentoProductPricesComparisonView $comparison) {
                     MagentoService::updateBasePrice(
