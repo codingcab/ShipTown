@@ -6,6 +6,7 @@ use App\Modules\MagentoApi\src\Api\MagentoApi;
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
 use App\Modules\MagentoApi\src\Models\MagentoProduct;
 use Exception;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
@@ -146,18 +147,17 @@ class MagentoService
         self::fetchStockItem($magentoProduct);
     }
 
-    public static function updateInventory(MagentoConnection $magentoConnection, string $sku, float $quantity)
+    public static function updateInventory(MagentoConnection $magentoConnection, string $sku, float $quantity): ?Response
     {
         if ($magentoConnection->magento_inventory_source_code === null) {
-            self::api($magentoConnection)
+            return self::api($magentoConnection)
                 ->putStockItems($sku, [
                     'is_in_stock' => $quantity > 0,
                     'qty' => $quantity,
                 ]);
-            return;
         }
 
-        self::api($magentoConnection)->postInventorySourceItems($sku, $magentoConnection->magento_inventory_source_code, $quantity);
+        return self::api($magentoConnection)->postInventorySourceItems($sku, $magentoConnection->magento_inventory_source_code, $quantity);
     }
 
     /**

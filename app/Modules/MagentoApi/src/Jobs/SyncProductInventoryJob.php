@@ -26,19 +26,25 @@ class SyncProductInventoryJob extends UniqueJob
             )')
             ->with('magentoConnection')
             ->chunkById(10, function ($products) {
-                collect($products)->each(function (MagentoProductInventoryComparisonView $comparison) {
-                    MagentoService::updateInventory(
-                        $comparison->magentoConnection,
-                        $comparison->magentoProduct->product->sku,
-                        $comparison->expected_quantity
-                    );
+                collect($products)
+                    ->each(function (MagentoProductInventoryComparisonView $comparison) {
+                        $response = MagentoService::updateInventory(
+                            $comparison->magentoConnection,
+                            $comparison->magentoProduct->product->sku,
+                            $comparison->expected_quantity
+                        );
 
-                    $comparison->magentoProduct->update([
-                        'stock_items_fetched_at' => null,
-                        'stock_items_raw_import' => null,
-                        'quantity'               => null,
-                    ]);
-                });
+                        if ($response === null) {
+                            Log::error('MAGENTO2API updateInventory returned null '.$comparison->magentoProduct->product->sku);
+                            return;
+                        }
+
+                        $comparison->magentoProduct->update([
+                            'stock_items_fetched_at' => null,
+                            'stock_items_raw_import' => null,
+                            'quantity'               => null,
+                        ]);
+                    });
 
                 Log::debug('Job processing', [
                     'job' => self::class,
