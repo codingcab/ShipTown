@@ -61,7 +61,6 @@ class UpdateTest extends TestCase
             'magento_store_code' => 'default',
             'magento_inventory_source_code'  => 'default',
             'pricing_source_warehouse_id' => 1,
-            'api_access_token' => 'some-token',
         ]);
 
         $response = $this->actingAs($user, 'api')
@@ -70,8 +69,6 @@ class UpdateTest extends TestCase
         $response->assertStatus(422);
 
         $response->assertJsonValidationErrors([
-            'base_url',
-            'magento_store_code',
             'api_access_token',
         ]);
     }

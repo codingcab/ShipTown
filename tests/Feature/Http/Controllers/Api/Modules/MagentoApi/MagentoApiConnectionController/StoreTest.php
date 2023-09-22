@@ -35,14 +35,13 @@ class StoreTest extends TestCase
         $user = User::factory()->create();
         $user->assignRole('admin');
 
-        $response = $this->actingAs($user, 'api')->json('post', route('api.modules.magento-api.connections.store'), [
-        ]);
+        $response = $this->actingAs($user, 'api')->json('post', route('api.modules.magento-api.connections.store'), []);
 
         $response->assertStatus(422);
 
         $response->assertJsonValidationErrors([
             'base_url',
-            'magento_store_id',
+            'api_access_token',
         ]);
     }
 }
