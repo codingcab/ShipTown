@@ -133,14 +133,17 @@ class MagentoService
         $magentoProduct->save();
     }
 
+    /**
+     * @throws Exception
+     */
     public static function fetchInventory(MagentoProduct $magentoProduct)
     {
-        if (($magentoProduct->magentoConnection->magento_store_code ?? 'all') === 'all') {
-            self::fetchStockItem($magentoProduct);
+        if ($magentoProduct->magentoConnection->magento_inventory_source_code) {
+            self::fetchFromInventorySourceItems($magentoProduct);
             return;
         }
 
-        self::fetchFromInventorySourceItems($magentoProduct);
+        self::fetchStockItem($magentoProduct);
     }
 
     public static function updateInventory(MagentoConnection $magentoConnection, string $sku, float $quantity)
