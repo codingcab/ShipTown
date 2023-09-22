@@ -14,12 +14,13 @@ class MagentoApiConnectionUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'base_url'                          => 'required|url',
-            'magento_store_code'                => 'required|string',
-            'magento_inventory_source_code'     => 'required|string',
+            'api_access_token'                  => 'required|string',
+            'magento_store_id'                  => 'sometimes|integer|nullable',
+            'magento_store_code'                => 'sometimes|string|nullable',
+            'base_url'                          => 'sometimes|url',
+            'magento_inventory_source_code'     => 'sometimes|string|nullable',
             'inventory_source_warehouse_tag_id' => 'sometimes|nullable|exists:tags,id',
             'pricing_source_warehouse_id'       => 'sometimes|nullable|exists:warehouses,id',
-            'api_access_token'                  => 'required|string',
         ];
     }
 }

@@ -20,7 +20,7 @@ class MagentoApiConnectionStoreRequest extends FormRequest
     {
         return [
             'base_url'                      => 'required|url',
-            'magento_store_id'              => 'required|numeric',
+            'magento_store_id'              => 'numeric',
             'tag'                           => 'nullable',
             'pricing_source_warehouse_id'   => 'nullable|exists:warehouses,id',
             'api_access_token'              => 'required',

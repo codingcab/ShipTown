@@ -1,6 +1,6 @@
 <template>
-    <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+    <div class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
             <div ref="loadingContainer2" class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Magento Api Connection</h5>
@@ -12,8 +12,13 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label" for="magento_store_id">Magento Store Code</label>
-                                <input v-model="config.magento_store_code" :class="{'form-control': true}" id="magento_store_id" type="text" required>
+                                <label class="form-label" for="magento_store_id">Magento Store ID</label>
+                                <input v-model="config.magento_store_id" :class="{'form-control': true}" id="magento_store_id" type="text" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="magento_store_code">Magento Store Code</label>
+                                <input v-model="config.magento_store_code" :class="{'form-control': true}" id="magento_store_code" type="text" required>
                             </div>
 
                             <div class="form-group">
@@ -93,7 +98,8 @@ export default {
             this.config = {
                 base_url: newVal.base_url,
                 magento_inventory_source_code: newVal.magento_inventory_source_code ?? '',
-                magento_store_code: newVal.magento_store_code,
+                magento_store_id: newVal.magento_store_id ?? 0,
+                magento_store_code: newVal.magento_store_code ?? 'default',
                 inventory_source_warehouse_tag_id: newVal.inventory_source_warehouse_tag_id ?? '',
                 pricing_source_warehouse_id: newVal.pricing_source_warehouse_id ?? '',
                 api_access_token: newVal.api_access_token

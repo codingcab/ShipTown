@@ -4,11 +4,11 @@
             <div class="card-header">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span>
-                        Magento Api Configurations
+                        Magento 2 API
                     </span>
-                    <span class="text-primary cursor-pointer" @click="showCreateForm">
-                        Create New Connection
-                    </span>
+                    <b-btn variant="primary" class="btn-sm bv-no-focus-ring" @click="showCreateForm" >
+                        New Connection
+                    </b-btn>
                 </div>
             </div>
 
@@ -17,15 +17,13 @@
                     <thead>
                     <tr>
                         <th>URL</th>
-                        <th>Magento Store Code</th>
-                        <th>Warehouse Tag</th>
-                        <th>Pricing Source</th>
+                        <th>Inventory</th>
+                        <th>Pricing</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr v-for="connection in connections" :key="connection.id" @click.prevent="showEditForm(connection)">
-                        <td>{{ connection.base_url }}</td>
-                        <td>{{ connection.magento_store_code }}</td>
+                        <td class="w-100">{{ connection.base_url }}</td>
                         <td>
                             <template v-for="tag in connection.tags">
                                 <a class="badge text-uppercase" :key="tag.id"> {{ tag.name }} </a>
@@ -81,7 +79,7 @@ export default {
         },
 
         showCreateForm() {
-            this.$bvModal.show('modal-create-connection')
+            this.$bvModal.show('modal-create-connection');
         },
 
         confirmDelete(connection_id){
