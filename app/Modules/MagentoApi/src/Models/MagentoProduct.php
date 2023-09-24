@@ -4,24 +4,34 @@ namespace App\Modules\MagentoApi\src\Models;
 
 use App\BaseModel;
 use App\Models\Product;
+use App\Models\ProductPrice;
+use App\Modules\InventoryTotals\src\Models\InventoryTotalByWarehouseTag;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 /**
- * @property Product $product
- * @property boolean $is_in_stock
- * @property double $quantity
- * @property Carbon $stock_items_fetched_at
- * @property array $stock_items_raw_import
- * @property Carbon $base_prices_fetched_at
- * @property array $base_prices_raw_import
- * @property MagentoConnection $magentoConnection
- * @property double $magento_price
- * @property Carbon $special_prices_fetched_at
- * @property array $special_prices_raw_import
- * @property double $magento_sale_price
- * @property Carbon $magento_sale_price_start_date
- * @property Carbon $magento_sale_price_end_date
+ * App\Modules\MagentoApi\src\Models\MagentoProduct
+ * @property int $id
+ * @property int $connection_id
+ * @property int $product_id
+ * @property int $inventory_totals_by_warehouse_tag_id
+ * @property int $product_price_id
+ * @property-read MagentoConnection $magentoConnection
+ * @property-read InventoryTotalByWarehouseTag $inventoryTotalsByWarehouseTag
+ * @property bool $exists_in_magento
+ * @property bool $is_in_stock
+ * @property float $quantity
+ * @property float $magento_price
+ *  @property float $magento_sale_price
+ * @property Carbon|null $stock_items_fetched_at
+ * @property Carbon|null $base_prices_fetched_at
+ * @property Carbon|null $special_prices_fetched_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Product $product
+ * @property-read ProductPrice $productPrice
+ *
  */
 class MagentoProduct extends BaseModel
 {
@@ -52,6 +62,16 @@ class MagentoProduct extends BaseModel
         'base_prices_raw_import'    => 'array',
         'special_prices_raw_import'    => 'array',
     ];
+
+    public function inventoryTotalsByWarehouseTag(): HasOne
+    {
+        return $this->hasOne(InventoryTotalByWarehouseTag::class, 'id', 'inventory_total_by_warehouse_tag_id');
+    }
+
+    public function prices(): HasOne
+    {
+        return $this->hasOne(ProductPrice::class, 'id', 'product_price_id');
+    }
 
     public function product(): BelongsTo
     {

@@ -6,6 +6,7 @@ use App\BaseModel;
 use App\Models\Warehouse;
 use App\Traits\HasTagsTrait;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Crypt;
@@ -30,6 +31,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class MagentoConnection extends BaseModel
 {
     use HasTagsTrait;
+    use HasFactory;
 
     protected $table = 'modules_magento2api_connections';
 

@@ -11,6 +11,9 @@ return new class extends Migration
         Schema::table('modules_magento2api_products', function (Blueprint $table) {
             $table->timestamp('inventory_synced_at')->nullable()->after('magento_sale_price_end_date');
             $table->timestamp('pricing_synced_at')->nullable()->after('inventory_synced_at');
+
+            $table->index('inventory_synced_at');
+            $table->index('pricing_synced_at');
         });
     }
 };
