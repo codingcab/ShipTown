@@ -12,14 +12,14 @@ return new class extends Migration
             $table->unsignedBigInteger('inventory_total_by_warehouse_tag_id')->nullable()->after('product_id');
             $table->unsignedBigInteger('product_price_id')->nullable()->after('inventory_total_by_warehouse_tag_id');
 
-            $table->foreign('inventory_total_by_warehouse_tag_id')
+            $table->foreign('inventory_total_by_warehouse_tag_id', 'inventory_total_by_warehouse_tag_id_fk')
                 ->references('id')
-                ->on('inventory_totals_by_warehouse_tags')
+                ->on('inventory_totals_by_warehouse_tag')
                 ->onDelete('SET NULL');
 
             $table->foreign('product_price_id')
                 ->references('id')
-                ->on('product_prices')
+                ->on('products_prices')
                 ->onDelete('SET NULL');
         });
     }
