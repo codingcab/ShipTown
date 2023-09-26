@@ -18,17 +18,13 @@ class ClearStockInformationJob extends UniqueJob
 
             SET
                 modules_magento2api_products.quantity = null,
-                modules_magento2api_products.is_in_stock = null,
                 modules_magento2api_products.stock_items_fetched_at = null,
-                modules_magento2api_products.stock_items_raw_import = null,
-                modules_magento2api_products.is_inventory_in_sync = null
+                modules_magento2api_products.stock_items_raw_import = null
 
             WHERE (
                 modules_magento2api_products.quantity is null
-                OR modules_magento2api_products.is_in_stock is null
                 OR modules_magento2api_products.stock_items_fetched_at is null
                 OR modules_magento2api_products.stock_items_raw_import is null
-                OR modules_magento2api_products.is_inventory_in_sync is null
             )
         ");
     }

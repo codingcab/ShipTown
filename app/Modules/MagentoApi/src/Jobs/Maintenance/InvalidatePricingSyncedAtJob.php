@@ -5,7 +5,7 @@ namespace App\Modules\MagentoApi\src\Jobs\Maintenance;
 use App\Abstracts\UniqueJob;
 use Illuminate\Support\Facades\DB;
 
-class InvalidateSyncedAtJob extends UniqueJob
+class InvalidatePricingSyncedAtJob extends UniqueJob
 {
     public function handle()
     {
@@ -25,13 +25,15 @@ class InvalidateSyncedAtJob extends UniqueJob
                     modules_magento2api_products.id as modules_magento2api_products_id
                 FROM modules_magento2api_products
 
-                INNER JOIN inventory_totals_by_warehouse_tag
-                    ON inventory_totals_by_warehouse_tag.id = modules_magento2api_products.inventory_totals_by_warehouse_tag_id
+                INNER JOIN products_prices
+                    ON products_prices.id = modules_magento2api_products.product_price_id
 
-                WHERE modules_magento2api_products.inventory_synced_at IS NOT NULL
-                    AND modules_magento2api_products.stock_items_fetched_at IS NOT NULL
-                    AND inventory_totals_by_warehouse_tag.quantity_available != modules_magento2api_products.quantity
-
+                WHERE modules_magento2api_products.pricing_synced_at IS NOT NULL
+                    AND modules_magento2api_products.base_prices_fetched_at IS NOT NULL
+                    AND (
+                        modules_magento2api_products.price IS NULL
+                        OR modules_magento2api_products.price != products_prices.price
+                    )
                 LIMIT ?;
         ", [$limit]);
 
@@ -42,7 +44,7 @@ class InvalidateSyncedAtJob extends UniqueJob
                 ON tempTable.modules_magento2api_products_id = modules_magento2api_products.id
 
             SET
-                modules_magento2api_products.inventory_synced_at = NULL
+                modules_magento2api_products.pricing_synced_at = NULL
         ");
     }
 }

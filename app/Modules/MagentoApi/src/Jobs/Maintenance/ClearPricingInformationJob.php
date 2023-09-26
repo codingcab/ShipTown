@@ -17,20 +17,20 @@ class ClearPricingInformationJob extends UniqueJob
                 AND modules_magento2api_connections.pricing_source_warehouse_id IS NULL
 
             SET
-                modules_magento2api_products.magento_price = null,
-                modules_magento2api_products.magento_sale_price = null,
-                modules_magento2api_products.magento_sale_price_start_date = null,
-                modules_magento2api_products.magento_sale_price_end_date = null,
+                modules_magento2api_products.price = null,
+                modules_magento2api_products.sale_price = null,
+                modules_magento2api_products.sale_price_start_date = null,
+                modules_magento2api_products.sale_price_end_date = null,
                 modules_magento2api_products.base_prices_fetched_at = null,
                 modules_magento2api_products.base_prices_raw_import = null,
                 modules_magento2api_products.special_prices_fetched_at = null,
                 modules_magento2api_products.special_prices_raw_import = null
 
             WHERE (
-                modules_magento2api_products.magento_price is null
-                OR modules_magento2api_products.magento_sale_price is null
-                OR modules_magento2api_products.magento_sale_price_start_date is null
-                OR modules_magento2api_products.magento_sale_price_end_date is null
+                   modules_magento2api_products.price is null
+                OR modules_magento2api_products.sale_price is null
+                OR modules_magento2api_products.sale_price_start_date is null
+                OR modules_magento2api_products.sale_price_end_date is null
                 OR modules_magento2api_products.base_prices_fetched_at is null
                 OR modules_magento2api_products.base_prices_raw_import is null
                 OR modules_magento2api_products.special_prices_fetched_at is null

@@ -4,6 +4,7 @@ namespace App\Modules\MagentoApi\src\Jobs\Sync;
 
 use App\Abstracts\UniqueJob;
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
+use App\Modules\MagentoApi\src\Models\MagentoProduct;
 use App\Modules\MagentoApi\src\Models\MagentoProductPricesComparisonView;
 use App\Modules\MagentoApi\src\Services\MagentoService;
 
@@ -14,16 +15,12 @@ class SyncProductBasePricesJob extends UniqueJob
         $connectionIds = MagentoConnection::query()
             ->where(['is_enabled' => true])
             ->whereNotNull('pricing_source_warehouse_id')
-            ->get()
-            ->pluck('id');
+            ->get();
 
-        MagentoProductPricesComparisonView::query()
-            ->whereIn('modules_magento2api_connection_id', $connectionIds)
-            ->whereNotNull('base_prices_fetched_at')
-            ->whereRaw('(
-                price IS NULL
-                OR price != expected_price
-            )')
+        MagentoProduct::query()
+            ->whereIn('connection_id', $connectionIds->pluck('id'))
+            ->whereNull('pricing_synced_at')
+            ->with(['magentoConnection', 'product', 'inventoryTotalsByWarehouseTag'])
             ->chunkById(10, function ($products) {
                 collect($products)->each(function (MagentoProductPricesComparisonView $comparison) {
                     MagentoService::updateBasePrice(
@@ -39,6 +36,6 @@ class SyncProductBasePricesJob extends UniqueJob
                         'magento_price'          => null,
                     ]);
                 });
-            }, 'modules_magento2api_products_id');
+            });
     }
 }

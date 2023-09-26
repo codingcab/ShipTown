@@ -7,6 +7,7 @@ use App\Modules\MagentoApi\src\Jobs\Fetch\FetchSpecialPricesJob;
 use App\Modules\MagentoApi\src\Jobs\Fetch\FetchStockItemsJob;
 use App\Modules\MagentoApi\src\Jobs\Maintenance\EnsureProductRecordsExistJob;
 use App\Modules\MagentoApi\src\Jobs\Maintenance\FillForeignIndexesJob;
+use App\Modules\MagentoApi\src\Jobs\Maintenance\InvalidatePricingSyncedAtJob;
 use App\Modules\MagentoApi\src\Jobs\Sync\SyncProductInventoryJob;
 
 class SyncRequestedEventListener
@@ -15,6 +16,9 @@ class SyncRequestedEventListener
     {
         EnsureProductRecordsExistJob::dispatch();
         FillForeignIndexesJob::dispatch();
+
+        InvalidatePricingSyncedAtJob::dispatch();
+        InvalidatePricingSyncedAtJob::dispatch();
 
         FetchStockItemsJob::dispatch();
         FetchBasePricesJob::dispatch();

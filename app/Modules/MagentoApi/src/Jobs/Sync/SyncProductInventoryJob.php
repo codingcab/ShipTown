@@ -19,14 +19,8 @@ class SyncProductInventoryJob extends UniqueJob
             ->get();
 
         MagentoProduct::query()
-            ->leftJoin('inventory_totals_by_warehouse_tag', 'inventory_totals_by_warehouse_tag.id', '=', 'modules_magento2api_products.inventory_totals_by_warehouse_tag_id')
             ->whereIn('connection_id', $enabledConnections->pluck('id'))
-            ->whereNotNull('stock_items_fetched_at')
-            ->whereNotNull('inventory_totals_by_warehouse_tag.id')
-            ->whereRaw('(
-                modules_magento2api_products.quantity IS NULL
-                OR modules_magento2api_products.quantity != inventory_totals_by_warehouse_tag.quantity_available
-            )')
+            ->whereNull('inventory_synced_at')
             ->with(['magentoConnection', 'product', 'inventoryTotalsByWarehouseTag'])
             ->chunkById(10, function ($products) {
                 collect($products)

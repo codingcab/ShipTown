@@ -4,6 +4,7 @@ namespace App\Modules\MagentoApi\src\Jobs\Sync;
 
 use App\Abstracts\UniqueJob;
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
+use App\Modules\MagentoApi\src\Models\MagentoProduct;
 use App\Modules\MagentoApi\src\Models\MagentoProductPricesComparisonView;
 use App\Modules\MagentoApi\src\Services\MagentoService;
 
@@ -17,20 +18,10 @@ class SyncProductSalePricesJob extends UniqueJob
             ->get()
             ->pluck('id');
 
-        MagentoProductPricesComparisonView::query()
-            ->whereIn('modules_magento2api_connection_id', $connectionIds)
-            ->whereRaw('(
-                special_prices_fetched_at IS NOT NULL
-                AND (
-                    sale_price IS NULL
-                    OR sale_price_start_date IS NULL
-                    OR sale_price_end_date IS NULL
-                    OR sale_price != expected_sale_price
-                    OR sale_price_start_date != expected_sale_price_start_date
-                    OR sale_price_end_date != expected_sale_price_end_date
-                )
-            )')
-            ->with('magentoConnection')
+        MagentoProduct::query()
+            ->whereIn('connection_id', $connectionIds)
+            ->whereNull('pricing_synced_at')
+            ->with(['magentoConnection', 'product', 'inventoryTotalsByWarehouseTag'])
             ->chunkById(10, function ($products) {
                 collect($products)->each(function (MagentoProductPricesComparisonView $comparison) {
                     MagentoService::updateSalePrice(
@@ -50,6 +41,6 @@ class SyncProductSalePricesJob extends UniqueJob
                         'price_end_date'                => null,
                     ]);
                 });
-            }, 'modules_magento2api_products_id');
+            }, 'id');
     }
 }
