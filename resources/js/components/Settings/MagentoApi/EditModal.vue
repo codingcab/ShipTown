@@ -28,7 +28,7 @@
 
                             <div class="form-group">
                                 <label class="form-label">Inventory source warehouse tag</label>
-                                <select v-model="config.inventory_source_warehouse_tag_id" :class="{'form-control': true}" id="inventory_source_tag_id">
+                                <select v-model="config.inventory_totals_tag_id" :class="{'form-control': true}" id="inventory_source_tag_id">
                                     <option value="">Do not sync inventory</option>
                                     <option v-for="tag in tags"  :value="tag.id" :key="tag.id">
                                        {{ tag.name.en }}
@@ -100,7 +100,7 @@ export default {
                 magento_inventory_source_code: newVal.magento_inventory_source_code ?? '',
                 magento_store_id: newVal.magento_store_id ?? 0,
                 magento_store_code: newVal.magento_store_code ?? 'default',
-                inventory_source_warehouse_tag_id: newVal.inventory_source_warehouse_tag_id ?? '',
+                inventory_totals_tag_id: newVal.inventory_totals_tag_id ?? '',
                 pricing_source_warehouse_id: newVal.pricing_source_warehouse_id ?? '',
                 api_access_token: newVal.api_access_token
             };

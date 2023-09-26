@@ -29,7 +29,7 @@ class MagentoApiConnectionController extends Controller
 
         if ($request->has('tag')) {
             $tag = Tag::findOrCreate($request->get('tag'));
-            $connection->inventory_source_warehouse_tag_id = $tag->getKey();
+            $connection->inventory_totals_tag_id = $tag->getKey();
         }
 
         $connection->save();

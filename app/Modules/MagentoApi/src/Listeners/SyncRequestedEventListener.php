@@ -2,34 +2,24 @@
 
 namespace App\Modules\MagentoApi\src\Listeners;
 
-use App\Events\SyncRequestedEvent;
-use App\Modules\MagentoApi\src\Jobs\EnsureProductRecordsExistJob;
-use App\Modules\MagentoApi\src\Jobs\FetchBasePricesJob;
-use App\Modules\MagentoApi\src\Jobs\FetchSpecialPricesJob;
-use App\Modules\MagentoApi\src\Jobs\FetchStockItemsJob;
-use App\Modules\MagentoApi\src\Jobs\SyncProductBasePricesJob;
-use App\Modules\MagentoApi\src\Jobs\SyncProductInventoryJob;
-use App\Modules\MagentoApi\src\Jobs\SyncProductSalePricesJob;
+use App\Modules\MagentoApi\src\Jobs\Fetch\FetchBasePricesJob;
+use App\Modules\MagentoApi\src\Jobs\Fetch\FetchSpecialPricesJob;
+use App\Modules\MagentoApi\src\Jobs\Fetch\FetchStockItemsJob;
+use App\Modules\MagentoApi\src\Jobs\Maintenance\EnsureProductRecordsExistJob;
+use App\Modules\MagentoApi\src\Jobs\Maintenance\FillForeignIndexesJob;
+use App\Modules\MagentoApi\src\Jobs\Sync\SyncProductInventoryJob;
 
 class SyncRequestedEventListener
 {
-    /**
-     * Handle the event.
-     *
-     * @param SyncRequestedEvent $event
-     *
-     * @return void
-     */
-    public function handle(SyncRequestedEvent $event)
+    public function handle()
     {
         EnsureProductRecordsExistJob::dispatch();
+        FillForeignIndexesJob::dispatch();
 
         FetchStockItemsJob::dispatch();
         FetchBasePricesJob::dispatch();
         FetchSpecialPricesJob::dispatch();
 
         SyncProductInventoryJob::dispatch();
-        SyncProductBasePricesJob::dispatch();
-        SyncProductSalePricesJob::dispatch();
     }
 }

@@ -31,6 +31,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Product $product
  * @property-read ProductPrice $productPrice
+ * @property array|mixed $stock_items_raw_import
  *
  */
 class MagentoProduct extends BaseModel
@@ -38,9 +39,11 @@ class MagentoProduct extends BaseModel
     protected $table = 'modules_magento2api_products';
 
     protected $fillable = [
-        'product_id',
-        'exists_in_magento',
         'connection_id',
+        'product_id',
+        'inventory_totals_by_warehouse_tag_id',
+        'product_price_id',
+        'exists_in_magento',
         'is_in_stock',
         'quantity',
         'magento_price',
@@ -65,7 +68,7 @@ class MagentoProduct extends BaseModel
 
     public function inventoryTotalsByWarehouseTag(): HasOne
     {
-        return $this->hasOne(InventoryTotalByWarehouseTag::class, 'id', 'inventory_total_by_warehouse_tag_id');
+        return $this->hasOne(InventoryTotalByWarehouseTag::class, 'id', 'inventory_totals_by_warehouse_tag_id');
     }
 
     public function prices(): HasOne

@@ -13,17 +13,19 @@ use Illuminate\Support\Facades\Crypt;
 use Spatie\QueryBuilder\QueryBuilder;
 
 /**
- * @property integer $id
+ * App\Modules\MagentoApi\src\Models\MagentoConnection
+ * @property int $id
+ * @property bool $is_enabled
  * @property string $base_url
- * @property integer $magento_store_id
- * @property string  $magento_store_code
- * @property integer $magento_inventory_source_code
- * @property integer $inventory_source_warehouse_tag_id
- * @property integer $pricing_source_warehouse_id
+ * @property int $magento_store_id
+ * @property string $magento_store_code
+ * @property string $magento_inventory_source_code
+ * @property int $inventory_totals_tag_id
+ * @property int $pricing_source_warehouse_id
  * @property string $api_access_token
- * @property Carbon $deleted_at
- * @property Carbon $updated_at
- * @property Carbon $created_at
+ * @property Carbon|null $deleted_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $created_at
  *
  * @property Warehouse $warehouse
  * @property Collection $tags
@@ -36,11 +38,12 @@ class MagentoConnection extends BaseModel
     protected $table = 'modules_magento2api_connections';
 
     protected $fillable = [
+        'is_enabled',
         'base_url',
         'magento_store_id',
         'magento_store_code',
         'magento_inventory_source_code',
-        'inventory_source_warehouse_tag_id',
+        'inventory_totals_tag_id',
         'pricing_source_warehouse_id',
         'api_access_token',
     ];

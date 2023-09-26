@@ -7,7 +7,12 @@ use App\Events\EveryFiveMinutesEvent;
 use App\Events\EveryHourEvent;
 use App\Events\EveryMinuteEvent;
 use App\Events\EveryTenMinutesEvent;
+use App\Models\Product;
+use App\Models\Tag;
+use App\Models\Warehouse;
 use App\Modules\MagentoApi\src\EventServiceProviderBase;
+use App\Modules\MagentoApi\src\Models\MagentoConnection;
+use App\Modules\MagentoApi\src\Models\MagentoProduct;
 use Tests\TestCase;
 
 class BasicModuleTest extends TestCase
@@ -38,5 +43,34 @@ class BasicModuleTest extends TestCase
         EveryDayEvent::dispatch();
 
         $this->assertTrue(true, 'Errors encountered while dispatching events');
+    }
+
+    public function test_if_fills_foreign_keys()
+    {
+        EventServiceProviderBase::enableModule();
+
+        /** @var Warehouse $warehouse */
+        $warehouse = Warehouse::factory()->create();
+        $warehouse->attachTag('online stock');
+
+        /** @var Product $product */
+        $product = Product::factory()->create();
+        $product->attachTag('Available Online');
+
+        /** @var Product $product */
+        $product2 = Product::factory()->create();
+        $product2->attachTag('Available Online');
+
+        $tag = Tag::findFromString('online stock');
+
+        MagentoConnection::factory()->create(['inventory_totals_tag_id' => $tag->getKey()]);
+
+        $builder = MagentoProduct::query()
+            ->whereNull('inventory_totals_by_warehouse_tag_id');
+
+        ray($builder->get()->toArray());
+
+        $this->assertTrue($builder->exists());
+
     }
 }

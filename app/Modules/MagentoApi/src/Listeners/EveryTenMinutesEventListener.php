@@ -2,12 +2,12 @@
 
 namespace App\Modules\MagentoApi\src\Listeners;
 
-use App\Modules\MagentoApi\src\Jobs\FetchBasePricesJob;
-use App\Modules\MagentoApi\src\Jobs\FetchSpecialPricesJob;
-use App\Modules\MagentoApi\src\Jobs\FetchStockItemsJob;
-use App\Modules\MagentoApi\src\Jobs\SyncProductBasePricesJob;
-use App\Modules\MagentoApi\src\Jobs\SyncProductInventoryJob;
-use App\Modules\MagentoApi\src\Jobs\SyncProductSalePricesJob;
+use App\Modules\MagentoApi\src\Jobs\Fetch\FetchBasePricesJob;
+use App\Modules\MagentoApi\src\Jobs\Fetch\FetchSpecialPricesJob;
+use App\Modules\MagentoApi\src\Jobs\Fetch\FetchStockItemsJob;
+use App\Modules\MagentoApi\src\Jobs\Sync\SyncProductBasePricesJob;
+use App\Modules\MagentoApi\src\Jobs\Sync\SyncProductInventoryJob;
+use App\Modules\MagentoApi\src\Jobs\Sync\SyncProductSalePricesJob;
 
 class EveryTenMinutesEventListener
 {

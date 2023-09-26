@@ -2,9 +2,9 @@
 
 namespace App\Modules\MagentoApi\src\Listeners;
 
-use App\Modules\MagentoApi\src\Jobs\ClearPricingInformationJob;
-use App\Modules\MagentoApi\src\Jobs\ClearStockInformationJob;
-use App\Modules\MagentoApi\src\Jobs\EnsureProductRecordsExistJob;
+use App\Modules\MagentoApi\src\Jobs\Maintenance\ClearPricingInformationJob;
+use App\Modules\MagentoApi\src\Jobs\Maintenance\ClearStockInformationJob;
+use App\Modules\MagentoApi\src\Jobs\Maintenance\EnsureProductRecordsExistJob;
 
 class EveryDayEventListener
 {
