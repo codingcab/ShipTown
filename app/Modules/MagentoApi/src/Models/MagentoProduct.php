@@ -20,6 +20,7 @@ use Illuminate\Support\Carbon;
  * @property-read MagentoConnection $magentoConnection
  * @property-read InventoryTotalByWarehouseTag $inventoryTotalsByWarehouseTag
  * @property bool $exists_in_magento
+ * @property int|null $remote_id
  * @property bool $is_in_stock
  * @property float $quantity
  * @property float $magento_price
@@ -44,6 +45,7 @@ class MagentoProduct extends BaseModel
         'inventory_totals_by_warehouse_tag_id',
         'product_price_id',
         'exists_in_magento',
+        'remote_id',
         'is_in_stock',
         'quantity',
         'magento_price',
