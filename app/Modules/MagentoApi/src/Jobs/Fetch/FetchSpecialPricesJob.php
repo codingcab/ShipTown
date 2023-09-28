@@ -19,6 +19,7 @@ class FetchSpecialPricesJob extends UniqueJob
             ->pluck('id');
 
         MagentoProduct::query()
+            ->where(['exists_in_magento' => true])
             ->whereIn('connection_id', $connectionIds)
             ->whereRaw('IFNULL(exists_in_magento, 1) = 1')
             ->whereRaw('special_prices_fetched_at IS NULL')

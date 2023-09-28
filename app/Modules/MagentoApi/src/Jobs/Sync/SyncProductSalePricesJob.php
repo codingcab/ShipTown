@@ -19,6 +19,7 @@ class SyncProductSalePricesJob extends UniqueJob
             ->pluck('id');
 
         MagentoProduct::query()
+            ->where(['exists_in_magento' => true])
             ->whereIn('connection_id', $connectionIds)
             ->whereNull('pricing_synced_at')
             ->with(['magentoConnection', 'product', 'inventoryTotalsByWarehouseTag'])

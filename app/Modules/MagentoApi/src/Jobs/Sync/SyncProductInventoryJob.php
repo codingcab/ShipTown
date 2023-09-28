@@ -19,6 +19,7 @@ class SyncProductInventoryJob extends UniqueJob
             ->get();
 
         MagentoProduct::query()
+            ->where(['exists_in_magento' => true])
             ->whereIn('connection_id', $enabledConnections->pluck('id'))
             ->whereNull('inventory_synced_at')
             ->with(['magentoConnection', 'product', 'inventoryTotalsByWarehouseTag'])

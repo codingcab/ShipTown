@@ -19,6 +19,7 @@ class FetchBasePricesJob extends UniqueJob
             ->pluck('id');
 
         MagentoProduct::query()
+            ->where(['exists_in_magento' => true])
             ->whereIn('connection_id', $connectionIds)
             ->whereRaw('IFNULL(exists_in_magento, 1) = 1')
             ->whereRaw('base_prices_fetched_at IS NULL')
