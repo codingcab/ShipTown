@@ -2,6 +2,7 @@
 
 namespace App\Modules\MagentoApi\src\Services;
 
+use App\Modules\MagentoApi\src\Abstracts\EcommerceSyncService;
 use App\Modules\MagentoApi\src\Api\MagentoApi;
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
 use App\Modules\MagentoApi\src\Models\MagentoProduct;
@@ -10,7 +11,7 @@ use Illuminate\Http\Client\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
-class MagentoService
+class MagentoService extends EcommerceSyncService
 {
     public static function api(MagentoConnection $magentoConnection = null): MagentoApi
     {
@@ -195,7 +196,7 @@ class MagentoService
     /**
      * @throws Exception
      */
-    private static function fetchFromInventorySourceItems(MagentoProduct $magentoProduct)
+    public static function fetchFromInventorySourceItems(MagentoProduct $magentoProduct)
     {
         $response = self::api($magentoProduct->magentoConnection)
             ->getInventorySourceItems($magentoProduct->product->sku, $magentoProduct->magentoConnection->magento_inventory_source_code ?? 'all');

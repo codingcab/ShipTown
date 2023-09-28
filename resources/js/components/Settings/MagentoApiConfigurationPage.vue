@@ -25,9 +25,12 @@
                     <tr v-for="connection in connections" :key="connection.id" @click.prevent="showEditForm(connection)">
                         <td class="w-100">{{ connection.base_url }}</td>
                         <td>
-                            <template v-for="tag in connection.tags">
-                                <a class="badge text-uppercase" :key="tag.id"> {{ tag.name }} </a>
-                            </template>
+
+                            <a class="badge text-uppercase" :key="connection.inventory_totals_tag_id"> {{ connection.inventory_totals_tag.name }} </a>
+<!--                            <template v-for="tag in connection.tags">-->
+<!--                                a-->
+<!--                                <a class="badge text-uppercase" :key="tag.id"> {{ tag.name }} </a>-->
+<!--                            </template>-->
                         </td>
                         <td>{{ connection.warehouse?.name }}</td>
                     </tr>
@@ -71,7 +74,7 @@ export default {
         getConnections() {
             this.apiGetMagentoApiConnections({
                 'per_page': 100,
-                'include': 'tags,warehouse'
+                'include': 'tags,warehouse,inventoryTotalsTag'
             })
                 .then(({ data }) => {
                     this.connections = data.data;

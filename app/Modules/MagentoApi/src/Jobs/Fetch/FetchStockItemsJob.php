@@ -15,15 +15,13 @@ class FetchStockItemsJob extends UniqueJob
         $connectionIds = MagentoConnection::query()
             ->where(['is_enabled' => true])
             ->whereNotNull('inventory_totals_tag_id')
-            ->get()
-            ->pluck('id');
+            ->get();
 
         MagentoProduct::query()
             ->where(['exists_in_magento' => true])
-            ->whereIn('connection_id', $connectionIds)
-            ->whereRaw('IFNULL(exists_in_magento, 1) = 1')
-            ->whereRaw('stock_items_fetched_at IS NULL')
-            ->with(['magentoConnection', 'product', 'inventoryTotalsByWarehouseTag'])
+            ->whereIn('connection_id', $connectionIds->pluck('id'))
+            ->whereNull('stock_items_fetched_at')
+            ->with(['magentoConnection', 'product'])
             ->chunkById(10, function ($products) {
                 collect($products)->each(function (MagentoProduct $magentoProduct) {
                     MagentoService::fetchInventory($magentoProduct);

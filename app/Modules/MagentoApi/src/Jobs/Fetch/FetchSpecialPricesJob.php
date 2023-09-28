@@ -15,15 +15,13 @@ class FetchSpecialPricesJob extends UniqueJob
         $connectionIds = MagentoConnection::query()
             ->where(['is_enabled' => true])
             ->whereNotNull('pricing_source_warehouse_id')
-            ->get()
-            ->pluck('id');
+            ->get();
 
         MagentoProduct::query()
             ->where(['exists_in_magento' => true])
-            ->whereIn('connection_id', $connectionIds)
-            ->whereRaw('IFNULL(exists_in_magento, 1) = 1')
-            ->whereRaw('special_prices_fetched_at IS NULL')
-            ->with('magentoConnection')
+            ->whereIn('connection_id', $connectionIds->pluck('id'))
+            ->whereNull('special_prices_fetched_at')
+            ->with('magentoConnection', 'product', 'prices')
             ->chunkById(10, function ($products) {
                 collect($products)->each(function (MagentoProduct $magentoProduct) {
                     MagentoService::fetchSpecialPrices($magentoProduct);

@@ -7,6 +7,8 @@ use Illuminate\Support\Arr;
 
 class MagentoApi extends BaseApi
 {
+    private bool $handleErrors = false;
+
     public function getOrders(): ?Response
     {
         return $this->get('orders');
@@ -124,5 +126,12 @@ class MagentoApi extends BaseApi
                 ]
             ]
         ]);
+    }
+
+    public function handleErrors(): static
+    {
+        $this->handleErrors = true;
+
+        return $this;
     }
 }

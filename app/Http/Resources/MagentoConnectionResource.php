@@ -20,6 +20,7 @@ class MagentoConnectionResource extends JsonResource
             'magento_inventory_source_code' => $this->magento_inventory_source_code,
             'inventory_totals_tag_id' => $this->inventory_totals_tag_id,
             'pricing_source_warehouse_id' => $this->pricing_source_warehouse_id,
+            'inventory_totals_tag' => $this->whenLoaded('inventoryTotalsTag', TagResource::make($this->inventoryTotalsTag)),
             'tags' => $this->whenLoaded('tags', TagResource::collection($this->tags)),
             'warehouse' => $this->whenLoaded('warehouse', WarehouseResource::make($this->warehouse)),
             'deleted_at' => $this->deleted_at,

@@ -3,6 +3,7 @@
 namespace App\Modules\MagentoApi\src\Models;
 
 use App\BaseModel;
+use App\Models\Tag;
 use App\Models\Warehouse;
 use App\Traits\HasTagsTrait;
 use Carbon\Carbon;
@@ -28,6 +29,7 @@ use Spatie\QueryBuilder\QueryBuilder;
  * @property Carbon|null $created_at
  *
  * @property Warehouse $warehouse
+ * @property Tag $inventoryTotalsTag
  * @property Collection $tags
  */
 class MagentoConnection extends BaseModel
@@ -52,13 +54,20 @@ class MagentoConnection extends BaseModel
     {
         return QueryBuilder::for(MagentoConnection::class)
             ->allowedIncludes([
-                'tags','warehouse'
+                'tags',
+                'warehouse',
+                'inventoryTotalsTag'
             ]);
     }
 
     public function warehouse(): BelongsTo
     {
         return $this->belongsTo(Warehouse::class, 'pricing_source_warehouse_id', 'id');
+    }
+
+    public function inventoryTotalsTag(): BelongsTo
+    {
+        return $this->belongsTo(Tag::class, 'inventory_totals_tag_id', 'id');
     }
 
     public function getApiAccessTokenAttribute(): string
