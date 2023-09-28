@@ -22,7 +22,7 @@ class SyncProductSalePricesJob extends UniqueJob
             ->where(['exists_in_magento' => true])
             ->whereIn('connection_id', $connectionIds)
             ->whereNull('pricing_synced_at')
-            ->with(['magentoConnection', 'product', 'inventoryTotalsByWarehouseTag'])
+            ->with(['magentoConnection', 'product'])
             ->chunkById(10, function ($products) {
                 collect($products)->each(function (MagentoProductPricesComparisonView $comparison) {
                     MagentoService::updateSalePrice(

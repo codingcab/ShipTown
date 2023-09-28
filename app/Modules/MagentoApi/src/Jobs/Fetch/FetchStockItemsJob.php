@@ -23,7 +23,7 @@ class FetchStockItemsJob extends UniqueJob
             ->whereIn('connection_id', $connectionIds)
             ->whereRaw('IFNULL(exists_in_magento, 1) = 1')
             ->whereRaw('stock_items_fetched_at IS NULL')
-            ->with('magentoConnection')
+            ->with(['magentoConnection', 'product', 'inventoryTotalsByWarehouseTag'])
             ->chunkById(10, function ($products) {
                 collect($products)->each(function (MagentoProduct $magentoProduct) {
                     MagentoService::fetchInventory($magentoProduct);
