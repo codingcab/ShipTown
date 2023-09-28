@@ -3,6 +3,7 @@
 namespace App\Modules\MagentoApi\src\Listeners;
 
 use App\Modules\MagentoApi\src\Jobs\Fetch\FetchBasePricesJob;
+use App\Modules\MagentoApi\src\Jobs\Fetch\FetchRemoteIdJob;
 use App\Modules\MagentoApi\src\Jobs\Fetch\FetchSpecialPricesJob;
 use App\Modules\MagentoApi\src\Jobs\Fetch\FetchStockItemsJob;
 use App\Modules\MagentoApi\src\Jobs\Maintenance\InvalidateInventorySyncedAtJob;
@@ -15,6 +16,7 @@ class EveryTenMinutesEventListener
 {
     public function handle()
     {
+        FetchRemoteIdJob::dispatch();
         FetchStockItemsJob::dispatch();
         FetchBasePricesJob::dispatch();
         FetchSpecialPricesJob::dispatch();
