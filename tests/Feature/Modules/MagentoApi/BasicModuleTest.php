@@ -61,16 +61,16 @@ class BasicModuleTest extends TestCase
         $product2 = Product::factory()->create();
         $product2->attachTag('Available Online');
 
-        $tag = Tag::findFromString('online stock');
+        $tag = Tag::findOrCreate('online stock');
 
         MagentoConnection::factory()->create(['inventory_totals_tag_id' => $tag->getKey()]);
 
-        $builder = MagentoProduct::query()
+        $recordsWithNullValue = MagentoProduct::query()
             ->whereNull('inventory_totals_by_warehouse_tag_id');
 
-        ray($builder->get()->toArray());
+        ray('recordsWithNullValue', $recordsWithNullValue->get()->toArray());
 
-        $this->assertTrue($builder->exists());
+        $this->assertEquals(0, $recordsWithNullValue->count());
 
     }
 }
