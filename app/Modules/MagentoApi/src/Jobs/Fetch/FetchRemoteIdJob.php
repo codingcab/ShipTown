@@ -3,6 +3,7 @@
 namespace App\Modules\MagentoApi\src\Jobs\Fetch;
 
 use App\Abstracts\UniqueJob;
+use App\Modules\MagentoApi\src\Api\Magento2Api;
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
 use App\Modules\MagentoApi\src\Models\MagentoProduct;
 use App\Modules\MagentoApi\src\Services\Magento2ApiIntegration;
@@ -25,7 +26,7 @@ class FetchRemoteIdJob extends UniqueJob
             ->with(['magentoConnection', 'product', 'inventoryTotalsByWarehouseTag'])
             ->chunkById(10, function ($products) {
                 collect($products)->each(function (MagentoProduct $magentoProduct) {
-                    $response = Magento2ApiIntegration::api($magentoProduct->magentoConnection)
+                    $response = Magento2Api::api($magentoProduct->magentoConnection)
                         ->get('products/' . $magentoProduct->product->sku);
 
                     if ($response === null) {

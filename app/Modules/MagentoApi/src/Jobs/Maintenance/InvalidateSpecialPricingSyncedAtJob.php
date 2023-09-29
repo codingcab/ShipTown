@@ -28,9 +28,8 @@ class InvalidateSpecialPricingSyncedAtJob extends UniqueJob
                 INNER JOIN products_prices
                     ON products_prices.id = modules_magento2api_products.product_price_id
 
-                WHERE modules_magento2api_products.pricing_synced_at IS NOT NULL
-                    AND modules_magento2api_products.base_prices_fetched_at IS NOT NULL
-                    AND special_prices_fetched_at IS NOT NULL
+                WHERE modules_magento2api_products.sale_prices_synced_at IS NOT NULL
+                    AND modules_magento2api_products.special_prices_fetched_at IS NOT NULL
                     AND (
                         modules_magento2api_products.sale_price IS NULL
                         OR modules_magento2api_products.sale_price_start_date IS NULL
@@ -49,7 +48,7 @@ class InvalidateSpecialPricingSyncedAtJob extends UniqueJob
                 ON tempTable.modules_magento2api_products_id = modules_magento2api_products.id
 
             SET
-                modules_magento2api_products.pricing_synced_at = NULL
+                modules_magento2api_products.sale_prices_synced_at = NULL
         ");
     }
 }

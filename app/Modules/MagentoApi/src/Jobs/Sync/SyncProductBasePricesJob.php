@@ -20,7 +20,7 @@ class SyncProductBasePricesJob extends UniqueJob
                 MagentoProduct::query()
                     ->where(['exists_in_magento' => true])
                     ->where(['connection_id' => $magentoConnection->getKey()])
-                    ->whereNull('base_prices_fetched_at')
+                    ->whereNull('pricing_synced_at')
                     ->with('magentoConnection', 'product', 'prices')
                     ->chunkById(10, function (Collection $products) use ($magentoConnection) {
                         $magentoConnection->service_class::updateBasePrices($products);

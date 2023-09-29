@@ -7,6 +7,7 @@ use App\Modules\MagentoApi\src\Api\Magento2Api;
 use App\Modules\MagentoApi\src\Models\MagentoProduct;
 use Exception;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class Magento2ApiIntegration extends EcommerceIntegration
 {
@@ -28,12 +29,12 @@ class Magento2ApiIntegration extends EcommerceIntegration
                 throw new Exception('Failed to fetch stock items for product ' . $record->product->sku);
             }
 
-            $record->stock_items_raw_import = $response->json();
-            $record->stock_items_fetched_at = now();
-            $record->remote_id = data_get($response->json(), 'item_id');
-            $record->quantity = data_get($response->json(), 'qty');
-
-            $record->save();
+            $record->update([
+                'remote_id' => $response->json('item_id'),
+                'quantity' => $response->json('qty'),
+                'stock_items_fetched_at' => now(),
+                'stock_items_raw_import' => $response->json(),
+            ]);
 
             return true;
         });
@@ -93,11 +94,11 @@ class Magento2ApiIntegration extends EcommerceIntegration
                 return false;
             }
 
-            $record->base_prices_fetched_at = now();
-            $record->base_prices_raw_import = $response->json();
-            $record->price = data_get($response->json(), '0.price');
-
-            $record->save();
+            $record->update([
+                'base_prices_fetched_at' => now(),
+                'base_prices_raw_import' => $response->json(),
+                'price' => data_get($response->json(), '0.price'),
+            ]);
 
             return true;
         });
@@ -131,12 +132,11 @@ class Magento2ApiIntegration extends EcommerceIntegration
             if ($response->failed()) {
                 throw new Exception('Failed to fetch sale prices for product ' . $record->product->sku);
             }
-
             $collect = collect($response->json());
 
             $specialPrices = $collect
                 ->filter(function ($apiSpecialPriceRecord) use ($record) {
-                    return $apiSpecialPriceRecord['store_id'] == $record->magentoConnection->magento_store_id;
+                    return $apiSpecialPriceRecord['store_id'] == $record->magentoConnection->magento_store_id ?? 0;
                 });
 
             if ($specialPrices->isEmpty()) {
@@ -165,6 +165,11 @@ class Magento2ApiIntegration extends EcommerceIntegration
                     'sale_price_start_date' => $specialPrice['price_from'],
                     'sale_price_end_date' => $specialPrice['price_to'],
                 ]);
+
+                Log::debug('Magento2ApiIntegration::fetchSpecialPrices', [
+                    'response' => $specialPrice,
+                    'record' => $record->toArray(),
+                ]);
             }
 
             $record->update([
@@ -184,8 +189,8 @@ class Magento2ApiIntegration extends EcommerceIntegration
             $response = Magento2Api::api($record->magentoConnection)
                 ->postProductsBasePrices(
                     $record->product->sku,
-                    $record->price,
-                    $record->magentoConnection->magento_store_id
+                    $record->prices->price,
+                    $record->magentoConnection->magento_store_id ?? 0
                 );
 
             if ($response === null) {
@@ -193,9 +198,10 @@ class Magento2ApiIntegration extends EcommerceIntegration
             }
 
             $record->update([
+                'price'                  => null,
                 'base_prices_fetched_at' => null,
                 'base_prices_raw_import' => null,
-                'price'          => null,
+                'pricing_synced_at'      => now(),
             ]);
 
             return $response->successful();
@@ -221,7 +227,7 @@ class Magento2ApiIntegration extends EcommerceIntegration
             }
 
             $record->update([
-                'pricing_synced_at'         => null,
+                'sale_prices_synced_at'     => now(),
                 'special_prices_fetched_at' => null,
                 'special_prices_raw_import' => null,
                 'sale_price'                => null,

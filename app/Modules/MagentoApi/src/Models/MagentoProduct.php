@@ -38,6 +38,10 @@ use Illuminate\Support\Carbon;
  * @property Carbon $sale_price_end_date
  * @property array|mixed $special_prices_raw_import
  *
+ * @property Carbon|null $inventory_synced_at
+ * @property Carbon|null $pricing_synced_at
+ * @property Carbon|null $special_prices_synced_at
+ *
  */
 class MagentoProduct extends BaseModel
 {
@@ -57,6 +61,7 @@ class MagentoProduct extends BaseModel
         'sale_price_end_date',
         'inventory_synced_at',
         'pricing_synced_at',
+        'sale_prices_synced_at',
         'stock_items_fetched_at',
         'stock_items_raw_import',
         'base_prices_fetched_at',

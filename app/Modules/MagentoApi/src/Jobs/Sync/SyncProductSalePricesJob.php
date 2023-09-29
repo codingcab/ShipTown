@@ -12,8 +12,6 @@ class SyncProductSalePricesJob extends UniqueJob
 {
     public function handle()
     {
-        ray()->clearAll();
-
         MagentoConnection::query()
             ->where(['is_enabled' => true])
             ->whereNotNull('pricing_source_warehouse_id')
@@ -22,7 +20,7 @@ class SyncProductSalePricesJob extends UniqueJob
                 MagentoProduct::query()
                     ->where(['exists_in_magento' => true])
                     ->where(['connection_id' => $magentoConnection->getKey()])
-                    ->whereNull('pricing_synced_at')
+                    ->whereNull('sale_prices_synced_at')
                     ->with(['magentoConnection', 'product', 'prices'])
                     ->chunkById(10, function (Collection $products) use ($magentoConnection) {
                         $magentoConnection->service_class::updateSalePrices($products);
