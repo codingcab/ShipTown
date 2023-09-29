@@ -23,16 +23,20 @@ use Illuminate\Support\Carbon;
  * @property int|null $remote_id
  * @property bool $is_in_stock
  * @property float $quantity
- * @property float $magento_price
- *  @property float $magento_sale_price
+ * @property float $price
+ *  @property float $sale_price
  * @property Carbon|null $stock_items_fetched_at
  * @property Carbon|null $base_prices_fetched_at
  * @property Carbon|null $special_prices_fetched_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Product $product
- * @property-read ProductPrice $productPrice
+ * @property-read ProductPrice $prices
  * @property array|mixed $stock_items_raw_import
+ * @property array|mixed $base_prices_raw_import
+ * @property Carbon $sale_price_start_date
+ * @property Carbon $sale_price_end_date
+ * @property array|mixed $special_prices_raw_import
  *
  */
 class MagentoProduct extends BaseModel
@@ -46,10 +50,13 @@ class MagentoProduct extends BaseModel
         'product_price_id',
         'exists_in_magento',
         'remote_id',
-        'is_in_stock',
         'quantity',
-        'magento_price',
-        'magento_sale_price',
+        'price',
+        'sale_price',
+        'sale_price_start_date',
+        'sale_price_end_date',
+        'inventory_synced_at',
+        'pricing_synced_at',
         'stock_items_fetched_at',
         'stock_items_raw_import',
         'base_prices_fetched_at',

@@ -5,6 +5,7 @@ namespace App\Modules\MagentoApi\src\Models;
 use App\BaseModel;
 use App\Models\Tag;
 use App\Models\Warehouse;
+use App\Modules\MagentoApi\src\Abstracts\EcommerceIntegration;
 use App\Traits\HasTagsTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -31,6 +32,7 @@ use Spatie\QueryBuilder\QueryBuilder;
  * @property Warehouse $warehouse
  * @property Tag $inventoryTotalsTag
  * @property Collection $tags
+ * @property EcommerceIntegration $service_class
  */
 class MagentoConnection extends BaseModel
 {

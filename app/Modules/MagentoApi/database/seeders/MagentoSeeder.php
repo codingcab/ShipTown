@@ -6,6 +6,7 @@ use App\Models\Tag;
 use App\Models\Warehouse;
 use App\Modules\MagentoApi\src\EventServiceProviderBase;
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
+use App\Modules\MagentoApi\src\Services\Magento2ApiIntegration;
 use Illuminate\Database\Seeder;
 
 class MagentoSeeder extends Seeder
@@ -31,6 +32,7 @@ class MagentoSeeder extends Seeder
 
         MagentoConnection::create([
             'is_enabled' => false,
+            'service_class' => Magento2ApiIntegration::class,
             'base_url' => env('TEST_MODULES_MAGENTO_BASE_URL'),
             'inventory_totals_tag_id' => Tag::findFromString('Magento Stock')->getKey(),
             'pricing_source_warehouse_id' => $warehouseDublin->getKey(),

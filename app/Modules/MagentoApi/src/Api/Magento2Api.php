@@ -2,12 +2,18 @@
 
 namespace App\Modules\MagentoApi\src\Api;
 
+use App\Modules\MagentoApi\src\Models\MagentoConnection;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Arr;
 
-class MagentoApi extends BaseApi
+class Magento2Api extends BaseApi
 {
     private bool $handleErrors = false;
+
+    public static function api(MagentoConnection $magentoConnection)
+    {
+        return new self($magentoConnection);
+    }
 
     public function getOrders(): ?Response
     {
