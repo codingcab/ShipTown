@@ -25,7 +25,7 @@ class DestroyTest extends TestCase
 
         $response = $this->actingAs($user, 'api')->delete(route('api.modules.magento-api.connections.destroy', $connection));
 
-        $response->assertOk();
+        $response->assertSuccessful();
 
         $this->assertFalse(MagentoConnection::where('id', $connection->id)->exists());
     }

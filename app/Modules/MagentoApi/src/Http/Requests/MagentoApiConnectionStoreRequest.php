@@ -6,14 +6,9 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class MagentoApiConnectionStoreRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize(): bool
+    public function authorize():bool
     {
-        return true;
+        return $this->user()->hasRole('admin');
     }
 
     /**
@@ -25,7 +20,7 @@ class MagentoApiConnectionStoreRequest extends FormRequest
     {
         return [
             'base_url'                      => 'required|url',
-            'magento_store_id'              => 'required|numeric',
+            'magento_store_id'              => 'numeric',
             'tag'                           => 'nullable',
             'pricing_source_warehouse_id'   => 'nullable|exists:warehouses,id',
             'api_access_token'              => 'required',

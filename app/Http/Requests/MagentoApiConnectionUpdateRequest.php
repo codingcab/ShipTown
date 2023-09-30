@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class MagentoApiConnectionUpdateRequest extends FormRequest
 {
-    public function authorize():bool
+    public function authorize(): bool
     {
         return $this->user()->hasRole('admin');
     }
@@ -14,11 +14,13 @@ class MagentoApiConnectionUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'base_url'                      => 'required|url',
-            'magento_store_id'              => 'required|numeric',
-            'tag'                           => 'required',
-            'pricing_source_warehouse_id'   => 'required|exists:warehouses,id',
-            'access_token_encrypted'        => 'required',
+            'api_access_token'                  => 'required|string',
+            'magento_store_id'                  => 'sometimes|integer|nullable',
+            'magento_store_code'                => 'sometimes|string|nullable',
+            'base_url'                          => 'sometimes|url',
+            'magento_inventory_source_code'     => 'sometimes|string|nullable',
+            'inventory_source_warehouse_tag_id' => 'sometimes|nullable|exists:tags,id',
+            'pricing_source_warehouse_id'       => 'sometimes|nullable|exists:warehouses,id',
         ];
     }
 }

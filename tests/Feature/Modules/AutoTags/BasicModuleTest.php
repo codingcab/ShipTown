@@ -32,7 +32,7 @@ class BasicModuleTest extends TestCase
 
         $product = $product->refresh();
 
-        $this->assertTrue(true);
+        $this->assertTrue(true, 'No exception thrown');
     }
 
     public function test_if_detaches_tag()

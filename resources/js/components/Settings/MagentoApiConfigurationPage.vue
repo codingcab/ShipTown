@@ -4,11 +4,11 @@
             <div class="card-header">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span>
-                        Magento Api Configurations
+                        Magento 2 API
                     </span>
-                    <span class="text-primary cursor-pointer" @click="showCreateForm">
-                        Create New Connection
-                    </span>
+                    <b-btn variant="primary" class="btn-sm bv-no-focus-ring" @click="showCreateForm" >
+                        New Connection
+                    </b-btn>
                 </div>
             </div>
 
@@ -17,19 +17,15 @@
                     <thead>
                     <tr>
                         <th>URL</th>
-                        <th>Magento Store ID</th>
-                        <th>Connection Tag</th>
-                        <th>Pricing Source</th>
+                        <th>Inventory</th>
+                        <th>Pricing</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr v-for="connection in connections" :key="connection.id" @click.prevent="showEditForm(connection)">
-                        <td>{{ connection.base_url }}</td>
-                        <td>{{ connection.magento_store_id }}</td>
+                        <td class="w-100">{{ connection.base_url }}</td>
                         <td>
-                            <template v-for="tag in connection.tags">
-                                <a class="badge text-uppercase" :key="tag.id"> {{ tag.name }} </a>
-                            </template>
+                            <a v-if="connection.inventory_totals_tag" class="badge text-uppercase" :key="connection.inventory_totals_tag.id"> {{ connection.inventory_totals_tag.name }} </a>
                         </td>
                         <td>{{ connection.warehouse?.name }}</td>
                     </tr>
@@ -73,7 +69,7 @@ export default {
         getConnections() {
             this.apiGetMagentoApiConnections({
                 'per_page': 100,
-                'include': 'tags,warehouse'
+                'include': 'tags,warehouse,inventoryTotalsTag'
             })
                 .then(({ data }) => {
                     this.connections = data.data;
@@ -81,7 +77,7 @@ export default {
         },
 
         showCreateForm() {
-            this.$bvModal.show('modal-create-connection')
+            this.$bvModal.show('modal-create-connection');
         },
 
         confirmDelete(connection_id){

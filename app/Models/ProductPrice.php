@@ -69,6 +69,11 @@ class ProductPrice extends BaseModel
         'sale_price_end_date'   => '2001-01-01 00:00:00',
     ];
 
+    protected $casts = [
+        'sale_price_start_date' => 'datetime',
+        'sale_price_end_date'   => 'datetime',
+    ];
+
     /**
      * @return BelongsTo
      */

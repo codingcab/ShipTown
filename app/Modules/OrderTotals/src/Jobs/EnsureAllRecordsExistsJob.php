@@ -2,20 +2,11 @@
 
 namespace App\Modules\OrderTotals\src\Jobs;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use App\Abstracts\UniqueJob;
 use Illuminate\Support\Facades\DB;
 
-class EnsureAllRecordsExistsJob implements ShouldQueue
+class EnsureAllRecordsExistsJob extends UniqueJob
 {
-    use Dispatchable,
-        InteractsWithQueue,
-        Queueable,
-        SerializesModels;
-
     /**
      * @var string
      */

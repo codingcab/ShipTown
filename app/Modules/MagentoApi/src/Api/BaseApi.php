@@ -2,24 +2,39 @@
 
 namespace App\Modules\MagentoApi\src\Api;
 
-use Grayloon\Magento\Api\AbstractApi;
+use App\Modules\MagentoApi\src\Models\MagentoConnection;
+use Exception;
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class BaseApi extends AbstractApi
+/**
+ *
+ */
+class BaseApi
 {
-    protected function get($path, $parameters = []): ?Response
+    private string $baseUrl;
+    private string $apiAccessToken;
+
+    private string $version = 'V1';
+
+    public function __construct(MagentoConnection $magentoConnection)
     {
+        $this->baseUrl = $magentoConnection->base_url;
+        $this->apiAccessToken = $magentoConnection->api_access_token;
+    }
+
+    public function get($path, $parameters = []): ?Response
+    {
+        $url = implode('/', [$this->baseUrl, 'rest/default', $this->version, $path]);
+
         try {
-            $response = parent::get($path, $parameters);
-        } catch (\Exception $e) {
-            Log::error(implode(' ', [
-                'MAGENTO2API GET',
-                $path,
-                $e->getMessage()
-            ]), [
-                'response' => $e->getMessage(),
-                'url' => $this->constructRequest() . $path,
+            $response = Http::withToken($this->apiAccessToken)->acceptJson()->get($url, $parameters);
+        } catch (Exception $e) {
+            Log::error('MAGENTO2API GET '. $path, [
+                'exception_code'  => $e->getCode(),
+                'exception_message' => $e->getMessage(),
+                'url' => $url,
                 'path' => $path,
                 'parameters' => $parameters,
             ]);
@@ -28,14 +43,10 @@ class BaseApi extends AbstractApi
         }
 
         if ($response->failed()) {
-            Log::error(implode(' ', [
-                'MAGENTO2API GET',
-                $path,
-                $response->status(),
-                $response->reason()
-            ]), [
-                'response' => implode(' ', [$response->status(), $response->reason()]),
-                'url' => $this->constructRequest() . $path,
+            Log::error('MAGENTO2API GET '. $path, [
+                'status' => $response->status(),
+                'reason' => $response->reason(),
+                'url' => $url,
                 'path' => $path,
                 'json' => $response->json(),
                 'parameters' => $parameters,
@@ -44,14 +55,10 @@ class BaseApi extends AbstractApi
             return $response;
         }
 
-        Log::debug(implode(' ', [
-            'MAGENTO2API GET',
-            $path,
-            $response->status(),
-            $response->reason()
-        ]), [
-            'response' => implode(' ', [$response->status(), $response->reason()]),
-            'url' => $this->constructRequest() . $path,
+        Log::debug('MAGENTO2API GET '. $path, [
+            'status' => $response->status(),
+            'reason' => $response->reason(),
+            'url' => $url,
             'path' => $path,
             'json' => $response->json(),
             'parameters' => $parameters,
@@ -60,18 +67,17 @@ class BaseApi extends AbstractApi
         return $response;
     }
 
-    protected function post($path, $parameters = []): ?Response
+    public function post($path, $parameters = []): ?Response
     {
+        $url = implode('/', [$this->baseUrl, 'rest/default', $this->version, $path]);
+
         try {
-            $response = parent::post($path, $parameters);
-        } catch (\Exception $e) {
-            Log::error(implode(' ', [
-                'MAGENTO2API POST',
-                $path,
-                $e->getMessage()
-            ]), [
-                'response' => $e->getMessage(),
-                'url' => $this->constructRequest() . $path,
+            $response = Http::withToken($this->apiAccessToken)->post($url, $parameters);
+        } catch (Exception $e) {
+            Log::error('MAGENTO2API POST '. $path, [
+                'exception_code'  => $e->getCode(),
+                'exception_message' => $e->getMessage(),
+                'url' => $url,
                 'path' => $path,
                 'parameters' => $parameters,
             ]);
@@ -79,16 +85,11 @@ class BaseApi extends AbstractApi
             return null;
         }
 
-
         if ($response->failed()) {
-            Log::error(implode(' ', [
-                'MAGENTO2API POST',
-                $path,
-                $response->status(),
-                $response->reason()
-            ]), [
-                'response' => implode(' ', [$response->status(), $response->reason()]),
-                'url' => $this->constructRequest() . $path,
+            Log::warning('MAGENTO2API POST '. $path, [
+                'status' => $response->status(),
+                'reason' => $response->reason(),
+                'url' => $url,
                 'path' => $path,
                 'json' => $response->json(),
                 'parameters' => $parameters,
@@ -97,14 +98,10 @@ class BaseApi extends AbstractApi
             return $response;
         }
 
-        Log::debug(implode(' ', [
-            'MAGENTO2API POST',
-            $path,
-            $response->status(),
-            $response->reason()
-        ]), [
-            'response' => implode(' ', [$response->status(), $response->reason()]),
-            'url' => $this->constructRequest() . $path,
+        Log::debug('MAGENTO2API POST '. $path, [
+            'status' => $response->status(),
+            'reason' => $response->reason(),
+            'url' => $url,
             'path' => $path,
             'json' => $response->json(),
             'parameters' => $parameters,
@@ -113,18 +110,17 @@ class BaseApi extends AbstractApi
         return $response;
     }
 
-    protected function put($path, $parameters = [])
+    public function put($path, $parameters = []): ?Response
     {
+        $url = implode('/', [$this->baseUrl, 'rest/default', $this->version, $path]);
+
         try {
-            $response = parent::put($path, $parameters);
-        } catch (\Exception $e) {
-            Log::error(implode(' ', [
-                'MAGENTO2API PUT',
-                $path,
-                $e->getMessage()
-            ]), [
-                'response' => $e->getMessage(),
-                'url' => $this->constructRequest() . $path,
+            $response = Http::withToken($this->apiAccessToken)->put($url, $parameters);
+        } catch (Exception $e) {
+            Log::error('MAGENTO2API PUT '. $path, [
+                'exception_code'  => $e->getCode(),
+                'exception_message' => $e->getMessage(),
+                'url' => $url,
                 'path' => $path,
                 'parameters' => $parameters,
             ]);
@@ -133,14 +129,10 @@ class BaseApi extends AbstractApi
         }
 
         if ($response->failed()) {
-            Log::error(implode(' ', [
-                'MAGENTO2API PUT',
-                $path,
-                $response->status(),
-                $response->reason()
-            ]), [
-                'response' => implode(' ', [$response->status(), $response->reason()]),
-                'url' => $this->constructRequest() . $path,
+            Log::error('MAGENTO2API PUT '. $path, [
+                'status' => $response->status(),
+                'reason' => $response->reason(),
+                'url' => $url,
                 'path' => $path,
                 'json' => $response->json(),
                 'parameters' => $parameters,
@@ -149,14 +141,10 @@ class BaseApi extends AbstractApi
             return $response;
         }
 
-        Log::debug(implode(' ', [
-            'MAGENTO2API PUT',
-            $path,
-            $response->status(),
-            $response->reason()
-        ]), [
-            'response' => implode(' ', [$response->status(), $response->reason()]),
-            'url' => $this->constructRequest() . $path,
+        Log::debug('MAGENTO2API PUT '. $path, [
+            'status' => $response->status(),
+            'reason' => $response->reason(),
+            'url' => $url,
             'path' => $path,
             'json' => $response->json(),
             'parameters' => $parameters,
@@ -165,18 +153,17 @@ class BaseApi extends AbstractApi
         return $response;
     }
 
-    protected function delete($path, $parameters = [])
+    public function delete($path, $parameters = []): ?Response
     {
+        $url = implode('/', [$this->baseUrl, 'rest/default', $this->version, $path]);
+
         try {
-            $response = parent::delete($path, $parameters);
-        } catch (\Exception $e) {
-            Log::error(implode(' ', [
-                'MAGENTO2API DELETE',
-                $path,
-                $e->getMessage()
-            ]), [
-                'response' => $e->getMessage(),
-                'url' => $this->constructRequest() . $path,
+            $response = Http::withToken($this->apiAccessToken)->delete($url, $parameters);
+        } catch (Exception $e) {
+            Log::error('MAGENTO2API DELETE '. $path, [
+                'exception_code'  => $e->getCode(),
+                'exception_message' => $e->getMessage(),
+                'url' => $url,
                 'path' => $path,
                 'parameters' => $parameters,
             ]);
@@ -184,16 +171,11 @@ class BaseApi extends AbstractApi
             return null;
         }
 
-
         if ($response->failed()) {
-            Log::error(implode(' ', [
-                'MAGENTO2API DELETE',
-                $path,
-                $response->status(),
-                $response->reason()
-            ]), [
-                'response' => implode(' ', [$response->status(), $response->reason()]),
-                'url' => $this->constructRequest() . $path,
+            Log::error('MAGENTO2API DELETE '. $path, [
+                'status' => $response->status(),
+                'reason' => $response->reason(),
+                'url' => $url,
                 'path' => $path,
                 'json' => $response->json(),
                 'parameters' => $parameters,
@@ -202,14 +184,10 @@ class BaseApi extends AbstractApi
             return $response;
         }
 
-        Log::debug(implode(' ', [
-            'MAGENTO2API DELETE',
-            $path,
-            $response->status(),
-            $response->reason()
-        ]), [
-            'response' => implode(' ', [$response->status(), $response->reason()]),
-            'url' => $this->constructRequest() . $path,
+        Log::debug('MAGENTO2API DELETE '. $path, [
+            'status' => $response->status(),
+            'reason' => $response->reason(),
+            'url' => $url,
             'path' => $path,
             'json' => $response->json(),
             'parameters' => $parameters,

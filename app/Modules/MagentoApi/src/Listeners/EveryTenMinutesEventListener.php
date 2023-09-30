@@ -2,25 +2,27 @@
 
 namespace App\Modules\MagentoApi\src\Listeners;
 
-use App\Modules\MagentoApi\src\Jobs\EnsureProductRecordsExistJob;
-use App\Modules\MagentoApi\src\Jobs\FetchBasePricesJob;
-use App\Modules\MagentoApi\src\Jobs\FetchOrdersJob;
-use App\Modules\MagentoApi\src\Jobs\FetchSpecialPricesJob;
-use App\Modules\MagentoApi\src\Jobs\FetchStockItemsJob;
-use App\Modules\MagentoApi\src\Jobs\SyncProductBasePricesJob;
-use App\Modules\MagentoApi\src\Jobs\SyncProductInventoryJob;
-use App\Modules\MagentoApi\src\Jobs\SyncProductSalePricesJob;
+use App\Modules\MagentoApi\src\Jobs\Fetch\FetchBasePricesJob;
+use App\Modules\MagentoApi\src\Jobs\Fetch\FetchRemoteIdJob;
+use App\Modules\MagentoApi\src\Jobs\Fetch\FetchSpecialPricesJob;
+use App\Modules\MagentoApi\src\Jobs\Fetch\FetchStockItemsJob;
+use App\Modules\MagentoApi\src\Jobs\Maintenance\InvalidateInventorySyncedAtJob;
+use App\Modules\MagentoApi\src\Jobs\Maintenance\InvalidatePricingSyncedAtJob;
+use App\Modules\MagentoApi\src\Jobs\Sync\SyncProductBasePricesJob;
+use App\Modules\MagentoApi\src\Jobs\Sync\SyncProductInventoryJob;
+use App\Modules\MagentoApi\src\Jobs\Sync\SyncProductSalePricesJob;
 
 class EveryTenMinutesEventListener
 {
     public function handle()
     {
-        EnsureProductRecordsExistJob::dispatch();
-
-//        FetchOrdersJob::dispatch();
+        FetchRemoteIdJob::dispatch();
         FetchStockItemsJob::dispatch();
         FetchBasePricesJob::dispatch();
         FetchSpecialPricesJob::dispatch();
+
+        InvalidateInventorySyncedAtJob::dispatch();
+        InvalidatePricingSyncedAtJob::dispatch();
 
         SyncProductInventoryJob::dispatch();
         SyncProductBasePricesJob::dispatch();

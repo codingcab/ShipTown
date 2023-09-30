@@ -4,37 +4,64 @@ namespace App\Modules\MagentoApi\src\Models;
 
 use App\BaseModel;
 use App\Models\Product;
+use App\Models\ProductPrice;
+use App\Modules\InventoryTotals\src\Models\InventoryTotalByWarehouseTag;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 /**
- * @property Product $product
- * @property boolean $is_in_stock
- * @property double $quantity
- * @property Carbon $stock_items_fetched_at
- * @property array $stock_items_raw_import
- * @property Carbon $base_prices_fetched_at
- * @property array $base_prices_raw_import
- * @property MagentoConnection $magentoConnection
- * @property double $magento_price
- * @property Carbon $special_prices_fetched_at
- * @property array $special_prices_raw_import
- * @property double $magento_sale_price
- * @property Carbon $magento_sale_price_start_date
- * @property Carbon $magento_sale_price_end_date
+ * App\Modules\MagentoApi\src\Models\MagentoProduct
+ * @property int $id
+ * @property int $connection_id
+ * @property int $product_id
+ * @property int $inventory_totals_by_warehouse_tag_id
+ * @property int $product_price_id
+ * @property-read MagentoConnection $magentoConnection
+ * @property-read InventoryTotalByWarehouseTag $inventoryTotalsByWarehouseTag
+ * @property bool $exists_in_magento
+ * @property int|null $remote_id
+ * @property bool $is_in_stock
+ * @property float $quantity
+ * @property float $price
+ *  @property float $sale_price
+ * @property Carbon|null $stock_items_fetched_at
+ * @property Carbon|null $base_prices_fetched_at
+ * @property Carbon|null $special_prices_fetched_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Product $product
+ * @property-read ProductPrice $prices
+ * @property array|mixed $stock_items_raw_import
+ * @property array|mixed $base_prices_raw_import
+ * @property Carbon $sale_price_start_date
+ * @property Carbon $sale_price_end_date
+ * @property array|mixed $special_prices_raw_import
+ *
+ * @property Carbon|null $inventory_synced_at
+ * @property Carbon|null $pricing_synced_at
+ * @property Carbon|null $special_prices_synced_at
+ *
  */
 class MagentoProduct extends BaseModel
 {
     protected $table = 'modules_magento2api_products';
 
     protected $fillable = [
-        'product_id',
-        'exists_in_magento',
         'connection_id',
-        'is_in_stock',
+        'product_id',
+        'inventory_totals_by_warehouse_tag_id',
+        'product_price_id',
+        'exists_in_magento',
+        'remote_id',
         'quantity',
-        'magento_price',
-        'magento_sale_price',
+        'price',
+        'sale_price',
+        'sale_price_start_date',
+        'sale_price_end_date',
+        'inventory_synced_at',
+        'pricing_synced_at',
+        'sale_prices_synced_at',
         'stock_items_fetched_at',
         'stock_items_raw_import',
         'base_prices_fetched_at',
@@ -52,6 +79,16 @@ class MagentoProduct extends BaseModel
         'base_prices_raw_import'    => 'array',
         'special_prices_raw_import'    => 'array',
     ];
+
+    public function inventoryTotalsByWarehouseTag(): HasOne
+    {
+        return $this->hasOne(InventoryTotalByWarehouseTag::class, 'id', 'inventory_totals_by_warehouse_tag_id');
+    }
+
+    public function prices(): HasOne
+    {
+        return $this->hasOne(ProductPrice::class, 'id', 'product_price_id');
+    }
 
     public function product(): BelongsTo
     {

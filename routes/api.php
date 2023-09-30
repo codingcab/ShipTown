@@ -39,6 +39,7 @@ Route::name('api.')->group(function () {
     Route::apiResource('stocktake-suggestions-details', Api\StocktakeSuggestionDetailController::class)->only(['index']);
     Route::apiResource('shipping-services', Api\ShippingServiceController::class)->only(['index']);
     Route::apiResource('shipping-labels', Api\ShippingLabelController::class)->only(['store']);
+    Route::apiResource('tags', Api\TagController::class)->only(['index']);
 });
 
 Route::prefix('modules')->name('api.modules.')->group(function () {

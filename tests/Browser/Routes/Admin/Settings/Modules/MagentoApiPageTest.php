@@ -30,7 +30,7 @@ class MagentoApiPageTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($user) {
             $browser->loginAs($user)
                 ->visit($this->uri)
-                ->assertSee('Magento Api Configurations');
+                ->assertSee('Magento 2 API');
         });
     }
 }

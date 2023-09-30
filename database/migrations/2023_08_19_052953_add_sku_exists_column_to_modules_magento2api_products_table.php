@@ -9,9 +9,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('modules_magento2api_products', function (Blueprint $table) {
-            $table->boolean('exists_in_magento')->nullable()->after('product_id');
-        });
+        if (! Schema::hasColumn('modules_magento2api_products', 'exists_in_magento')) {
+            Schema::table('modules_magento2api_products', function (Blueprint $table) {
+                $table->boolean('exists_in_magento')->nullable()->after('product_id');
+            });
+        }
 
         DB::statement('
             CREATE OR REPLACE VIEW modules_magento2api_products_prices_comparison_view AS

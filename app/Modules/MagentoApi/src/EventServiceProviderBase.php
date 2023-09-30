@@ -2,11 +2,15 @@
 
 namespace App\Modules\MagentoApi\src;
 
+use App\Events\EveryDayEvent;
+use App\Events\EveryMinuteEvent;
 use App\Events\EveryTenMinutesEvent;
 use App\Events\Product\ProductTagAttachedEvent;
 use App\Events\Product\ProductTagDetachedEvent;
 use App\Events\SyncRequestedEvent;
 use App\Modules\BaseModuleServiceProvider;
+use App\Modules\MagentoApi\src\Models\MagentoConnection;
+use App\Modules\MagentoApi\src\Observers\MagentoConnectionObserver;
 
 /**
  * Class EventServiceProviderBase.
@@ -43,8 +47,12 @@ class EventServiceProviderBase extends BaseModuleServiceProvider
             Listeners\SyncRequestedEventListener::class,
         ],
 
-        EveryTenMinutesEvent::class => [
+        EveryMinuteEvent::class => [
             Listeners\EveryTenMinutesEventListener::class
+        ],
+
+        EveryDayEvent::class => [
+            Listeners\EveryDayEventListener::class
         ],
 
         ProductTagAttachedEvent::class => [
@@ -55,4 +63,11 @@ class EventServiceProviderBase extends BaseModuleServiceProvider
             Listeners\ProductTagDetachedEventListener::class,
         ],
     ];
+
+    public function boot()
+    {
+        parent::boot();
+
+        MagentoConnection::observe(MagentoConnectionObserver::class);
+    }
 }
