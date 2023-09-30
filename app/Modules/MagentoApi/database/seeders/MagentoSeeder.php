@@ -32,7 +32,7 @@ class MagentoSeeder extends Seeder
 
         MagentoConnection::create([
             'is_enabled' => false,
-            'service_class' => Magento2ApiIntegration::class,
+            'service_class' => env('TEST_MODULES_ECOMMERCE_SERVICE_CLASS'),
             'base_url' => env('TEST_MODULES_MAGENTO_BASE_URL'),
             'inventory_totals_tag_id' => Tag::findFromString('Magento Stock')->getKey(),
             'pricing_source_warehouse_id' => $warehouseDublin->getKey(),
