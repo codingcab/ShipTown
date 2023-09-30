@@ -2,6 +2,7 @@
 
 namespace App\Modules\MagentoApi\src\Abstracts;
 
+use App\Modules\MagentoApi\src\Models\MagentoConnection;
 use Exception;
 use Illuminate\Support\Collection;
 
@@ -10,7 +11,7 @@ abstract class EcommerceIntegration
     /**
      * @throws Exception
      */
-    abstract public static function fetchInventory(Collection $recordCollection): bool;
+    abstract public static function fetchInventory(MagentoConnection $apiConnection, Collection $recordCollection): bool;
 
     /**
      * @throws Exception
@@ -25,7 +26,7 @@ abstract class EcommerceIntegration
     /**
      * @throws Exception
      */
-    abstract public static function updateInventory(Collection $recordCollection): bool;
+    abstract public static function updateInventory(MagentoConnection $apiConnection, Collection $recordCollection): bool;
 
     /**
      * @throws Exception

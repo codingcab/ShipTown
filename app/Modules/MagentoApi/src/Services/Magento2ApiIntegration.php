@@ -4,6 +4,7 @@ namespace App\Modules\MagentoApi\src\Services;
 
 use App\Modules\MagentoApi\src\Abstracts\EcommerceIntegration;
 use App\Modules\MagentoApi\src\Api\Magento2Api;
+use App\Modules\MagentoApi\src\Models\MagentoConnection;
 use App\Modules\MagentoApi\src\Models\MagentoProduct;
 use Exception;
 use Illuminate\Support\Collection;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 
 class Magento2ApiIntegration extends EcommerceIntegration
 {
-    public static function fetchInventory(Collection $recordCollection): bool
+    public static function fetchInventory(MagentoConnection $apiConnection, Collection $recordCollection): bool
     {
         $recordCollection->map(function (MagentoProduct $record) {
             $response = Magento2Api::api($record->magentoConnection)->getStockItems($record->product->sku);
@@ -42,10 +43,10 @@ class Magento2ApiIntegration extends EcommerceIntegration
         return true;
     }
 
-    public static function updateInventory(Collection $recordCollection): bool
+    public static function updateInventory(MagentoConnection $apiConnection, Collection $recordCollection): bool
     {
-        $recordCollection->map(function (MagentoProduct $record) {
-            $response = Magento2Api::api($record->magentoConnection)
+        $recordCollection->map(function (MagentoProduct $record) use ($apiConnection) {
+            $response = Magento2Api::api($apiConnection)
                 ->putStockItems($record->product->sku, [
                     'is_in_stock' => $record->inventoryTotalsByWarehouseTag->quantity_available > 0,
                     'qty' => $record->inventoryTotalsByWarehouseTag->quantity_available,
