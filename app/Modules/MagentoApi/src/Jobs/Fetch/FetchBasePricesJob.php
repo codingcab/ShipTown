@@ -23,7 +23,7 @@ class FetchBasePricesJob extends UniqueJob
                     ->whereNull('base_prices_fetched_at')
                     ->with('magentoConnection', 'product', 'prices')
                     ->chunkById(10, function (Collection $products) use ($magentoConnection) {
-                        $magentoConnection->service_class::fetchBasePrices($products);
+                        $magentoConnection->integration_class::fetchBasePrices($products);
 
                         Log::debug('Job processing', [
                             'job' => self::class,

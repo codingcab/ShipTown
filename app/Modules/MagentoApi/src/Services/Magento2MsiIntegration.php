@@ -9,7 +9,7 @@ use App\Modules\MagentoApi\src\Models\MagentoProduct;
 use Exception;
 use Illuminate\Support\Collection;
 
-class Magento2MsiApiIntegration extends EcommerceIntegration
+class Magento2MsiIntegration extends EcommerceIntegration
 {
     public static function fetchInventory(MagentoConnection $apiConnection, Collection $recordCollection): bool
     {

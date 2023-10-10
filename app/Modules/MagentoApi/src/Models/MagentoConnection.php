@@ -32,7 +32,7 @@ use Spatie\QueryBuilder\QueryBuilder;
  * @property Warehouse $warehouse
  * @property Tag $inventoryTotalsTag
  * @property Collection $tags
- * @property EcommerceIntegration $service_class
+ * @property EcommerceIntegration $integration_class
  */
 class MagentoConnection extends BaseModel
 {
@@ -43,6 +43,7 @@ class MagentoConnection extends BaseModel
 
     protected $fillable = [
         'is_enabled',
+        'integration_class',
         'base_url',
         'magento_store_id',
         'magento_store_code',

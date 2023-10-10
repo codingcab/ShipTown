@@ -22,7 +22,7 @@ class SyncProductInventoryJob extends UniqueJob
                     ->whereNull('inventory_synced_at')
                     ->with(['magentoConnection', 'product', 'inventoryTotalsByWarehouseTag'])
                     ->chunkById(10, function ($products) use ($magentoConnection) {
-                        $magentoConnection->service_class::updateInventory($magentoConnection, $products);
+                        $magentoConnection->integration_class::updateInventory($magentoConnection, $products);
 
                         MagentoProduct::query()->whereIn('id', $products->pluck('id'))->update([
                             'inventory_synced_at' => now(),

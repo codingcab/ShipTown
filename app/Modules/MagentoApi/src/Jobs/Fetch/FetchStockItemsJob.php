@@ -23,7 +23,7 @@ class FetchStockItemsJob extends UniqueJob
                     ->whereNull('stock_items_fetched_at')
                     ->with(['magentoConnection', 'product'])
                     ->chunkById(10, function (Collection $products) use ($magentoConnection) {
-                        $magentoConnection->service_class::fetchInventory($magentoConnection, $products);
+                        $magentoConnection->integration_class::fetchInventory($magentoConnection, $products);
 
                         Log::debug('Job processing', [
                             'job' => self::class,

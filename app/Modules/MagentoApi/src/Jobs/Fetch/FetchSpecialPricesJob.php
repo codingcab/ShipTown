@@ -23,7 +23,7 @@ class FetchSpecialPricesJob extends UniqueJob
                     ->whereNull('special_prices_fetched_at')
                     ->with('magentoConnection', 'product', 'prices')
                     ->chunkById(10, function (Collection $products) use ($magentoConnection) {
-                        $magentoConnection->service_class::fetchSpecialPrices($products);
+                        $magentoConnection->integration_class::fetchSpecialPrices($products);
 
                         Log::debug('Job processing', [
                             'job' => self::class,

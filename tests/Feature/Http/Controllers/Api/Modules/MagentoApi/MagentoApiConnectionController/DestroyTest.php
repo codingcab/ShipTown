@@ -3,8 +3,8 @@
 namespace Tests\Feature\Http\Controllers\Api\Modules\MagentoApi\MagentoApiConnectionController;
 
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
+use App\Modules\MagentoApi\src\Services\Magento2Integration;
 use App\User;
-use Grayloon\Magento\Magento;
 use Tests\TestCase;
 
 class DestroyTest extends TestCase
@@ -14,6 +14,8 @@ class DestroyTest extends TestCase
     {
         $connection = MagentoConnection::create([
             'base_url' => 'https://magento2.test',
+            'is_enabled' => true,
+            'integration_class' => Magento2Integration::class,
             'magento_store_id' => 123456,
             'pricing_source_warehouse_id' => 1,
             'access_token_encrypted' => 'some-token',

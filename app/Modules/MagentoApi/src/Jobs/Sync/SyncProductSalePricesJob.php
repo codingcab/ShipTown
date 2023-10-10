@@ -23,7 +23,7 @@ class SyncProductSalePricesJob extends UniqueJob
                     ->whereNull('sale_prices_synced_at')
                     ->with(['magentoConnection', 'product', 'prices'])
                     ->chunkById(10, function (Collection $products) use ($magentoConnection) {
-                        $magentoConnection->service_class::updateSalePrices($products);
+                        $magentoConnection->integration_class::updateSalePrices($products);
 
                         Log::debug('Job processing', [
                             'job' => self::class,

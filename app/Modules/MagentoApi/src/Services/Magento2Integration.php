@@ -10,7 +10,7 @@ use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
-class Magento2ApiIntegration extends EcommerceIntegration
+class Magento2Integration extends EcommerceIntegration
 {
     public static function fetchInventory(MagentoConnection $apiConnection, Collection $recordCollection): bool
     {

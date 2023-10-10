@@ -6,7 +6,7 @@ use App\Abstracts\UniqueJob;
 use App\Modules\MagentoApi\src\Api\Magento2Api;
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
 use App\Modules\MagentoApi\src\Models\MagentoProduct;
-use App\Modules\MagentoApi\src\Services\Magento2ApiIntegration;
+use App\Modules\MagentoApi\src\Services\Magento2Integration;
 use Illuminate\Support\Facades\Log;
 
 class FetchRemoteIdJob extends UniqueJob
