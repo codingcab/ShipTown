@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers\Api\Modules\MagentoApi\MagentoApiConnectionController;
 
 use App\Models\Warehouse;
+use App\Modules\MagentoApi\src\Services\Magento2Integration;
 use App\User;
 use Tests\TestCase;
 
@@ -18,6 +19,7 @@ class StoreTest extends TestCase
         $warehouse = Warehouse::firstOrCreate(['code' => '999'], ['name' => '999']);
 
         $response = $this->actingAs($user, 'api')->json('post', route('api.modules.magento-api.connections.store'), [
+            'integration_class'                 => Magento2Integration::class,
             'base_url'                          => 'https://magento2.test',
             'magento_store_id'                  => 123456,
             'tag'                               => 'some-tag',

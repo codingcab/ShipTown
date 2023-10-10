@@ -4,6 +4,7 @@ namespace Tests\Feature\Http\Controllers\Api\Modules\MagentoApi\MagentoApiConnec
 
 use App\Models\Warehouse;
 use App\Modules\MagentoApi\src\Models\MagentoConnection;
+use App\Modules\MagentoApi\src\Services\Magento2Integration;
 use App\User;
 use Spatie\Tags\Tag;
 use Tests\TestCase;
@@ -18,6 +19,7 @@ class UpdateTest extends TestCase
         $user->assignRole('admin');
 
         $connection = MagentoConnection::create([
+            'integration_class' => Magento2Integration::class,
             'base_url' => 'https://magento2.test',
             'magento_store_code' => 'default',
             'magento_inventory_source_code' => 'default',
@@ -56,6 +58,7 @@ class UpdateTest extends TestCase
         $user->assignRole('admin');
 
         $connection = MagentoConnection::create([
+            'integration_class' => Magento2Integration::class,
             'base_url' => 'https://magento2.test',
             'magento_store_id' => 123456,
             'magento_store_code' => 'default',
