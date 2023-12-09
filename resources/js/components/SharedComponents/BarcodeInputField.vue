@@ -1,7 +1,8 @@
 <template>
     <div>
         <div class="bg-warning">
-            <input class="form-control"
+            <input type=password
+                   class="form-control"
                    autocomplete="off"
                    enterkeyhint="done"
                    :placeholder="placeholder"

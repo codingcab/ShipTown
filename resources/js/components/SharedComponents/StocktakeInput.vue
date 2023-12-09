@@ -34,6 +34,8 @@
                         <input class="form-control" :placeholder="'New quantity'" :class="{ 'border-danger': this.adjustByQuantity < 0, 'border-success': this.adjustByQuantity > 0}"
                                id="quantity-request-input"
                                dusk="quantity-request-input"
+                               ref="quantity-request-input"
+                               name="quantity-request-input"
                                v-model="newQuantity"
                                type="number"
                                inputmode="numeric"
