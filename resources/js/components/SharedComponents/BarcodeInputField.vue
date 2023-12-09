@@ -9,6 +9,7 @@
                    id="barcodeInput"
                    dusk="barcode-input-field"
                    v-model.trim="barcode"
+                   @focus="simulateSelectAll"
                    @keyup.enter="barcodeScanned(barcode)"
             />
         </div>
