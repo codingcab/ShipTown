@@ -120,6 +120,7 @@
 
                 this.$emit('barcodeScanned', barcode);
                 this.typedInText = '';
+                this.barcode = barcode;
 
                 this.setFocusOnBarcodeInput();
                 // this.simulateSelectAll();
