@@ -11,7 +11,7 @@
                @focus="simulateSelectAll"
                @keyup.enter="barcodeScanned(barcode)"
         />
-        <div>{{ typedInText }}</div>
+        <div class="small">{{ typedInText }}</div>
 
       <b-modal :id="getModalID" @submit="updateShelfLocation" @shown="updateShelfLocationShown" @hidden="updateShelfLocationHidden" scrollable no-fade hide-header>
           <div class="h5 text-center">{{ command['name'] }} : {{ command['value'] }}</div>
