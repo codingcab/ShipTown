@@ -71,12 +71,15 @@
         },
 
 
+        shown() {
+            console.log('shown');
+        },
+
         mounted() {
             this.resetInputValue();
-            // this.setFocusOnBarcodeInput(200);
-            this.simulateClick(document.getElementById('barcodeInput'));
-            window.addEventListener('touchstart', (e) => {
-                console.log('touchstart');
+            window.addEventListener('pageshow', (e) => {
+            this.setFocusOnBarcodeInput(200);
+                console.log('pageshow');
             });
 
             window.addEventListener('keydown', (e) => {
