@@ -2,7 +2,6 @@
     <div>
         <div class="bg-warning">
             <input class="form-control"
-                   autofocus
                    autocomplete="off"
                    enterkeyhint="done"
                    :placeholder="placeholder"
@@ -74,7 +73,11 @@
 
         mounted() {
             this.resetInputValue();
-            this.setFocusOnBarcodeInput(200);
+            // this.setFocusOnBarcodeInput(200);
+            this.simulateClick(document.getElementById('barcodeInput'));
+            window.addEventListener('touchstart', (e) => {
+                console.log('touchstart');
+            });
 
             window.addEventListener('keydown', (e) => {
                 if (e.target.nodeName !== 'BODY') {
@@ -96,6 +99,15 @@
         },
 
         methods: {
+             simulateClick(control) {
+                if (document.all) {
+                    control.click();
+                } else {
+                    var evObj = document.createEvent('MouseEvents');
+                    evObj.initMouseEvent('click', true, true, window, 1, 12, 345, 7, 220, false, false, true, false, 0, null );
+                    control.dispatchEvent(evObj);
+                }
+            },
             barcodeScanned(barcode) {
                 if (barcode && barcode !== '') {
                     this.apiPostActivity({
