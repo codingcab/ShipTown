@@ -133,7 +133,7 @@
                 this.$bvModal.hide(this.modal_name);
             }
 
-            this.setFocusElementById(100, this.input_id, true, true);
+            // this.setFocusElementById(100, this.input_id, true, true);
             this.focusAndOpenKeyboard(this.input_id, 100);
         },
 
