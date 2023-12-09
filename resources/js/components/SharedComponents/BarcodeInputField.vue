@@ -78,6 +78,7 @@
         mounted() {
             const isIos = () => !!window.navigator.userAgent.match(/iPad|iPhone/i)
 
+            console.log(window.navigator.userAgent);
             console.log(isIos());
             this.resetInputValue();
             window.addEventListener('pageshow', (e) => {
