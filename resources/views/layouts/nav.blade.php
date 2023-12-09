@@ -4,7 +4,7 @@
         <div class="container text-white">
             <div class="d-block mb-0 navbar-dark bg-primary">
                 <div class="btn-group" role="group" aria-label="Basic example">
-                    <a style="width: 40px" id="dashboard_link" type="button" class="btn btn-primary" href="{{ route('dashboard') }}"><font-awesome-icon icon="chart-bar" class="fa-lg"></font-awesome-icon></a>
+                    <a style="width: 40px" id="dashboard_link" class="btn btn-primary" href="{{ route('dashboard') }}"><font-awesome-icon icon="chart-bar" class="fa-lg"></font-awesome-icon></a>
                     <a id="products_link" class="btn btn-primary" href="{{ route('products') }}">{{ __('Products') }}</a>
                     <a id="orders_link" class="btn btn-primary" href="{{ route('orders') }}">{{ __('Orders') }}</a>
 
