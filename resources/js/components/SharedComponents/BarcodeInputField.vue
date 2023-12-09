@@ -92,9 +92,6 @@
 
                 // document.getElementById('barcodeInput').value += e.key;
                 this.typedInText += e.key;
-
-                console.log(e);
-                console.log(e.key);
             });
         },
 
