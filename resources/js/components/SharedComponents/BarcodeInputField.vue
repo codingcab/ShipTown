@@ -74,7 +74,7 @@
 
         mounted() {
             this.resetInputValue();
-            this.setFocusOnBarcodeInput(100);
+            this.setFocusOnBarcodeInput(200);
 
             window.addEventListener('keydown', (e) => {
                 if (e.target.nodeName !== 'BODY') {

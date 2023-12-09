@@ -76,7 +76,7 @@ export default {
                     }
 
                     if (autoSelectAll) {
-                        document.execCommand('selectall');
+                        document.execCommand('selectall', false);
                     }
 
                     }, delay);
