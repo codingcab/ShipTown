@@ -75,7 +75,7 @@
             this.setFocusOnBarcodeInput(1000);
 
             window.addEventListener('keydown', (e) => {
-                if (e.srcElement.nodeName !== 'BODY') {
+                if (e.target.nodeName !== 'BODY') {
                     return;
                 }
 
