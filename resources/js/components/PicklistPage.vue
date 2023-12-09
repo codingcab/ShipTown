@@ -17,12 +17,19 @@
                                v-model="current_shelf_location"
                                @keyup.enter="reloadPicks()"/>
                     </div>
-
                     <button v-b-modal="'quick-actions-modal'" type="button" class="btn btn-primary ml-2"><font-awesome-icon icon="cog" class="fa-lg"></font-awesome-icon></button>
                 </div>
             </div>
         </div>
 
+        <div class="row pl-2 p-1 font-weight-bold text-uppercase small text-secondary">
+            <div class="col-6 text-left text-nowrap">
+                TOOLS > PICKLIST
+            </div>
+            <div class="col-6 text-right text-nowrap">
+                <!--                        -->
+            </div>
+        </div>
         <div v-if="picklist !== null && picklist.length === 0" class="row" >
             <div class="col">
                 <div class="alert alert-info" role="alert">

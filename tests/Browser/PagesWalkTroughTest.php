@@ -30,8 +30,10 @@ class PagesWalkTroughTest extends DuskTestCase
         /** @var Warehouse $warehouse */
         $warehouse = Warehouse::factory()->create();
 
-        $this->user = User::factory()->create(['password' => bcrypt('password')]);
-        $this->user->warehouse()->associate($warehouse);
+        $this->user = User::factory()->create([
+            'warehouse_id' => $warehouse->getKey(),
+            'password' => bcrypt('password')
+        ]);
 
         $product1 = Product::factory()->create(['sku' => '111576']);
         $product2 = Product::factory()->create(['sku' => '222957']);
@@ -59,8 +61,8 @@ class PagesWalkTroughTest extends DuskTestCase
         ]);
 
 
-        InventoryService::stocktake($inventory1, $orderProduct1->quantity_ordered);
-        InventoryService::stocktake($inventory2, $orderProduct2->quantity_ordered);
+        InventoryService::stocktake($inventory1, $orderProduct1->quantity_ordered+1);
+        InventoryService::stocktake($inventory2, $orderProduct2->quantity_ordered+1);
     }
 
     /**
@@ -199,7 +201,7 @@ class PagesWalkTroughTest extends DuskTestCase
     {
         $browser->mouseover('#navToggleButton')->pause($this->shortDelay)->click('#navToggleButton')->pause($this->shortDelay)
             ->mouseover('#picklists_link')->pause($this->shortDelay)->clickLink('Picklist')->pause($this->shortDelay)
-            ->pause($this->shortDelay)->clickLink('Status: paid')->pause($this->longDelay);
+            ->pause($this->shortDelay)->clickLink('Status: paid')->pause($this->longDelay)->pause(15000);
 
         $this->order->orderProducts()
             ->where('quantity_to_pick', '>', 0)
