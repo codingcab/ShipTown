@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="bg-warning">
-            <input type=password
+            <input type=text
                    class="form-control"
                    autocomplete="off"
                    enterkeyhint="done"
