@@ -85,7 +85,7 @@
                 }
 
                 if (e.key === 'Enter') {
-                    this.barcodeScanned(this.barcode);
+                    this.barcodeScanned(this.typedInText);
                     return;
                 }
 
