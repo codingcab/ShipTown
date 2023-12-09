@@ -11,6 +11,7 @@
                @focus="simulateSelectAll"
                @keyup.enter="barcodeScanned(barcode)"
         />
+        <div>{{ typedInText }}</div>
 
       <b-modal :id="getModalID" @submit="updateShelfLocation" @shown="updateShelfLocationShown" @hidden="updateShelfLocationHidden" scrollable no-fade hide-header>
           <div class="h5 text-center">{{ command['name'] }} : {{ command['value'] }}</div>
@@ -57,6 +58,7 @@
 
         data: function() {
             return {
+                typedInText: '',
                 currentLocation: '',
                 barcode: '',
                 command: ['',''],
@@ -71,6 +73,27 @@
         mounted() {
             this.resetInputValue();
             this.setFocusOnBarcodeInput(1000);
+
+            window.addEventListener('keydown', (e) => {
+                if (e.srcElement.nodeName !== 'BODY') {
+                    return;
+                }
+
+                if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
+                    return;
+                }
+
+                if (e.key === 'Enter') {
+                    this.barcodeScanned(this.barcode);
+                    return;
+                }
+
+                // document.getElementById('barcodeInput').value += e.key;
+                this.typedInText += e.key;
+
+                console.log(e);
+                console.log(e.key);
+            });
         },
 
         methods: {
@@ -87,6 +110,7 @@
 
                 if (this.tryToRunCommand(barcode)) {
                     this.barcode = '';
+                    this.typedInText = '';
                     return;
                 }
 
@@ -95,9 +119,10 @@
                 }
 
                 this.$emit('barcodeScanned', barcode);
+                this.typedInText = '';
 
                 this.setFocusOnBarcodeInput();
-                this.simulateSelectAll();
+                // this.simulateSelectAll();
             },
 
             updateShelfLocationShown: function (bvEvent, modalId) {

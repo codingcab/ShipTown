@@ -18,7 +18,7 @@ export default {
             simulateSelectAll() {
                 setTimeout(() => {
                     document.execCommand('selectall', null, false);
-                }, 1);
+                }, 5);
             },
 
             copyToClipBoard(textToCopy){
