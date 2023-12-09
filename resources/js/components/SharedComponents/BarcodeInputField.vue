@@ -96,6 +96,10 @@
             document.addEventListener('DOMContentLoaded', () => {
                 this.setFocusOnBarcodeInput(1000);
             })
+
+            document.addEventListener('touchstart', () => {
+                this.typedInText = 'touchstart';
+            })
         },
 
         methods: {
