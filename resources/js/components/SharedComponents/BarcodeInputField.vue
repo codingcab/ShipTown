@@ -1,6 +1,7 @@
 <template>
     <div>
         <input class="form-control"
+               autofocus
                autocomplete="off"
                enterkeyhint="done"
                :placeholder="placeholder"
