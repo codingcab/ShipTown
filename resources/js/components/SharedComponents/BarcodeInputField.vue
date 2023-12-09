@@ -71,6 +71,7 @@
 
         mounted() {
             this.resetInputValue();
+            this.setFocusOnBarcodeInput(100);
 
             window.addEventListener('keydown', (e) => {
                 if (e.target.nodeName !== 'BODY') {
@@ -92,10 +93,6 @@
                 console.log(e);
                 console.log(e.key);
             });
-
-            document.addEventListener('DOMContentLoaded', () => {
-                this.setFocusOnBarcodeInput(1000);
-            })
 
             document.addEventListener('touchstart', () => {
                 this.typedInText = 'touchstart';
