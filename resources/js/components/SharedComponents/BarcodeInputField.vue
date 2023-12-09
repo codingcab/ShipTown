@@ -1,17 +1,17 @@
 <template>
     <div>
-        <input class="form-control"
-               autocomplete="off"
-               enterkeyhint="done"
-               :placeholder="placeholder"
-               ref="barcode"
-               id="barcodeInput"
-               dusk="barcode-input-field"
-               v-model.trim="barcode"
-               @keyup.enter="barcodeScanned(barcode)"
-        />
-        <div class="small">{{ typedInText }}</div>
-
+        <div class="bg-warning">
+            <input class="form-control"
+                   autocomplete="off"
+                   enterkeyhint="done"
+                   :placeholder="placeholder"
+                   ref="barcode"
+                   id="barcodeInput"
+                   dusk="barcode-input-field"
+                   v-model.trim="barcode"
+                   @keyup.enter="barcodeScanned(barcode)"
+            />
+        </div>
       <b-modal :id="getModalID" @submit="updateShelfLocation" @shown="updateShelfLocationShown" @hidden="updateShelfLocationHidden" scrollable no-fade hide-header>
           <div class="h5 text-center">{{ command['name'] }} : {{ command['value'] }}</div>
           <div v-if="shelfLocationModalContinuesScan" class="alert-success text-center mb-2 small">CONTINUES SCAN ENABLED</div>
@@ -29,6 +29,7 @@
               </div>
           </div>
       </b-modal>
+
     </div>
 </template>
 
@@ -93,10 +94,6 @@
                 console.log(e);
                 console.log(e.key);
             });
-
-            document.addEventListener('touchstart', () => {
-                this.typedInText = 'touchstart';
-            })
         },
 
         methods: {
