@@ -70,7 +70,7 @@
 
         mounted() {
             this.resetInputValue();
-            this.setFocusOnBarcodeInput();
+            this.setFocusOnBarcodeInput(1000);
         },
 
         methods: {
