@@ -2,6 +2,7 @@
     <div>
         <div class="bg-warning">
             <input class="form-control"
+                   autofocus
                    autocomplete="off"
                    enterkeyhint="done"
                    :placeholder="placeholder"
