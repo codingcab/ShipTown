@@ -129,6 +129,7 @@
             // Put this temp element as a child of the page <body> and focus on it
             document.body.appendChild(__tempEl__);
             __tempEl__.focus();
+            console.log('test');
 
             // The keyboard is open. Now do a delayed focus on the target element
             setTimeout(function() {
