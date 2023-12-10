@@ -35,15 +35,14 @@ class DatabaseSeeder extends Seeder
             Demo\UsersSeeder::class,
 
             Demo\WarehousesSeeder::class,
+
             Demo\ProductsSeeder::class,
+            Demo\ProductsTagsSeeder::class,
 
             Demo\TestOrdersSeeder::class,
 
             Demo\PaidOrdersSeeder::class,
             Demo\PaidOrdersSeeder::class,
-            Demo\CollectionOrdersSeeder::class,
-
-            Demo\ProductsTagsSeeder::class,
 
             Demo\DataCollections\TransferToCorkBranchSeeder::class,
             Demo\DataCollections\TransfersFromWarehouseSeeder::class,
@@ -81,6 +80,8 @@ class DatabaseSeeder extends Seeder
 //        Modules Seeders
 //            WebhooksTestSeeder::class,
 //            DpdUk\DpdUkTestOrdersSeeder::class,
+            Demo\CollectionOrdersSeeder::class,
+
 
         ]);
 

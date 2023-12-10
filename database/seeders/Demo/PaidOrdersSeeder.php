@@ -24,6 +24,24 @@ class PaidOrdersSeeder extends Seeder
             ->count(1)
             ->create(['status_code' => 'paid'])
             ->each(function (Order $order) {
+                OrderProduct::factory()->count(1)->create([
+                    'sku_ordered' => '45',
+                    'order_id' => $order->getKey(),
+                    'quantity_ordered' => 6,
+                ]);
+                OrderProduct::factory()->count(1)->create([
+                    'sku_ordered' => '46',
+                    'order_id' => $order->getKey(),
+                    'quantity_ordered' => 6,
+                ]);
+                $order = $order->refresh();
+                Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => $order->total_order]);
+            });
+
+        Order::factory()
+            ->count(1)
+            ->create(['status_code' => 'paid'])
+            ->each(function (Order $order) {
                 OrderProduct::factory()->count(1)->create(['order_id' => $order->getKey()]);
                 $order = $order->refresh();
                 Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => $order->total_order]);
