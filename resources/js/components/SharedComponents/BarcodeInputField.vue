@@ -88,7 +88,11 @@
         },
 
         mounted() {
-            const isIos = () => !!window.navigator.userAgent.match(/iPad|iPhone/i)
+            const isIos = () => !!window.navigator.userAgent.match(/iPad|iPhone/i);
+
+            if (isIos()) {
+                console.log('On iPhones and iPads, devices autofocus on input fields is disabled due to a bug in iOS. This works ok with external keyboards on iOS >16');
+            }
 
             console.log(window.navigator.userAgent);
             console.log(isIos());
@@ -102,8 +106,9 @@
             // Usage example
             var myElement = document.getElementById(this.getInputId);
             var modalFadeInDuration = 300;
-            this.focusAndOpenKeyboard(myElement, modalFadeInDuration);
+            // this.focusAndOpenKeyboard(myElement, modalFadeInDuration);
 
+            this.setFocusElementById(100, this.getInputId, true, true)
             window.addEventListener('keydown', (e) => {
                 if (e.target.nodeName !== 'BODY') {
                     return;
