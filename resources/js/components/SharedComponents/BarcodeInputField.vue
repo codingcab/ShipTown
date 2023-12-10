@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="bg-warning">
-            <input id="barcodeInput"
+            <input :id="getInputId"
                    type=text
                    class="form-control"
                    autocomplete="off"
@@ -51,12 +51,19 @@
         mixins: [helpers, url, FiltersModal, api],
 
         props: {
+            input_id: null,
             url_param_name: null,
             placeholder: '',
         },
 
-
         computed: {
+            getInputId() {
+                if (this.input_id) {
+                    return this.input_id;
+                }
+
+                return `barcode-input-field-${Math.floor(Math.random() * 10000000)}`;
+            },
             getModalID() {
                 return `set-shelf-location-command-modal-${Math.floor(Math.random() * 10000000)}`;
             }
@@ -93,7 +100,7 @@
 
 
             // Usage example
-            var myElement = document.getElementById('barcodeInput');
+            var myElement = document.getElementById(this.getInputId);
             var modalFadeInDuration = 300;
             this.focusAndOpenKeyboard(myElement, modalFadeInDuration);
 
