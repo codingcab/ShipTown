@@ -1,13 +1,7 @@
 <template>
     <div>
-        <input :id="input_id"
-               placeholder="Scan SKU to stocktake"
-               type="text"
-               class="form-control"
-               @keyup.enter="showStocktakeModal"
-               autocomplete="off"
-               enterkeyhint="done"
-        >
+        <barcode-input-field placeholder="Search products using name, sku, alias or command"
+                             @barcodeScanned="showStocktakeModal"></barcode-input-field>
 
         <b-modal @ok="submitStocktake" :id="modal_name" scrollable no-fade hide-header
                  @shown="setFocusElementById(100, 'quantity-request-input', true, false)"
@@ -204,7 +198,7 @@
             },
 
             showStocktakeModal(event) {
-                this.stocktakeSKU(event.target.value);
+                this.stocktakeSKU(event);
             },
 
             stocktakeSKU: async function (sku) {
