@@ -76,6 +76,7 @@ export default {
                     }
 
                     if (autoSelectAll) {
+                        input.select();
                         document.execCommand('selectall', false);
                     }
 

@@ -54,6 +54,10 @@
             input_id: null,
             url_param_name: null,
             placeholder: '',
+            autoFocusAfter: {
+                type: Number,
+                default: 100,
+            },
         },
 
         computed: {
@@ -106,9 +110,12 @@
             // Usage example
             var myElement = document.getElementById(this.getInputId);
             var modalFadeInDuration = 300;
-            // this.focusAndOpenKeyboard(myElement, modalFadeInDuration);
 
-            this.setFocusElementById(100, this.getInputId, true, true)
+            if (this.autoFocusAfter > 0) {
+                // this.focusAndOpenKeyboard(myElement, modalFadeInDuration);
+                this.setFocusElementById(this.autoFocusAfter, this.getInputId, true, true)
+            }
+
             window.addEventListener('keydown', (e) => {
                 if (e.target.nodeName !== 'BODY') {
                     return;
@@ -119,6 +126,7 @@
                 }
 
                 if (e.key === 'Enter') {
+                    this.barcode = this.typedInText;
                     this.barcodeScanned(this.typedInText);
                     return;
                 }
@@ -131,32 +139,33 @@
         methods: {
 
              focusAndOpenKeyboard(el, timeout) {
-        if(!timeout) {
-            timeout = 100;
-        }
-        if(el) {
-            // Align temp input element approximately where the input element is
-            // so the cursor doesn't jump around
-            var __tempEl__ = document.createElement('input');
-            __tempEl__.style.position = 'absolute';
-            __tempEl__.style.top = (el.offsetTop + 7) + 'px';
-            __tempEl__.style.left = el.offsetLeft + 'px';
-            __tempEl__.style.height = 0;
-            __tempEl__.style.opacity = 0;
-            // Put this temp element as a child of the page <body> and focus on it
-            document.body.appendChild(__tempEl__);
-            __tempEl__.focus();
-            console.log('test');
+                if(!timeout) {
+                    timeout = 100;
+                }
+                if(el) {
+                    // Align temp input element approximately where the input element is
+                    // so the cursor doesn't jump around
+                    var __tempEl__ = document.createElement('input');
+                    __tempEl__.style.position = 'absolute';
+                    __tempEl__.style.top = (el.offsetTop + 7) + 'px';
+                    __tempEl__.style.left = el.offsetLeft + 'px';
+                    __tempEl__.style.height = 0;
+                    __tempEl__.style.opacity = 0;
+                    // Put this temp element as a child of the page <body> and focus on it
+                    document.body.appendChild(__tempEl__);
+                    __tempEl__.focus();
+                    console.log('test');
 
-            // The keyboard is open. Now do a delayed focus on the target element
-            setTimeout(function() {
-                el.focus();
-                el.click();
-                // Remove the temp element
-                document.body.removeChild(__tempEl__);
-            }, timeout);
-        }
-    },
+                    // The keyboard is open. Now do a delayed focus on the target element
+                    setTimeout(function() {
+                        el.focus();
+                        el.click();
+                        // Remove the temp element
+                        document.body.removeChild(__tempEl__);
+                    }, timeout);
+                }
+            },
+
              simulateClick(control) {
                 if (document.all) {
                     control.click();
@@ -166,6 +175,7 @@
                     control.dispatchEvent(evObj);
                 }
             },
+
             barcodeScanned(barcode) {
                 if (barcode && barcode !== '') {
                     this.apiPostActivity({
@@ -191,8 +201,7 @@
                 this.typedInText = '';
                 this.barcode = barcode;
 
-                this.setFocusOnBarcodeInput();
-                // this.simulateSelectAll();
+                this.setFocusOnBarcodeInput(100, true);
             },
 
             updateShelfLocationShown: function (bvEvent, modalId) {
@@ -315,10 +324,8 @@
                 this.$bvModal.hide(this.getModalID);
             },
 
-            setFocusOnBarcodeInput(delay = 1) {
-                setTimeout(() => {
-                    this.setFocus(document.getElementById('barcodeInput'), true,true)
-                }, delay);
+            setFocusOnBarcodeInput(delay = 100, autoSelectAll = false, hideOnScreenKeyboard = false) {
+                this.setFocusElementById(delay, this.getInputId, autoSelectAll, hideOnScreenKeyboard)
             },
         }
     }
