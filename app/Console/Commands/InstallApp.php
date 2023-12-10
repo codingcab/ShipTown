@@ -54,6 +54,10 @@ class InstallApp extends Command
             $this->createPassportKeys();
         }
 
+        if (env('APP_KEY') === '') {
+            $this->call('key:generate');
+        }
+
         $this->createDefaultConfigurationRecord();
         $this->createDefaultUserRoles();
         $this->createDefaultNavigationLinks();

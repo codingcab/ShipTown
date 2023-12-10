@@ -39,9 +39,8 @@
         </div>
 
         <b-modal id="quick-actions-modal" no-fade hide-header
-                 @shown="setFocusElementById(100,'stocktake-input', true, true)"
                  @hidden="setFocusElementById(100,'barcodeInput', true, true)">
-            <stocktake-input></stocktake-input>
+            <stocktake-input v-bind:auto-focus-after="100" ></stocktake-input>
             <hr>
             <template #modal-footer>
                 <b-button variant="secondary" class="float-right" @click="$bvModal.hide('quick-actions-modal');">

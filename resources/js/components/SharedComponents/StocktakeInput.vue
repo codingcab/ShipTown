@@ -68,10 +68,16 @@
     export default {
         mixins: [url, api, helpers],
 
+        props: {
+            autoFocusAfter: {
+                type: Number,
+                default: 100,
+            }
+        },
+
         data: function() {
             return {
                 modal_name: 'stocktake-modal',
-                input_id: 'stocktake-input',
                 inventory: null,
                 adjustByQuantity: null,
                 newQuantity: null,
@@ -79,6 +85,12 @@
                 recentStocktakes: [],
                 stocktakeSuggestions: [],
             };
+        },
+
+        computed: {
+            input_id() {
+                return `stocktake_input_${Math.floor(Math.random() * 10000000)}`;
+            }
         },
 
         watch: {
@@ -133,8 +145,23 @@
                 this.$bvModal.hide(this.modal_name);
             }
 
+            console.log('mounted');
+            console.log(this.input_id);
+            console.log(document.getElementById(this.input_id));
+
+            if (this.autoFocusAfter > 0) {
+                this.setFocusElementById(this.autoFocusAfter, this.input_id, true, true);
+            }
+        },
+
+        shown() {
+            console.log('shown');
+            console.log(this.input_id);
+            console.log(document.getElementById(this.input_id));
+
+            // document.getElementById(this.input_id).focus();
             // this.setFocusElementById(100, this.input_id, true, true);
-            this.focusAndOpenKeyboard(this.input_id, 100);
+            // this.focusAndOpenKeyboard(document.getElementById(this.input_id), 100);
         },
 
         methods: {

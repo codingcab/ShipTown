@@ -2,7 +2,7 @@
     <div>
         <div class="row mb-1 pb-2 p-1 sticky-top bg-light">
             <div class="flex-fill">
-                <stocktake-input @stocktakeSubmitted="reloadData"></stocktake-input>
+                <stocktake-input @stocktakeSubmitted="reloadData" ref="stocktakeinput"></stocktake-input>
             </div>
 
             <button id="config-button" disabled type="button" class="btn btn-primary ml-2" data-toggle="modal" data-target="#filterConfigurationModal"><font-awesome-icon icon="cog" class="fa-lg"></font-awesome-icon></button>
