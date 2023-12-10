@@ -192,6 +192,7 @@
                     }, timeout);
                 }
             },
+
             isCountedRecently(last_counted_at, days) {
                 const minDateAllowed = moment().subtract(days, 'days');
 

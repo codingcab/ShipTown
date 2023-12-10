@@ -2,7 +2,7 @@
     <div>
         <div class="row mb-1 pb-2 p-1 sticky-top bg-light">
             <div class="flex-fill">
-                <stocktake-input @stocktakeSubmitted="reloadData" ref="stocktakeinput"></stocktake-input>
+                <stocktake-input @stocktakeSubmitted="reloadData"></stocktake-input>
             </div>
 
             <button id="config-button" disabled type="button" class="btn btn-primary ml-2" data-toggle="modal" data-target="#filterConfigurationModal"><font-awesome-icon icon="cog" class="fa-lg"></font-awesome-icon></button>
@@ -54,13 +54,11 @@
         <modal-inventory-movement :product_sku="showMovementSku" :warehouse_code="warehouse_code"/>
 
         <div class="row col" ref="loadingContainerOverride" style="height: 32px"></div>
-
     </div>
 </template>
 
 <script>
     import loadingOverlay from '../mixins/loading-overlay';
-    import BarcodeInputField from "./SharedComponents/BarcodeInputField";
     import api from "../mixins/api";
     import helpers from "../mixins/helpers";
     import url from "../mixins/url";
@@ -71,7 +69,6 @@
         mixins: [loadingOverlay, url, api, helpers],
 
         components: {
-            BarcodeInputField,
             SuggestionRecord,
             ModalInventoryMovement,
         },
