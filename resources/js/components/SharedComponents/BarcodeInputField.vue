@@ -112,8 +112,8 @@
             var modalFadeInDuration = 300;
 
             if (this.autoFocusAfter > 0) {
-                // this.focusAndOpenKeyboard(myElement, modalFadeInDuration);
-                this.setFocusElementById(this.autoFocusAfter, this.getInputId, true, true)
+                this.focusAndOpenKeyboard(myElement, modalFadeInDuration);
+                // this.setFocusElementById(this.autoFocusAfter, this.getInputId, true, true)
             }
 
             window.addEventListener('keydown', (e) => {
@@ -137,7 +137,6 @@
         },
 
         methods: {
-
              focusAndOpenKeyboard(el, timeout) {
                 if(!timeout) {
                     timeout = 100;
@@ -154,7 +153,6 @@
                     // Put this temp element as a child of the page <body> and focus on it
                     document.body.appendChild(__tempEl__);
                     __tempEl__.focus();
-                    console.log('test');
 
                     // The keyboard is open. Now do a delayed focus on the target element
                     setTimeout(function() {
