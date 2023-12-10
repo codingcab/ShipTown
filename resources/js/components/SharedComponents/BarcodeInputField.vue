@@ -1,13 +1,13 @@
 <template>
     <div>
         <div class="bg-warning">
-            <input type=text
+            <input id="barcodeInput"
+                   type=text
                    class="form-control"
                    autocomplete="off"
                    enterkeyhint="done"
                    :placeholder="placeholder"
                    ref="barcode"
-                   id="barcodeInput"
                    dusk="barcode-input-field"
                    v-model.trim="barcode"
                    @focus="simulateSelectAll"

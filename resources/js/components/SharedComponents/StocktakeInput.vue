@@ -150,7 +150,11 @@
             console.log(document.getElementById(this.input_id));
 
             if (this.autoFocusAfter > 0) {
-                this.setFocusElementById(this.autoFocusAfter, this.input_id, true, true);
+                // this.setFocusElementById(this.autoFocusAfter, this.input_id, true, true);
+
+                var myElement = document.getElementById('barcodeInput');
+                var modalFadeInDuration = 300;
+                this.focusAndOpenKeyboard(myElement, modalFadeInDuration);
             }
         },
 
