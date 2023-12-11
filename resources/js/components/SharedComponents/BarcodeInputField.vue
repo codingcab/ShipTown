@@ -228,7 +228,12 @@
                     return;
                 }
 
-                if (textEntered === this.command['name'] + ':' + this.command['value']) {
+                let s = this.command['name'] + ':' + this.command['value'];
+
+                this.notifySuccess('Scanned: ' + textEntered);
+                this.notifySuccess('Command: ' + s);
+
+                if (textEntered === s) {
                     event.target.value = '';
 
                     if (this.shelfLocationModalContinuesScan) {
