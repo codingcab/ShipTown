@@ -223,19 +223,15 @@
                 }
 
                 if (textEntered === this.command['name'] + ':' + this.command['value']) {
-                    this.shelfLocationModalCommandScanCount = this.shelfLocationModalCommandScanCount + 1;
+                    event.target.value = '';
 
-                    switch (this.shelfLocationModalCommandScanCount)
-                    {
-                        case 1:
-                            this.shelfLocationModalContinuesScan = true;
-                            break;
-                        case 2:
-                            this.$bvModal.hide('set-shelf-location-command-modal');
-                            break;
+                    if (this.shelfLocationModalContinuesScan) {
+                        this.$bvModal.hide(this.getModalID);
+                        return;
+
                     }
 
-                    event.target.value = '';
+                    this.shelfLocationModalContinuesScan = true;
                     return ;
                 }
 
