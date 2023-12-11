@@ -2,6 +2,7 @@
     <div>
         <div class="bg-warning">
             <input :id="getInputId"
+                   autocapitalize="off"
                    type=text
                    class="form-control"
                    autocomplete="off"

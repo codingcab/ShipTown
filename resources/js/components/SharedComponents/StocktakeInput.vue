@@ -94,16 +94,6 @@
             }
         },
 
-        shown() {
-            console.log('shown');
-            console.log(this.input_id);
-            console.log(document.getElementById(this.input_id));
-
-            // document.getElementById(this.input_id).focus();
-            // this.setFocusElementById(100, this.input_id, true, true);
-            // this.focusAndOpenKeyboard(document.getElementById(this.input_id), 100);
-        },
-
         watch: {
             adjustByQuantity() {
                 let adjustByValue = 0;
@@ -216,7 +206,6 @@
                         }
 
                         this.inventory = e.data.data[0];
-                        this.newQuantity = this.inventory.quantity;
 
                         this.$bvModal.show(this.modal_name);
                     })
