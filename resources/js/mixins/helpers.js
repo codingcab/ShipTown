@@ -57,26 +57,29 @@ export default {
                 return (value && value !== 0) ? value : '-';
             },
 
-            // setFocusElementById(delay = 1, elementId, autoSelectAll = false, hideOnScreenKeyboard = false) {
             setFocusElementById(elementId, autoSelectAll = false, hideOnScreenKeyboard = false, delay = 100) {
                 const element = document.getElementById(elementId);
 
                 if (element === null) {
                     return;
                 }
+
                 const isIos = () => !!window.navigator.userAgent.match(/iPad|iPhone/i);
+
+                this.notifySuccess(window.navigator.userAgent);
 
                 if (isIos()) {
                     this.focusAndOpenKeyboard(element, delay);
                     return;
                 }
 
+                if (hideOnScreenKeyboard) {
+                    // this simple hack of setting focus when field is read only will
+                    // prevent showing on screen keyboard on mobile devices
+                    element.readOnly = true;
+                }
+
                 setTimeout(() => {
-                    if (hideOnScreenKeyboard) {
-                        // this simple hack of setting focus when field is read only will
-                        // prevent showing on screen keyboard on mobile devices
-                        element.readOnly = true;
-                    }
 
                     element.focus();
                     element.click();
