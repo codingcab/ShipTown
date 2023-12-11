@@ -3,7 +3,7 @@
         <template v-if="getUrlParameter('hide_nav_bar', false) === false">
             <div class="row mb-1 p-1 sticky-top bg-light">
                 <div class="flex-fill">
-                    <barcode-input-field :url_param_name="'search'" @barcodeScanned="findText" placeholder="Search orders using number, sku, alias or command" ref="barcode"/>
+                    <barcode-input-field :input_id="'barcode-input'"  :url_param_name="'search'" @barcodeScanned="findText" placeholder="Search orders using number, sku, alias or command" ref="barcode"/>
                 </div>
 
                 <button v-b-modal="'quick-actions-modal'" type="button" class="btn btn-primary ml-2"><font-awesome-icon icon="cog" class="fa-lg"></font-awesome-icon></button>
@@ -39,7 +39,7 @@
         </div>
 
         <b-modal id="quick-actions-modal" no-fade hide-header
-                 @hidden="setFocusElementById(100,'barcodeInput', true, true)">
+                 @hidden="setFocusElementById('barcode-input', true, true)">
             <stocktake-input v-bind:auto-focus-after="100" ></stocktake-input>
             <hr>
             <template #modal-footer>

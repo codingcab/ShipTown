@@ -18,7 +18,7 @@
         </div>
 
         <b-modal id="configuration-modal" no-fade hide-footer hide-header
-                 @shown="setFocusElementById(100,'stocktake-input', true, true)"
+                 @shown="setFocusElementById('stocktake-input', true, true)"
                  @hidden="focusOnInputAndReload">
             <stocktake-input></stocktake-input>
             <hr>

@@ -179,7 +179,7 @@
                     this.csv = null;
                     this.newCollectionName = null;
                     this.$nextTick(() => {
-                        this.setFocusElementById(10, 'collection_name_input');
+                        this.setFocusElementById('collection_name_input');
                     });
                 },
 

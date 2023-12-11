@@ -79,7 +79,7 @@
 
         <b-modal id="configuration-modal" no-fade hide-header
                  @shown="onShownConfigurationModal"
-                 @hidden="setFocusElementById(100,'barcodeInput', true, true)"
+                 @hidden="setFocusElementById('barcodeInput', true, true)"
         >
             <div v-if="dataCollection">
                 <stocktake-input></stocktake-input>
@@ -157,7 +157,7 @@
 
         </b-modal>
 
-        <b-modal id="transferToModal" no-fade hide-header @hidden="setFocusElementById(100,'barcodeInput', true, true)">
+        <b-modal id="transferToModal" no-fade hide-header @hidden="setFocusElementById('barcodeInput', true, true)">
             <template v-for="warehouse in warehouses">
                 <button @click.prevent="transferToWarehouse(warehouse)" v-if="warehouse.id !== dataCollection.warehouse_id" v-b-toggle class="col btn mb-2 btn-primary">{{ warehouse.name }}</button>
             </template>
@@ -253,7 +253,7 @@
             },
 
             onModalHidden() {
-                this.setFocusElementById(100, 'barcodeInput', true, true);
+                this.setFocusElementById('barcodeInput', true, true);
 
                 setTimeout(() => {
                     this.reloadDataCollection();
@@ -261,7 +261,7 @@
             },
 
             onShownConfigurationModal() {
-                this.setFocusElementById(100,'stocktake-input', true, true);
+                this.setFocusElementById('stocktake-input', true, true);
                 this.buttonsEnabled = true;
             },
 

@@ -193,7 +193,7 @@
                 this.shelfLocationModalShowing = true;
                 this.shelfLocationModalContinuesScan = false;
                 this.shelfLocationModalCommandScanCount = 0;
-                this.setFocusElementById(100, 'set-shelf-location-command-modal-input', true, true)
+                this.setFocusElementById('set-shelf-location-command-modal-input', true, true)
             },
 
             updateShelfLocationHidden: function (bvEvent, modalId) {
@@ -201,7 +201,7 @@
                 this.shelfLocationModalContinuesScan = false;
                 this.shelfLocationModalCommandScanCount = 0;
                 this.resetInputValue();
-                this.setFocusElementById(300, 'barcodeInput', true, true)
+                this.setFocusElementById('barcodeInput', true, true)
                 this.$emit('refreshRequest');
             },
 
@@ -214,7 +214,7 @@
             showShelfLocationModal: function () {
                 this.$bvModal.show(this.getModalID);
                 this.warningBeep();
-                this.setFocusElementById(1, 'set-shelf-location-command-modal-input')
+                this.setFocusElementById('set-shelf-location-command-modal-input')
             },
 
             tryToRunCommand: function (textEntered) {
@@ -302,7 +302,7 @@
                     });
 
                 if(this.shelfLocationModalContinuesScan) {
-                    this.setFocusElementById(1, 'set-shelf-location-command-modal-input', true, true)
+                    this.setFocusElementById('set-shelf-location-command-modal-input', true, true)
                     return;
                 }
 
@@ -310,7 +310,7 @@
             },
 
             setFocusOnBarcodeInput(delay = 100, autoSelectAll = false, hideOnScreenKeyboard = false) {
-                this.setFocusElementById(delay, this.getInputId, autoSelectAll, hideOnScreenKeyboard)
+                this.setFocusElementById(this.getInputId, autoSelectAll, hideOnScreenKeyboard, delay)
             },
         }
     }

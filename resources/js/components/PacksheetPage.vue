@@ -65,7 +65,7 @@
         </div>
 
         <b-modal ref="shippingNumberModal2" no-fade hide-footer hide-header
-                 @shown="setFocusElementById(300,'shipping_number_input', true, false)"
+                 @shown="setFocusElementById('shipping_number_input', true, false)"
                  @hidden="setFocusOnBarcodeInput(100)">
             <input id="shipping_number_input" class="form-control" placeholder="Scan shipping number"
                    v-model="shippingNumberInput"
@@ -79,7 +79,7 @@
         </b-modal>
 
         <b-modal id="filtersModal" ref="filtersModal" no-fade hide-footer hide-header
-                 @shown="setFocusElementById(100,'stocktake-input', true, true)"
+                 @shown="setFocusElementById('stocktake-input', true, true)"
                  @hidden="modalHidden">
                 <stocktake-input></stocktake-input>
                 <hr>

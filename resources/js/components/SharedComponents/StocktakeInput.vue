@@ -4,8 +4,8 @@
                              @barcodeScanned="showStocktakeModal"></barcode-input-field>
 
         <b-modal @ok="submitStocktake" :id="modal_name" scrollable no-fade hide-header
-                 @shown="setFocusElementById(100, 'quantity-request-input', true, false)"
-                 @hidden="setFocusElementById(100, input_id, true, true)"
+                 @shown="setFocusElementById('quantity-request-input', true, true)"
+                 @hidden="setFocusElementById(input_id, true, true)"
         >
             <template v-if="inventory">
                 <product-info-card :product="inventory.product"></product-info-card>
@@ -14,7 +14,7 @@
                 <div class="row mt-2">
                     <div class="col-6">
                         <label class="small" for="adjust-by-request-input">adjust by</label>
-                        <input class="form-control " :placeholder="'Adjust by'" :class="{ 'border-danger': this.adjustByQuantity < 0, 'border-success': this.adjustByQuantity > 0}"
+                         <input class="form-control " :placeholder="'Adjust by'" :class="{ 'border-danger': this.adjustByQuantity < 0, 'border-success': this.adjustByQuantity > 0}"
                                id="adjust-by-request-input"
                                dusk="adjust-by-request-input"
                                v-model="adjustByQuantity"
@@ -223,7 +223,7 @@
                     .then(e => {
                         if (e.data.meta.total === 0) {
                             this.notifyError('Product not found - "' + sku + '"');
-                            this.setFocusElementById(100, 'stocktake-input', true, true);
+                            this.setFocusElementById('stocktake-input', true, true);
                             return;
                         }
 
@@ -234,7 +234,7 @@
                     })
                     .catch((error) => {
                         this.displayApiCallError(error);
-                        this.setFocusElementById(100, 'stocktake-input', true, true);
+                        this.setFocusElementById('stocktake-input', true, true);
                     });
             },
 
