@@ -57,42 +57,33 @@ export default {
                 return (value && value !== 0) ? value : '-';
             },
 
-            setFocus: function (input, autoSelectAll = false, hideOnScreenKeyboard = false, delay = 100) {
-                setTimeout(() => {
-                    if (input === null) {
-                        return;
-                    }
-
-                    if (hideOnScreenKeyboard) {
-                        // this simple hack of setting focus when field is read only will
-                        // prevent showing on screen keyboard on mobile devices
-                        input.readOnly = true;
-                    }
-
-                    input.focus();
-
-                    if (hideOnScreenKeyboard) {
-                        input.readOnly = false;
-                    }
-
-                    if (autoSelectAll) {
-                        input.select();
-                        document.execCommand('selectall', false);
-                    }
-
-                    }, delay);
-            },
-
             // setFocusElementById(delay = 1, elementId, autoSelectAll = false, hideOnScreenKeyboard = false) {
             setFocusElementById(elementId, autoSelectAll = false, hideOnScreenKeyboard = false, delay = 1) {
                 const element = document.getElementById(elementId);
 
-                if (hideOnScreenKeyboard) {
-                    // this simple hack of setting focus when field is read only will
-                    // prevent showing on screen keyboard on mobile devices
-                    element.readOnly = true;
+                if (element === null) {
+                    return;
                 }
-                this.setFocus(element, autoSelectAll, hideOnScreenKeyboard, delay);
+
+                setTimeout(() => {
+                    if (hideOnScreenKeyboard) {
+                        // this simple hack of setting focus when field is read only will
+                        // prevent showing on screen keyboard on mobile devices
+                        element.readOnly = true;
+                    }
+
+                    element.focus();
+                    element.click();
+
+                    if (hideOnScreenKeyboard) {
+                        element.readOnly = false;
+                    }
+
+                    if (autoSelectAll) {
+                        element.select();
+                        document.execCommand('selectall', false);
+                    }
+                }, delay);
             },
 
             isMoreThanPercentageScrolled: function (percentage) {
