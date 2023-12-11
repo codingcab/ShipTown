@@ -98,10 +98,10 @@
                 console.log('On iPhones and iPads, devices autofocus on input fields is disabled due to a bug in iOS. This works ok with external keyboards on iOS >16');
             }
 
-            this.resetInputValue();
+            this.importValueFromUrlParam();
 
             if (this.autoFocusAfter > 0) {
-                this.setFocusElementById(this.autoFocusAfter, this.getInputId, true, true)
+                this.setFocusElementById(this.getInputId, true, true)
             }
 
             window.addEventListener('keydown', (e) => {
@@ -163,12 +163,12 @@
                 this.shelfLocationModalShowing = false;
                 this.shelfLocationModalContinuesScan = false;
                 this.shelfLocationModalCommandScanCount = 0;
-                this.resetInputValue();
+                this.importValueFromUrlParam();
                 this.setFocusElementById('barcodeInput', true, true)
                 this.$emit('refreshRequest');
             },
 
-            resetInputValue: function () {
+            importValueFromUrlParam: function () {
                 if (this.url_param_name) {
                     this.barcode = this.getUrlParameter(this.url_param_name);
                 }
