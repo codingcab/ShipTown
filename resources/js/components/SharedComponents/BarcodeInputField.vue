@@ -137,10 +137,7 @@
         },
 
         methods: {
-             focusAndOpenKeyboard(el, timeout) {
-                if(!timeout) {
-                    timeout = 100;
-                }
+             focusAndOpenKeyboard(el, timeout = 100) {
                 if(el) {
                     // Align temp input element approximately where the input element is
                     // so the cursor doesn't jump around
@@ -161,16 +158,6 @@
                         // Remove the temp element
                         document.body.removeChild(__tempEl__);
                     }, timeout);
-                }
-            },
-
-             simulateClick(control) {
-                if (document.all) {
-                    control.click();
-                } else {
-                    var evObj = document.createEvent('MouseEvents');
-                    evObj.initMouseEvent('click', true, true, window, 1, 12, 345, 7, 220, false, false, true, false, 0, null );
-                    control.dispatchEvent(evObj);
                 }
             },
 
