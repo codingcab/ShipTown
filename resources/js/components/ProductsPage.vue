@@ -3,7 +3,7 @@
         <template v-if="getUrlParameter('hide_nav_bar', false) === false">
             <div class="row mb-1 pb-2 p-1 sticky-top bg-light">
                 <div class="flex-fill">
-                    <barcode-input-field placeholder="Search products using name, sku, alias or command"
+                    <barcode-input-field :input_id="'barcode_input'" placeholder="Search products using name, sku, alias or command"
                                          ref="barcode"
                                          :url_param_name="'search'"
                                          @refreshRequest="reloadProductList"
@@ -46,7 +46,7 @@
         </div>
 
         <b-modal id="quick-actions-modal" no-fade hide-footer hide-header
-                 @hidden="setFocusElementById('barcodeInput', true, true)">
+                 @hidden="setFocusElementById('barcode_input', true, true)">
             <stocktake-input></stocktake-input>
             <hr>
         </b-modal>
