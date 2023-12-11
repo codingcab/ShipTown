@@ -2,12 +2,12 @@
     <div>
         <div class="bg-warning">
             <input :id="getInputId"
-                   autocapitalize="off"
+                   :placeholder="placeholder"
                    type=text
                    class="form-control"
                    autocomplete="off"
+                   autocapitalize="off"
                    enterkeyhint="done"
-                   :placeholder="placeholder"
                    ref="barcode"
                    dusk="barcode-input-field"
                    v-model.trim="barcode"
@@ -23,9 +23,15 @@
           <div class="h5 text-center">{{ command['name'] }} : {{ command['value'] }}</div>
           <div v-if="shelfLocationModalContinuesScan" class="alert-success text-center mb-2 small">CONTINUES SCAN ENABLED</div>
 
-          <input id="set-shelf-location-command-modal-input" class="form-control" :placeholder="'Scan product to update shelf location: ' + command[1]"
-               @focus="simulateSelectAll"
-               @keyup.enter="updateShelfLocation"/>
+          <input id="set-shelf-location-command-modal-input"
+                 :placeholder="'Scan product to update shelf location: ' + command[1]"
+                 type=text
+                 class="form-control"
+                 autocomplete="off"
+                 autocapitalize="off"
+                 enterkeyhint="done"
+                 @focus="simulateSelectAll"
+                 @keyup.enter="updateShelfLocation"/>
 
           <div class="mt-2 small">
               <div>
