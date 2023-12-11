@@ -4,7 +4,7 @@
                              @barcodeScanned="showStocktakeModal"></barcode-input-field>
 
         <b-modal @ok="submitStocktake" :id="modal_name" scrollable no-fade hide-header
-                 @shown="setFocusElementById('quantity-request-input', true, true)"
+                 @shown="setFocusElementById('quantity-request-input', true, false)"
                  @hidden="setFocusElementById(input_id, true, true)"
         >
             <template v-if="inventory">
@@ -87,6 +87,23 @@
             }
         },
 
+        mounted() {
+            if (! this.currentUser()['warehouse_id']) {
+                this.$snotify.error('You do not have warehouse assigned. Please contact administrator', {timeout: 50000});
+                this.$bvModal.hide(this.modal_name);
+            }
+        },
+
+        shown() {
+            console.log('shown');
+            console.log(this.input_id);
+            console.log(document.getElementById(this.input_id));
+
+            // document.getElementById(this.input_id).focus();
+            // this.setFocusElementById(100, this.input_id, true, true);
+            // this.focusAndOpenKeyboard(document.getElementById(this.input_id), 100);
+        },
+
         watch: {
             adjustByQuantity() {
                 let adjustByValue = 0;
@@ -131,35 +148,6 @@
                     this.adjustByQuantity = newValue === 0 ? '' : newValue;
                 }
             }
-        },
-
-        mounted() {
-            if (! this.currentUser()['warehouse_id']) {
-                this.$snotify.error('You do not have warehouse assigned. Please contact administrator', {timeout: 50000});
-                this.$bvModal.hide(this.modal_name);
-            }
-
-            console.log('mounted');
-            console.log(this.input_id);
-            console.log(document.getElementById(this.input_id));
-
-            if (this.autoFocusAfter > 0) {
-                // this.setFocusElementById(this.autoFocusAfter, this.input_id, true, true);
-
-                var myElement = document.getElementById(this.input_id);
-                var modalFadeInDuration = 300;
-                this.focusAndOpenKeyboard(myElement, modalFadeInDuration);
-            }
-        },
-
-        shown() {
-            console.log('shown');
-            console.log(this.input_id);
-            console.log(document.getElementById(this.input_id));
-
-            // document.getElementById(this.input_id).focus();
-            // this.setFocusElementById(100, this.input_id, true, true);
-            // this.focusAndOpenKeyboard(document.getElementById(this.input_id), 100);
         },
 
         methods: {
