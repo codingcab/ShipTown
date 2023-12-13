@@ -66,9 +66,6 @@ export default {
 
                 const isIos = () => !!window.navigator.userAgent.match(/Mac OS|iPad|iPhone/i);
 
-                this.notifySuccess(window.navigator.userAgent);
-                this.notifySuccess(isIos());
-
                 if (isIos()) {
                     this.focusAndOpenKeyboard(element, delay, showKeyboard);
                     return;
