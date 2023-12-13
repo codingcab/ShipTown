@@ -25,6 +25,7 @@ class DpdIrelandSeeder extends Seeder
         }
 
         DpdIreland::factory()->create([
+            'live'              => true,
             'token'             => env('TEST_DPD_TOKEN'),
             'user'              => env('TEST_DPD_USER'),
             'password'          => env('TEST_DPD_PASSWORD'),

@@ -76,18 +76,8 @@ class DatabaseSeeder extends Seeder
 //            PicksSeeder::class,
 //            OrderShipmentsSeeder::class,
 
-//        Modules Seeders
-//            WebhooksTestSeeder::class,
-//            DpdUk\DpdUkTestOrdersSeeder::class,
             Demo\CollectionOrdersSeeder::class,
-
-
         ]);
-
-//        RunHourlyJobs::dispatchSync();
-//        CopyInventoryMovementsToNewTableJob::dispatch();
-
-//        SyncRequestedEvent::dispatch();
 
         DispatchEveryMinuteEventJob::dispatch();
         DispatchEveryFiveMinutesEventJob::dispatch();
