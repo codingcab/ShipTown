@@ -57,7 +57,7 @@ export default {
                 return (value && value !== 0) ? value : '-';
             },
 
-            setFocusElementById(elementId, autoSelectAll = false, showKeyboard = false, delay = 100) {
+            setFocusElementById(elementId, showKeyboard = false, autoSelectAll = false, delay = 100) {
                 const element = document.getElementById(elementId);
 
                 if (element === null) {

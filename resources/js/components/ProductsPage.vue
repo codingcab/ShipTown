@@ -46,7 +46,7 @@
         </div>
 
         <b-modal id="quick-actions-modal" no-fade hide-footer hide-header
-                 @hidden="setFocusElementById('barcode_input', true, true)">
+                 @hidden="setFocusElementById('barcode_input')">
             <stocktake-input></stocktake-input>
             <hr>
         </b-modal>

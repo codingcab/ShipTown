@@ -108,7 +108,7 @@
             this.importValueFromUrlParam();
 
             if (this.autoFocusAfter > 0) {
-                this.setFocusElementById(this.getInputId, true, true)
+                this.setFocusElementById(this.getInputId)
             }
 
             window.addEventListener('keydown', (e) => {
@@ -163,7 +163,7 @@
                 this.shelfLocationModalShowing = true;
                 this.shelfLocationModalContinuesScan = false;
                 this.shelfLocationModalCommandScanCount = 0;
-                this.setFocusElementById('set-shelf-location-command-modal-input', true, true)
+                this.setFocusElementById('set-shelf-location-command-modal-input')
             },
 
             updateShelfLocationHidden: function (bvEvent, modalId) {
@@ -171,7 +171,7 @@
                 this.shelfLocationModalContinuesScan = false;
                 this.shelfLocationModalCommandScanCount = 0;
                 this.importValueFromUrlParam();
-                this.setFocusElementById('barcodeInput', true, true)
+                this.setFocusElementById('barcodeInput')
                 this.$emit('refreshRequest');
             },
 
@@ -273,7 +273,7 @@
                     });
 
                 if(this.shelfLocationModalContinuesScan) {
-                    this.setFocusElementById('set-shelf-location-command-modal-input', true, true)
+                    this.setFocusElementById('set-shelf-location-command-modal-input')
                     return;
                 }
 

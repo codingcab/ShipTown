@@ -50,7 +50,7 @@ export default {
 
     methods: {
         focusOnInput() {
-            this.setFocusElementById('shipping_number_input', true, true)
+            this.setFocusElementById('shipping_number_input')
         },
 
         setFocus() {

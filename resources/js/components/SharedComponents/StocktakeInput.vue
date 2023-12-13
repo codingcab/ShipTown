@@ -1,12 +1,12 @@
 <template>
     <div>
-        <barcode-input-field placeholder="Search products using name, sku, alias or command"
+        <barcode-input-field :input_id="input_id" placeholder="Search products using name, sku, alias or command"
                              @barcodeScanned="showStocktakeModal"></barcode-input-field>
 
         <b-modal :id="modal_name" scrollable no-fade hide-header
                  @ok="submitStocktake"
-                 @shown="setFocusElementById('quantity-request-input', true, false)"
-                 @hidden="setFocusElementById(input_id, true, true)"
+                 @shown="setFocusElementById('quantity-request-input')"
+                 @hidden="setFocusElementById(input_id)"
         >
             <template v-if="inventory">
                 <product-info-card :product="inventory.product"></product-info-card>

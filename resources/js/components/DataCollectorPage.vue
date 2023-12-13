@@ -79,7 +79,7 @@
 
         <b-modal id="configuration-modal" no-fade hide-header
                  @shown="onShownConfigurationModal"
-                 @hidden="setFocusElementById('barcodeInput', true, true)"
+                 @hidden="setFocusElementById('barcodeInput')"
         >
             <div v-if="dataCollection">
                 <stocktake-input></stocktake-input>

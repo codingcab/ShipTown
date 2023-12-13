@@ -39,7 +39,7 @@
         </div>
 
         <b-modal id="quick-actions-modal" no-fade hide-header
-                 @hidden="setFocusElementById('barcode-input', true, true)">
+                 @hidden="setFocusElementById('barcode-input')">
             <stocktake-input v-bind:auto-focus-after="100" ></stocktake-input>
             <hr>
             <template #modal-footer>
