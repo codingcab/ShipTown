@@ -57,7 +57,7 @@ export default {
                 return (value && value !== 0) ? value : '-';
             },
 
-            setFocusElementById(elementId, autoSelectAll = false, hideOnScreenKeyboard = false, delay = 100) {
+            setFocusElementById(elementId, autoSelectAll = false, showKeyboard = false, delay = 100) {
                 const element = document.getElementById(elementId);
 
                 if (element === null) {
@@ -67,14 +67,14 @@ export default {
                 const isIos = () => !!window.navigator.userAgent.match(/Mac OS|iPad|iPhone/i);
 
                 this.notifySuccess(window.navigator.userAgent);
-                this.notifySuccess(isIos( ));
+                this.notifySuccess(isIos());
 
                 if (isIos()) {
-                    this.focusAndOpenKeyboard(element, delay, hideOnScreenKeyboard);
+                    this.focusAndOpenKeyboard(element, delay, showKeyboard);
                     return;
                 }
 
-                if (hideOnScreenKeyboard) {
+                if (showKeyboard === false) {
                     // this simple hack of setting focus when field is read only will
                     // prevent showing on screen keyboard on mobile devices
                     element.readOnly = true;
@@ -85,9 +85,7 @@ export default {
                     element.focus();
                     element.click();
 
-                    if (hideOnScreenKeyboard) {
-                        element.readOnly = false;
-                    }
+                    element.readOnly = false;
 
                     if (autoSelectAll) {
                         element.select();
@@ -96,8 +94,8 @@ export default {
                 }, delay);
             },
 
-            focusAndOpenKeyboard(el, timeout = 100, hideOnScreenKeyboard = false) {
-                if (!hideOnScreenKeyboard) {
+            focusAndOpenKeyboard(el, delay= 100, showKeyboard = false) {
+                if (showKeyboard) {
                     // Align temp input element approximately where the input element is
                     // so the cursor doesn't jump around
                     var __tempEl__ = document.createElement('input');
@@ -115,11 +113,10 @@ export default {
                 setTimeout(function() {
                     el.focus();
                     el.click();
-                    if (!hideOnScreenKeyboard) {
-                        // Remove the temp element
+                    if (__tempEl__) {
                         document.body.removeChild(__tempEl__);
                     }
-                }, timeout);
+                }, delay);
             },
 
             isMoreThanPercentageScrolled: function (percentage) {
