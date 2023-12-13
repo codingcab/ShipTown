@@ -156,7 +156,7 @@
                 this.typedInText = '';
                 this.barcode = barcode;
 
-                this.setFocusOnBarcodeInput(100, true);
+                this.setFocusOnBarcodeInput();
             },
 
             updateShelfLocationShown: function (bvEvent, modalId) {
@@ -280,8 +280,8 @@
                 this.$bvModal.hide(this.getModalID);
             },
 
-            setFocusOnBarcodeInput(delay = 100, autoSelectAll = false, hideOnScreenKeyboard = false) {
-                this.setFocusElementById(this.getInputId, autoSelectAll, hideOnScreenKeyboard, delay)
+            setFocusOnBarcodeInput(showKeyboard = false, autoSelectAll = true, delay = 100) {
+                this.setFocusElementById(this.getInputId, showKeyboard, autoSelectAll, delay = 100)
             },
         }
     }

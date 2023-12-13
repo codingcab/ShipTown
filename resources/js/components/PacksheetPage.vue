@@ -209,7 +209,7 @@
 
             methods: {
                 modalHidden() {
-                    this.setFocusOnBarcodeInput(100);
+                    this.setFocusOnBarcodeInput();
                     this.reloadData();
                 },
 
@@ -383,7 +383,7 @@
 
                 changeStatus() {
                     this.$refs.filtersModal.hide();
-                    this.setFocusOnBarcodeInput(500);
+                    this.setFocusOnBarcodeInput();
 
                     this.apiUpdateOrder(this.order['id'], {'status_code': this.order.status_code})
                         .then(() => {
@@ -588,7 +588,7 @@
 
                 printExtraLabelClick: function () {
                     this.$refs.filtersModal.hide();
-                    this.setFocusOnBarcodeInput(500);
+                    this.setFocusOnBarcodeInput();
 
                     this.printShippingLabel();
                 },
@@ -636,7 +636,7 @@
 
                 openPreviousOrder: function (){
                     this.$refs.filtersModal.hide();
-                    this.setFocusOnBarcodeInput(500);
+                    this.setFocusOnBarcodeInput();
 
                     if (! this.previous_order_id) {
                         this.notifyError('Not Available');

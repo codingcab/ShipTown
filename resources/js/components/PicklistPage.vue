@@ -52,7 +52,7 @@
 
         <b-modal id="quick-actions-modal" no-fade hide-footer hide-header
                  @shown="setFocusElementById('stocktake-input',)"
-                 @hidden="setFocusOnBarcodeInput(100)">
+                 @hidden="setFocusOnBarcodeInput()">
             <stocktake-input></stocktake-input>
         </b-modal>
 

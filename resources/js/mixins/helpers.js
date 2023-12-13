@@ -57,7 +57,7 @@ export default {
                 return (value && value !== 0) ? value : '-';
             },
 
-            setFocusElementById(elementId, showKeyboard = false, autoSelectAll = false, delay = 100) {
+            setFocusElementById(elementId, showKeyboard = false, autoSelectAll = true, delay = 100) {
                 const element = document.getElementById(elementId);
 
                 if (element === null) {
@@ -91,7 +91,7 @@ export default {
                 }, delay);
             },
 
-            focusAndOpenKeyboard(el, delay= 100, showKeyboard = false) {
+            focusAndOpenKeyboard(el, delay= 100, showKeyboard = false, autoSelectAll = true) {
                 if (showKeyboard) {
                     // Align temp input element approximately where the input element is
                     // so the cursor doesn't jump around
@@ -110,9 +110,17 @@ export default {
                 setTimeout(function() {
                     el.focus();
                     el.click();
+
+                    if (autoSelectAll) {
+                        element.select();
+                        document.execCommand('selectall', false);
+                    }
+
                     if (__tempEl__) {
                         document.body.removeChild(__tempEl__);
                     }
+
+
                 }, delay);
             },
 
