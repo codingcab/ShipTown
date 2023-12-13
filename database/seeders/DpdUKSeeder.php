@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\OrderAddress;
 use App\Models\OrderProduct;
 use App\Models\OrderStatus;
+use App\Models\Product;
 use App\Modules\DpdUk\src\DpdUkServiceProvider;
 use App\Modules\DpdUk\src\Models\Connection;
 use Illuminate\Database\Seeder;
@@ -73,8 +74,18 @@ class DpdUKSeeder extends Seeder
             'status_code' => 'test_orders_courier_dpd_uk',
         ]);
 
+        /** @var Product $product */
+        $product = Product::findBySku('45');
+
         foreach ($orders as $order) {
-            OrderProduct::factory()->create(['order_id' => $order->id]);
+            OrderProduct::factory()->create([
+                'order_id' => $order->getKey(),
+                'product_id' => $product->getKey(),
+                'quantity_ordered' => 1,
+                'price' => $product->price,
+                'name_ordered' => $product->name,
+                'sku_ordered' => $product->sku,
+            ]);
         }
 
     }

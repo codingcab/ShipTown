@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\OrderAddress;
 use App\Models\OrderProduct;
 use App\Models\OrderStatus;
+use App\Models\Product;
 use App\Modules\DpdIreland\src\DpdIrelandServiceProvider;
 use App\Modules\DpdIreland\src\Models\DpdIreland;
 use Illuminate\Database\Seeder;
@@ -69,7 +70,17 @@ class DpdIrelandSeeder extends Seeder
         $order->shippingAddress()->associate($testAddress);
         $order->save();
 
-        OrderProduct::factory()->count(3)->create(['order_id' => $order->getKey()]);
+        /** @var Product $product */
+        $product = Product::findBySku('45');
+
+        OrderProduct::factory()->create([
+            'order_id' => $order->getKey(),
+            'product_id' => $product->getKey(),
+            'quantity_ordered' => 1,
+            'price' => $product->price,
+            'name_ordered' => $product->name,
+            'sku_ordered' => $product->sku,
+        ]);
 
         $order->refresh();
 
