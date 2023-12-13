@@ -62,28 +62,34 @@ class DpdIrelandSeeder extends Seeder
         $testAddress->email = 'john.smith@dpd.ie';
         $testAddress->save();
 
-        /** @var Order $order */
-        $order = Order::factory()->make([
+        $orders[] = Order::factory()->create([
+            'shipping_address_id' => $testAddress->getKey(),
             'status_code' => 'test_orders_courier_dpd_ireland',
             'label_template' => 'dpd_irl_next_day',
         ]);
-        $order->shippingAddress()->associate($testAddress);
-        $order->save();
+
+        $orders[] = Order::factory()->create([
+            'shipping_address_id' => $testAddress->getKey(),
+            'status_code' => 'autopilot_packlist_test',
+            'label_template' => 'dpd_irl_next_day',
+        ]);
 
         /** @var Product $product */
         $product = Product::findBySku('45');
 
-        OrderProduct::factory()->create([
-            'order_id' => $order->getKey(),
-            'product_id' => $product->getKey(),
-            'quantity_ordered' => 1,
-            'price' => $product->price,
-            'name_ordered' => $product->name,
-            'sku_ordered' => $product->sku,
-        ]);
+        foreach ($orders as $order) {
+            OrderProduct::factory()->create([
+                'order_id' => $order->getKey(),
+                'product_id' => $product->getKey(),
+                'quantity_ordered' => 1,
+                'price' => $product->price,
+                'name_ordered' => $product->name,
+                'sku_ordered' => $product->sku,
+            ]);
+            $order->refresh();
 
-        $order->refresh();
+            $order->update(['total_paid' => $order->total_order]);
+        }
 
-        $order->update(['total_paid' => $order->total_order]);
     }
 }

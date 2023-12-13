@@ -42,7 +42,6 @@ class DatabaseSeeder extends Seeder
             Demo\TestOrdersSeeder::class,
 
             Demo\PaidOrdersSeeder::class,
-            Demo\PaidOrdersSeeder::class,
 
             Demo\DataCollections\TransferToCorkBranchSeeder::class,
             Demo\DataCollections\TransfersFromWarehouseSeeder::class,

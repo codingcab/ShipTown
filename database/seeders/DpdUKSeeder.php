@@ -74,6 +74,12 @@ class DpdUKSeeder extends Seeder
             'status_code' => 'test_orders_courier_dpd_uk',
         ]);
 
+        $orders[] = Order::factory()->create([
+            'shipping_address_id' => $testAddress->id,
+            'label_template' => 'dpd_uk_next_day',
+            'status_code' => 'autopilot_packlist_test',
+        ]);
+
         /** @var Product $product */
         $product = Product::findBySku('45');
 
