@@ -64,7 +64,7 @@ export default {
                     return;
                 }
 
-                const isIos = () => !!window.navigator.userAgent.match(/AppleWebKit/i);
+                const isIos = () => !!window.navigator.userAgent.match(/Mac OS/i);
 
                 this.notifySuccess(window.navigator.userAgent);
                 this.notifySuccess(isIos( ));
