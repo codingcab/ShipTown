@@ -5,6 +5,7 @@ namespace Database\Seeders\Demo;
 use App\Models\NavigationMenu;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\Product;
 use App\Modules\Automations\src\Actions\Order\SetStatusCodeAction;
 use App\Modules\Automations\src\Conditions\Order\IsFullyPackedCondition;
 use App\Modules\Automations\src\Conditions\Order\StatusCodeEqualsCondition;
@@ -78,7 +79,18 @@ class PaidOrdersSeeder extends Seeder
             ->count(1)
             ->create(['status_code' => 'autopilot_packlist_test', 'label_template' => 'address_label'])
             ->each(function (Order $order) {
-                OrderProduct::factory()->count(1)->create(['order_id' => $order->getKey()]);
+                /** @var Product $product */
+                $product = Product::findBySku('45');
+
+                OrderProduct::factory()->create([
+                    'order_id' => $order->getKey(),
+                    'product_id' => $product->getKey(),
+                    'quantity_ordered' => 1,
+                    'price' => $product->price,
+                    'name_ordered' => $product->name,
+                    'sku_ordered' => $product->sku,
+                ]);
+
                 $order = $order->refresh();
                 Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => $order->total_order]);
             });
