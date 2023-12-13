@@ -70,7 +70,7 @@ export default {
                 this.notifySuccess(isIos( ));
 
                 if (isIos()) {
-                    this.focusAndOpenKeyboard(element, delay);
+                    this.focusAndOpenKeyboard(element, delay, hideOnScreenKeyboard);
                     return;
                 }
 
@@ -96,8 +96,8 @@ export default {
                 }, delay);
             },
 
-            focusAndOpenKeyboard(el, timeout = 100) {
-                if(el) {
+            focusAndOpenKeyboard(el, timeout = 100, hideOnScreenKeyboard = false) {
+                if (!hideOnScreenKeyboard) {
                     // Align temp input element approximately where the input element is
                     // so the cursor doesn't jump around
                     var __tempEl__ = document.createElement('input');
@@ -109,15 +109,17 @@ export default {
                     // Put this temp element as a child of the page <body> and focus on it
                     document.body.appendChild(__tempEl__);
                     __tempEl__.focus();
+                }
 
-                    // The keyboard is open. Now do a delayed focus on the target element
-                    setTimeout(function() {
-                        el.focus();
-                        el.click();
+                // The keyboard is open. Now do a delayed focus on the target element
+                setTimeout(function() {
+                    el.focus();
+                    el.click();
+                    if (!hideOnScreenKeyboard) {
                         // Remove the temp element
                         document.body.removeChild(__tempEl__);
-                    }, timeout);
-                }
+                    }
+                }, timeout);
             },
 
             isMoreThanPercentageScrolled: function (percentage) {

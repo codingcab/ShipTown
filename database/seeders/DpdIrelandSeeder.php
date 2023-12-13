@@ -23,7 +23,11 @@ class DpdIrelandSeeder extends Seeder
             return;
         }
 
-        DpdIreland::factory()->create();
+        DpdIreland::factory()->create([
+            'token'             => env('TEST_DPD_TOKEN'),
+            'user'              => env('TEST_DPD_USER'),
+            'password'          => env('TEST_DPD_PASSWORD'),
+        ]);
 
         DpdIrelandServiceProvider::enableModule();
 

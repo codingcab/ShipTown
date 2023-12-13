@@ -3,7 +3,8 @@
         <barcode-input-field placeholder="Search products using name, sku, alias or command"
                              @barcodeScanned="showStocktakeModal"></barcode-input-field>
 
-        <b-modal @ok="submitStocktake" :id="modal_name" scrollable no-fade hide-header
+        <b-modal :id="modal_name" scrollable no-fade hide-header
+                 @ok="submitStocktake"
                  @shown="setFocusElementById('quantity-request-input', true, false)"
                  @hidden="setFocusElementById(input_id, true, true)"
         >
