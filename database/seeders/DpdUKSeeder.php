@@ -77,7 +77,7 @@ class DpdUKSeeder extends Seeder
         $orders[] = Order::factory()->create([
             'shipping_address_id' => $testAddress->id,
             'label_template' => 'dpd_uk_next_day',
-            'status_code' => 'autopilot_packlist_test',
+            'status_code' => 'packing',
         ]);
 
         /** @var Product $product */

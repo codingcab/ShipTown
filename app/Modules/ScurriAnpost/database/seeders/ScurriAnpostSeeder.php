@@ -70,7 +70,7 @@ class ScurriAnpostSeeder extends Seeder
         ]);
 
         $order = Order::factory()->create([
-            'status_code' => 'test_orders_courier_anpost_ireland',
+            'status_code' => 'packing',
             'label_template' => 'anpost_3day',
             'shipping_address_id' => $orderAddress->getKey(),
             'order_placed_at' => now()->subDays(3)

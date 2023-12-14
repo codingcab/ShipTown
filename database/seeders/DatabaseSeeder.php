@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             Demo\ConfigurationSeeder::class,
+            Demo\NavigationSeeder::class,
             Demo\OrderStatusesSeeder::class,
             Demo\UsersSeeder::class,
 

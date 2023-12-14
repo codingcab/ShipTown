@@ -2,14 +2,9 @@
 
 namespace Database\Seeders\Demo;
 
-use App\Models\NavigationMenu;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\Product;
-use App\Modules\Automations\src\Actions\Order\SetStatusCodeAction;
-use App\Modules\Automations\src\Conditions\Order\IsFullyPackedCondition;
-use App\Modules\Automations\src\Conditions\Order\StatusCodeEqualsCondition;
-use App\Modules\Automations\src\Models\Automation;
 use Illuminate\Database\Seeder;
 
 class PaidOrdersSeeder extends Seeder
@@ -77,7 +72,7 @@ class PaidOrdersSeeder extends Seeder
 
         Order::factory()
             ->count(1)
-            ->create(['status_code' => 'autopilot_packlist_test', 'label_template' => 'address_label'])
+            ->create(['status_code' => 'packing', 'label_template' => 'address_label'])
             ->each(function (Order $order) {
                 /** @var Product $product */
                 $product = Product::findBySku('45');

@@ -72,7 +72,7 @@ class DpdIrelandSeeder extends Seeder
         $orders[] = Order::factory()->create([
             'shipping_address_id' => $testAddress->getKey(),
             'status_code' => 'autopilot_packlist_test',
-            'label_template' => 'dpd_irl_next_day',
+            'label_template' => 'packing',
         ]);
 
         /** @var Product $product */
