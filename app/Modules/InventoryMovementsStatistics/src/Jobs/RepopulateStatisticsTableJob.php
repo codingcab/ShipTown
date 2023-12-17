@@ -9,6 +9,8 @@ class RepopulateStatisticsTableJob extends UniqueJob
 {
     public function handle()
     {
+        // TODO: this query is very slow, it takes about 10 minutes to complete
+        // TODO: redesign this query to be recalculated incrementally instead of truncating and recalculating everything
         DB::unprepared('
             TRUNCATE TABLE inventory_movements_statistics;
             INSERT INTO inventory_movements_statistics (
