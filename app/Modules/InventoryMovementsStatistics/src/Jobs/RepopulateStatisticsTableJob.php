@@ -3,17 +3,31 @@
 namespace App\Modules\InventoryMovementsStatistics\src\Jobs;
 
 use App\Abstracts\UniqueJob;
+use App\Models\Inventory;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Log;
 
 class RepopulateStatisticsTableJob extends UniqueJob
 {
-    public function handle()
+    public function handle(): void
     {
-        // TODO: this query is very slow, it takes about 10 minutes to complete
-        // TODO: redesign this query to be recalculated incrementally instead of truncating and recalculating everything
-        DB::unprepared('
-            TRUNCATE TABLE inventory_movements_statistics;
-            INSERT INTO inventory_movements_statistics (
+        Inventory::query()
+            ->where('last_sold_at', '>', now()->subDays(60))
+            ->chunkById(10, function (Collection $inventories) {
+                $this->repopulateStatisticsTable($inventories->pluck('id'));
+                Log::info('Job processing', [
+                    'job' => self::class,
+                    'records_updated' => $inventories->count()
+                ]);
+                usleep(100000); // 0.1 second
+            });
+    }
+
+    public function repopulateStatisticsTable($inventory): void
+    {
+        DB::statement('
+            REPLACE INTO inventory_movements_statistics (
                 type,
                 inventory_id,
                 product_id,
@@ -48,8 +62,8 @@ class RepopulateStatisticsTableJob extends UniqueJob
                 now() as updated_at
             FROM inventory_movements
             LEFT JOIN warehouses ON warehouses.id = inventory_movements.warehouse_id
-            WHERE inventory_movements.created_at > date_sub(now(), interval 28 day)
+            WHERE inventory_movements.inventory_id IN (?)
             GROUP BY inventory_movements.type, inventory_movements.inventory_id
-        ');
+        ', [$inventory->implode(',')]);
     }
 }
