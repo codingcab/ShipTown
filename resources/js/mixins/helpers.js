@@ -15,10 +15,11 @@ export default {
                 return datetime ? moment(datetime).format(format) : defaultValue;
             },
 
-            simulateSelectAll() {
-                setTimeout(() => {
-                    document.execCommand('selectall', false, 'tet');
-                }, 50);
+            simulateSelectAll(e) {
+                console.log(e);
+                // setTimeout(() => {
+                //     document.execCommand('selectall', false, 'tet');
+                // }, 50);
             },
 
             copyToClipBoard(textToCopy){
@@ -78,7 +79,6 @@ export default {
                 }
 
                 setTimeout(() => {
-
                     element.focus();
                     element.click();
 
@@ -86,19 +86,19 @@ export default {
 
                     if (autoSelectAll) {
                         element.select();
-                        document.execCommand('selectall', false);
                     }
+
                 }, delay);
             },
 
-            focusAndOpenKeyboard(el, delay= 100, showKeyboard = false, autoSelectAll = true) {
+            focusAndOpenKeyboard(element, delay= 100, showKeyboard = false, autoSelectAll = true) {
                 if (showKeyboard) {
                     // Align temp input element approximately where the input element is
                     // so the cursor doesn't jump around
                     var __tempEl__ = document.createElement('input');
                     __tempEl__.style.position = 'absolute';
-                    __tempEl__.style.top = (el.offsetTop + 7) + 'px';
-                    __tempEl__.style.left = el.offsetLeft + 'px';
+                    __tempEl__.style.top = (element.offsetTop + 7) + 'px';
+                    __tempEl__.style.left = element.offsetLeft + 'px';
                     __tempEl__.style.height = 0;
                     __tempEl__.style.opacity = 0;
                     // Put this temp element as a child of the page <body> and focus on it
@@ -108,12 +108,11 @@ export default {
 
                 // The keyboard is open. Now do a delayed focus on the target element
                 setTimeout(function() {
-                    el.focus();
-                    el.click();
+                    element.focus();
+                    element.click();
 
                     if (autoSelectAll) {
                         element.select();
-                        document.execCommand('selectall', false);
                     }
 
                     if (__tempEl__) {

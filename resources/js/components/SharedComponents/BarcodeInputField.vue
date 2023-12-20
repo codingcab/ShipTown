@@ -4,14 +4,13 @@
             <input :id="getInputId"
                    :placeholder="placeholder"
                    type=text
-                   class="form-control"
+                   class="form-control barcode-input"
                    autocomplete="off"
                    autocapitalize="off"
                    enterkeyhint="done"
                    ref="barcode"
                    dusk="barcode-input-field"
                    v-model.trim="barcode"
-                   @focus="simulateSelectAll"
                    @keyup.enter="barcodeScanned(barcode)"
             />
         </div>
@@ -91,11 +90,6 @@
                 shelfLocationModalShowing: false,
                 shelfLocationModalContinuesScan: false,
             }
-        },
-
-
-        shown() {
-            console.log('shown');
         },
 
         mounted() {
@@ -281,12 +275,15 @@
             },
 
             setFocusOnBarcodeInput(showKeyboard = false, autoSelectAll = true, delay = 100) {
-                this.setFocusElementById(this.getInputId, showKeyboard, autoSelectAll, delay = 100)
+                this.setFocusElementById(this.getInputId, showKeyboard, autoSelectAll, delay)
             },
         }
     }
 </script>
 
 <style scoped>
-
+.barcode-input::selection {
+    color: black;
+    background: #cce3ff;
+}
 </style>

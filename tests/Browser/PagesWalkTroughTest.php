@@ -23,6 +23,30 @@ class PagesWalkTroughTest extends DuskTestCase
     private int $shortDelay = 200;
     private int $longDelay = 0;
 
+
+    /**
+     * A Dusk test example.
+     *
+     * @return void
+     * @throws Throwable
+     */
+    public function testExample()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->disableFitOnFailure();
+
+            $this->login($browser);
+            $this->products($browser);
+            $this->orders($browser);
+            $this->transferIn($browser);
+            $this->stocktaking($browser);
+            $this->picklist($browser);
+            $this->packlist($browser);
+            $this->dashboard($browser);
+            $this->restocking($browser);
+        });
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -66,29 +90,6 @@ class PagesWalkTroughTest extends DuskTestCase
     }
 
     /**
-     * A Dusk test example.
-     *
-     * @return void
-     * @throws Throwable
-     */
-    public function testExample()
-    {
-        $this->browse(function (Browser $browser) {
-            $browser->disableFitOnFailure();
-
-            $this->login($browser);
-            $this->products($browser);
-            $this->orders($browser);
-            $this->transferIn($browser);
-            $this->stocktaking($browser);
-            $this->picklist($browser);
-            $this->packlist($browser);
-            $this->dashboard($browser);
-            $this->restocking($browser);
-        });
-    }
-
-    /**
      * @param Browser $browser
      * @throws ElementClickInterceptedException
      * @throws NoSuchElementException
@@ -118,7 +119,7 @@ class PagesWalkTroughTest extends DuskTestCase
 
             $browser->driver->getKeyboard()->sendKeys($orderProduct->product->sku);
             $browser->pause($this->shortDelay)
-                ->keys('#barcodeInput', '{enter}')
+                ->keys('@barcode-input-field', '{enter}')
                 ->pause(1500);
         }
 
@@ -172,7 +173,7 @@ class PagesWalkTroughTest extends DuskTestCase
             ->each(function (OrderProduct $orderProduct) use ($browser) {
                 $browser->pause(210);// wait for input to be focused
                 $browser->screenshot('01');
-                $browser->keys('#barcodeInput', $orderProduct->product->sku, '{ENTER}');
+                $browser->keys('@barcode-input-field', $orderProduct->product->sku, '{ENTER}');
                 $browser->pause($this->shortDelay);
                 $browser->screenshot('02');
                 $browser->waitForText($orderProduct->product->sku);
@@ -209,21 +210,21 @@ class PagesWalkTroughTest extends DuskTestCase
             ->each(function (OrderProduct $orderProduct) use ($browser) {
                 $browser->waitForText($orderProduct->product->sku);
                 $browser->assertSee($orderProduct->product->sku);
-                $browser->type('#barcodeInput', $orderProduct->product->sku);
+                $browser->type('@barcode-input-field', $orderProduct->product->sku);
                 $browser->pause(500)
-                    ->keys('#barcodeInput', '{enter}')
+                    ->keys('@barcode-input-field', '{enter}')
                     ->pause($this->longDelay);
             });
     }
 
     /**
-     * @param Browser $browser
      * @throws ElementClickInterceptedException
      * @throws NoSuchElementException
      */
     private function dashboard(Browser $browser): void
     {
-        $browser->mouseover('#dashboard_link')->pause($this->shortDelay)->click('#dashboard_link')->pause($this->longDelay)
+        $browser->mouseover('#dashboard_link')->pause($this->shortDelay)
+            ->click('#dashboard_link')->pause($this->longDelay)
             ->pause($this->longDelay);
     }
 
@@ -232,8 +233,10 @@ class PagesWalkTroughTest extends DuskTestCase
      */
     private function stocktaking(Browser $browser): void
     {
-        $browser->mouseover('#tools_link')->pause($this->shortDelay)->clickLink('Tools')->pause($this->shortDelay)
-            ->mouseover('#stocktaking_link')->pause($this->shortDelay)->clickLink('Stocktaking')->pause($this->shortDelay)
+        $browser->mouseover('#tools_link')->pause($this->shortDelay)
+            ->clickLink('Tools')->pause($this->shortDelay)
+            ->mouseover('#stocktaking_link')->pause($this->shortDelay)
+            ->clickLink('Stocktaking')->pause($this->shortDelay)
             ->pause($this->longDelay);
     }
 
@@ -242,15 +245,16 @@ class PagesWalkTroughTest extends DuskTestCase
      */
     private function products(Browser $browser): void
     {
-        $browser->mouseover('#products_link')->pause($this->shortDelay)->clickLink('Products')->pause($this->longDelay);
+        $browser->mouseover('#products_link')->pause($this->shortDelay)
+            ->clickLink('Products')->pause($this->longDelay)
+            ->keys('@barcode-input-field', '45')->pause($this->shortDelay)
+            ->keys('@barcode-input-field', '48')->pause($this->shortDelay);
     }
 
-    /**
-     * @param Browser $browser
-     */
     private function orders(Browser $browser): void
     {
-        $browser->mouseover('#orders_link')->pause($this->shortDelay)->clickLink('Orders')->pause($this->longDelay);
+        $browser->mouseover('#orders_link')->pause($this->shortDelay)
+            ->clickLink('Orders')->pause($this->longDelay);
     }
 
     /**
@@ -258,7 +262,9 @@ class PagesWalkTroughTest extends DuskTestCase
      */
     private function restocking(Browser $browser): void
     {
-        $browser->mouseover('#tools_link')->pause($this->shortDelay)->clickLink('Tools')->pause($this->shortDelay)
-            ->mouseover('#restocking_link')->pause($this->shortDelay)->clickLink('Restocking')->pause($this->longDelay);
+        $browser->mouseover('#tools_link')->pause($this->shortDelay)
+            ->clickLink('Tools')->pause($this->shortDelay)
+            ->mouseover('#restocking_link')->pause($this->shortDelay)
+            ->clickLink('Restocking')->pause($this->longDelay);
     }
 }
