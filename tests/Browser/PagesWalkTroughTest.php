@@ -247,8 +247,8 @@ class PagesWalkTroughTest extends DuskTestCase
     {
         $browser->mouseover('#products_link')->pause($this->shortDelay)
             ->clickLink('Products')->pause($this->longDelay)
-            ->keys('@barcode-input-field', '45')->pause($this->shortDelay)
-            ->keys('@barcode-input-field', '48')->pause($this->shortDelay);
+            ->keys('@barcode-input-field', '45', '{enter}')->pause($this->longDelay)
+            ->keys('@barcode-input-field', '48', '{enter}')->pause($this->longDelay);
     }
 
     private function orders(Browser $browser): void
