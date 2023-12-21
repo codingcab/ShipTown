@@ -20,8 +20,8 @@ class PagesWalkTroughTest extends DuskTestCase
 {
     private Order $order;
     private User $user;
-    private int $shortDelay = 200;
-    private int $longDelay = 0;
+    private int $shortDelay = 120;
+    private int $longDelay = 201;
 
 
     /**
@@ -171,7 +171,7 @@ class PagesWalkTroughTest extends DuskTestCase
             ->where('quantity_to_ship', '>', 0)
             ->first()
             ->each(function (OrderProduct $orderProduct) use ($browser) {
-                $browser->pause(210);// wait for input to be focused
+                $browser->pause($this->longDelay);// wait for input to be focused
                 $browser->screenshot('01');
                 $browser->keys('@barcode-input-field', $orderProduct->product->sku, '{ENTER}');
                 $browser->pause($this->shortDelay);
