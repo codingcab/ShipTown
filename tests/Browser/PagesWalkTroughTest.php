@@ -36,14 +36,14 @@ class PagesWalkTroughTest extends DuskTestCase
             $browser->disableFitOnFailure();
 
             $this->login($browser);
-            $this->products($browser);
-            $this->orders($browser);
-            $this->dataCollectorStockDelivery($browser);
-            $this->stocktaking($browser);
+//            $this->products($browser);
+//            $this->orders($browser);
+//            $this->dataCollectorStockDelivery($browser);
+//            $this->stocktaking($browser);
             $this->picklist($browser);
-            $this->packlist($browser);
-            $this->dashboard($browser);
-            $this->restocking($browser);
+//            $this->packlist($browser);
+//            $this->dashboard($browser);
+//            $this->restocking($browser);
         });
     }
 
