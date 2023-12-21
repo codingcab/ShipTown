@@ -209,9 +209,6 @@ class PagesWalkTroughTest extends DuskTestCase
             ->pause($this->longDelay)->clickLink('Status: paid')
             ->pause($this->longDelay);
 
-        $browser->vueAttribute('#picklist-table', '@picklist', $this->order->id)
-            ->pause($this->longDelay);
-
         $this->order->orderProducts()
             ->where('quantity_to_pick', '>', 0)
             ->first()
