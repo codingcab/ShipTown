@@ -200,9 +200,13 @@ class PagesWalkTroughTest extends DuskTestCase
      */
     private function picklist(Browser $browser): void
     {
-        $browser->mouseover('#navToggleButton')->pause($this->shortDelay)->click('#navToggleButton')->pause($this->shortDelay)
-            ->mouseover('#picklists_link')->pause($this->shortDelay)->clickLink('Picklist')->pause($this->shortDelay)
-            ->pause($this->shortDelay)->clickLink('Status: paid')->pause($this->longDelay)->pause(15000);
+        $browser->pause($this->shortDelay)
+            ->pause($this->shortDelay)->mouseover('#navToggleButton')
+            ->pause($this->shortDelay)->click('#navToggleButton')
+            ->pause($this->shortDelay)->mouseover('#picklists_link')
+            ->pause($this->shortDelay)->clickLink('Picklist')
+            ->pause($this->shortDelay)->clickLink('Status: paid')
+            ->pause($this->longDelay);
 
         $this->order->orderProducts()
             ->where('quantity_to_pick', '>', 0)
@@ -211,7 +215,7 @@ class PagesWalkTroughTest extends DuskTestCase
                 $browser->waitForText($orderProduct->product->sku);
                 $browser->assertSee($orderProduct->product->sku);
                 $browser->type('@barcode-input-field', $orderProduct->product->sku);
-                $browser->pause(500)
+                $browser->pause($this->shortDelay)
                     ->keys('@barcode-input-field', '{enter}')
                     ->pause($this->longDelay);
             });
