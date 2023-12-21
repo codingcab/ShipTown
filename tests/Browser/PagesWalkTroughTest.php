@@ -36,10 +36,10 @@ class PagesWalkTroughTest extends DuskTestCase
             $browser->disableFitOnFailure();
 
             $this->login($browser);
-//            $this->products($browser);
-//            $this->orders($browser);
-//            $this->dataCollectorStockDelivery($browser);
-//            $this->stocktaking($browser);
+            $this->products($browser);
+            $this->orders($browser);
+            $this->dataCollectorStockDelivery($browser);
+            $this->stocktaking($browser);
             $this->picklist($browser);
             $this->packlist($browser);
             $this->dashboard($browser);
@@ -201,6 +201,18 @@ class PagesWalkTroughTest extends DuskTestCase
      */
     private function picklist(Browser $browser): void
     {
+        $this->order = Order::factory()->create([
+            'is_active' => true,
+            'status_code' => 'paid'
+        ]);
+
+        /** @var OrderProduct $orderProduct */
+        OrderProduct::factory()->create([
+            'order_id' => $this->order->id,
+            'product_id' => Product::first()->getKey(),
+            'quantity_ordered' => 1
+        ]);
+
         $browser->pause($this->shortDelay)
             ->pause($this->shortDelay)->mouseover('#navToggleButton')
             ->pause($this->shortDelay)->click('#navToggleButton')
@@ -209,17 +221,17 @@ class PagesWalkTroughTest extends DuskTestCase
             ->pause($this->longDelay)->clickLink('Status: paid')
             ->pause($this->longDelay);
 
-        $this->order->orderProducts()
-            ->where('quantity_to_pick', '>', 0)
-            ->first()
-            ->each(function (OrderProduct $orderProduct) use ($browser) {
-                $browser->waitForText($orderProduct->product->sku);
-                $browser->assertSee($orderProduct->product->sku);
-                $browser->type('@barcode-input-field', $orderProduct->product->sku);
-                $browser->pause($this->shortDelay)
-                    ->keys('@barcode-input-field', '{enter}')
-                    ->pause($this->longDelay);
-            });
+        $skuToScan = collect($browser->elements('@product_sku'))->first();
+        $browser->pause($this->shortDelay)
+            ->pause($this->shortDelay)->keys('@barcode-input-field', $skuToScan->getText())
+            ->pause($this->shortDelay)->keys('@barcode-input-field', '{enter}')
+            ->pause($this->longDelay);
+
+        $skuToScan = collect($browser->elements('@product_sku'))->first();
+        $browser->pause($this->shortDelay)
+            ->pause($this->shortDelay)->keys('@barcode-input-field', $skuToScan->getText())
+            ->pause($this->shortDelay)->keys('@barcode-input-field', '{enter}')
+            ->pause($this->longDelay);
     }
 
     /**
