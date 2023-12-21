@@ -122,7 +122,7 @@ class PagesWalkTroughTest extends DuskTestCase
             $browser->driver->getKeyboard()->sendKeys($orderProduct->product->sku);
             $browser->pause($this->shortDelay)
                 ->keys('@barcode-input-field', '{enter}')
-                ->pause(1500);
+                ->pause($this->shortDelay);
         }
 
         $browser->pause(2000)
@@ -173,7 +173,8 @@ class PagesWalkTroughTest extends DuskTestCase
 
         $this->order->orderProducts()
             ->where('quantity_to_ship', '>', 0)
-            ->first()
+            ->limit(4)
+            ->get()
             ->each(function (OrderProduct $orderProduct) use ($browser) {
                 $browser
                 ->pause($this->shortDelay)
