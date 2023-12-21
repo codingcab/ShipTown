@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Models\Configuration;
 use App\User;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
@@ -21,6 +22,8 @@ abstract class DuskTestCase extends BaseTestCase
 
         $this->setEnvironmentValue('DEBUG', 'false');
         $this->setEnvironmentValue('DEMO_MODE', 'false');
+
+        Configuration::query()->update(['disable_2fa' => true]);
     }
 
     /**
