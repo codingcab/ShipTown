@@ -239,13 +239,29 @@ class PagesWalkTroughTest extends DuskTestCase
 
     /**
      * @param Browser $browser
+     * @throws TimeoutException
      */
     private function stocktaking(Browser $browser): void
     {
-        $browser->mouseover('#tools_link')->pause($this->shortDelay)
-            ->clickLink('Tools')->pause($this->shortDelay)
-            ->mouseover('#stocktaking_link')->pause($this->shortDelay)
-            ->clickLink('Stocktaking')->pause($this->shortDelay)
+        /** @var Product $product */
+        $product = Product::first();
+
+        $browser
+            ->pause($this->shortDelay)->mouseover('#tools_link')
+            ->pause($this->shortDelay)->clickLink('Tools')
+            ->pause($this->shortDelay)
+            ->pause($this->shortDelay)->mouseover('#stocktaking_link')
+            ->pause($this->shortDelay)->clickLink('Stocktaking')
+            ->pause($this->shortDelay)
+            ->pause($this->shortDelay)->typeSlowly('@barcode-input-field', $product->sku, 50)
+            ->pause($this->shortDelay)->screenshot('stocktaking')
+            ->pause($this->shortDelay)->keys('@barcode-input-field', '{enter}')
+            ->pause($this->shortDelay)
+            ->pause($this->shortDelay)->waitForText($product->name)
+            ->pause($this->shortDelay)
+            ->pause($this->shortDelay)->waitFor('#quantity-request-input')
+            ->pause($this->shortDelay)->typeSlowly('#quantity-request-input', 12)
+            ->pause($this->shortDelay)->keys('#quantity-request-input', '{ENTER}')
             ->pause($this->longDelay);
     }
 
