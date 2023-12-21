@@ -97,13 +97,15 @@ class PagesWalkTroughTest extends DuskTestCase
      */
     private function packlist(Browser $browser): void
     {
-        $browser->mouseover('#navToggleButton')->pause($this->shortDelay)
-            ->click('#navToggleButton')->pause($this->shortDelay)
-            ->mouseover('#packlists_link')->pause($this->shortDelay)
-            ->clickLink('Packlist')->pause($this->shortDelay)
-            ->clickLink('Status: paid')->pause($this->longDelay)
-            ->assertSee('Start AutoPilot Packing')
-            ->click('@startAutopilotButton')
+        $browser->pause($this->shortDelay)->mouseover('#navToggleButton')
+            ->pause($this->shortDelay)->click('#navToggleButton')
+            ->pause($this->shortDelay)->mouseover('#packlists_link')
+            ->pause($this->shortDelay)->clickLink('Packlist')
+            ->pause($this->shortDelay)->clickLink('Status: paid')
+            ->pause($this->longDelay)
+            ->pause($this->shortDelay)->assertSee('Start AutoPilot Packing')
+            ->pause($this->longDelay)
+            ->pause($this->shortDelay)->click('@startAutopilotButton')
             ->pause($this->longDelay);
 
         while ($this->order->orderProducts()->where('quantity_to_ship', '>', 0)->exists()) {
