@@ -41,9 +41,9 @@ class PagesWalkTroughTest extends DuskTestCase
 //            $this->dataCollectorStockDelivery($browser);
 //            $this->stocktaking($browser);
             $this->picklist($browser);
-//            $this->packlist($browser);
-//            $this->dashboard($browser);
-//            $this->restocking($browser);
+            $this->packlist($browser);
+            $this->dashboard($browser);
+            $this->restocking($browser);
         });
     }
 
@@ -59,8 +59,8 @@ class PagesWalkTroughTest extends DuskTestCase
             'password' => bcrypt('password')
         ]);
 
-        $product1 = Product::factory()->create(['sku' => '111576']);
-        $product2 = Product::factory()->create(['sku' => '222957']);
+        $product1 = Product::query()->where(['sku' => '111576'])->first() ?? Product::factory()->create(['sku' => '111576']);
+        $product2 = Product::query()->where(['sku' => '222957'])->first() ?? Product::factory()->create(['sku' => '222957']);
 
         $inventory1 = Inventory::query()->where(['product_id' => $product1->getKey(), 'warehouse_id' => $warehouse->getKey()])->first();
         $inventory2 = Inventory::query()->where(['product_id' => $product2->getKey(), 'warehouse_id' => $warehouse->getKey()])->first();
@@ -175,15 +175,11 @@ class PagesWalkTroughTest extends DuskTestCase
             ->each(function (OrderProduct $orderProduct) use ($browser) {
                 $browser
                 ->pause($this->shortDelay)
-                ->pause($this->shortDelay)->screenshot('01')
-                ->pause($this->shortDelay)->keys('@barcode-input-field', $orderProduct->product->sku, '{ENTER}')
+                ->pause($this->shortDelay)->keys('@barcode-input-field', $orderProduct->sku_ordered, '{ENTER}')
                 ->pause($this->shortDelay)
-                ->pause($this->shortDelay)->screenshot('02')
-                ->pause($this->shortDelay)->waitForText($orderProduct->product->sku)
+                ->pause($this->shortDelay)->waitForText($orderProduct->sku_ordered)
                 ->pause($this->shortDelay)
-                ->pause($this->shortDelay)->screenshot('04')
                 ->pause($this->shortDelay)->waitFor('#data-collection-record-quantity-request-input')
-                ->pause($this->shortDelay)->screenshot('04')
                 ->pause($this->shortDelay)->typeSlowly('#data-collection-record-quantity-request-input', 12)->pause($this->shortDelay)
                 ->pause($this->shortDelay)->keys('#data-collection-record-quantity-request-input', '{ENTER}')
                 ->pause($this->longDelay);
@@ -208,9 +204,12 @@ class PagesWalkTroughTest extends DuskTestCase
         $browser->pause($this->shortDelay)
             ->pause($this->shortDelay)->mouseover('#navToggleButton')
             ->pause($this->shortDelay)->click('#navToggleButton')
-            ->pause($this->shortDelay)->mouseover('#picklists_link')
+            ->pause($this->longDelay)->mouseover('#picklists_link')
             ->pause($this->shortDelay)->clickLink('Picklist')
-            ->pause($this->shortDelay)->clickLink('Status: paid')
+            ->pause($this->longDelay)->clickLink('Status: paid')
+            ->pause($this->longDelay);
+
+        $browser->vueAttribute('#picklist-table', '@picklist', $this->order->id)
             ->pause($this->longDelay);
 
         $this->order->orderProducts()
