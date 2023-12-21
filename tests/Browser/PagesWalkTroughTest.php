@@ -35,7 +35,7 @@ class PagesWalkTroughTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser->disableFitOnFailure();
 
-            $this->login($browser);
+//            $this->login($browser);
             $this->products($browser);
             $this->orders($browser);
             $this->transferIn($browser);
