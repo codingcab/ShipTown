@@ -156,7 +156,7 @@ class PagesWalkTroughTest extends DuskTestCase
             ->mouseover('#data_collector_link')->pause($this->shortDelay)
             ->clickLink('Data Collector')->pause($this->longDelay)
             ->click('#new_data_collection')->pause($this->longDelay)
-            ->typeSlowly('#collection_name_input', 'Stock delivery')
+            ->typeSlowly('@collection_name_input', 'Stock delivery')
             ->press('OK')
             ->waitUntilMissing('#collection_name_input');
 
