@@ -15,6 +15,14 @@ abstract class DuskTestCase extends BaseTestCase
     use CreatesApplication;
     use ResetsDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->setEnvironmentValue('DEBUG', 'false');
+        $this->setEnvironmentValue('DEMO_MODE', 'false');
+    }
+
     /**
      * Prepare for Dusk test execution.
      *
