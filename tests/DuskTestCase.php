@@ -34,11 +34,11 @@ abstract class DuskTestCase extends BaseTestCase
      */
     protected function driver(): RemoteWebDriver
     {
-        $options = (new ChromeOptions())->addArguments([
+        $options = (new ChromeOptions())->addArguments(collect([
             '--disable-gpu',
-            '--headless',
+            env('DUSK_HEADLESS', true) ?? '--headless',
             '--window-size=300,900',
-        ]);
+        ])->filter()->toArray());
 
         return RemoteWebDriver::create(
             'http://127.0.0.1:9515',
