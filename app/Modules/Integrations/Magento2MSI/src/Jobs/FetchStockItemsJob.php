@@ -16,9 +16,9 @@ class FetchStockItemsJob extends UniqueJob
         MagentoConnection::query()->get()
             ->each(function (MagentoConnection $connection) {
                 MagentoProduct::query()
+                    ->where(['connection_id' => $connection->getKey()])
                     ->whereRaw('IFNULL(exists_in_magento, 1) = 1')
-                    ->whereNull('stock_items_fetched_at')
-                    ->orWhereNull('stock_items_raw_import')
+                    ->whereRaw('(stock_items_fetched_at IS NULL OR stock_items_raw_import IS NULL)')
                     ->chunkById(100, function (Collection $products) use ($connection) {
                         try {
                             $skuList = $products->map(function (MagentoProduct $product) {
