@@ -41,7 +41,7 @@ Route::view('stocktaking', 'stocktaking')->name('stocktaking');
 Route::view('setting-profile', 'setting-profile')->name('setting-profile');
 Route::view('data-collector', 'data-collector-list')->name('data-collector');
 Route::get('data-collector/{data_collection_id}', [DataCollectorController::class, 'index'])->name('data-collector-show');
-Route::view('settings/warehouses', 'settings/warehouses')->name('settings.warehouses');
+
 
 Route::get('shipping-labels/{shipping_label}', [ShippingLabelController::class, 'show'])->name('shipping-labels');
 
@@ -61,6 +61,9 @@ Route::name('reports.')->group(function () {
     Route::get('reports/stocktake-suggestions-totals', [Reports\StocktakeSuggestionsTotalsReportController::class, 'index'])->name('stocktake-suggestions-totals');
     Route::get('reports/inventory-movements-summary', [Reports\InventoryMovementsSummaryController::class, 'index'])->name('inventory-movements-summary');
 });
+
+Route::view('settings/warehouses', 'settings/warehouses')->name('settings.warehouses');
+Route::view('settings/modules/warehouses', 'settings/modules/magento2msi');
 
 Route::get('pdf/orders/{order_number}/{template}', [PdfOrderController::class, 'show']);
 Route::get('csv/ready_order_shipments', [Csv\ReadyOrderShipmentController::class, 'index'])->name('ready_order_shipments_as_csv');
