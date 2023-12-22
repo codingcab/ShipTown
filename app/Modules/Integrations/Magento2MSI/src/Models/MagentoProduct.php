@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
- * @property Product $product
  * @property boolean $is_in_stock
  * @property double $quantity
  * @property Carbon $stock_items_fetched_at
@@ -22,6 +21,8 @@ use Illuminate\Support\Carbon;
  * @property double $magento_sale_price
  * @property Carbon $magento_sale_price_start_date
  * @property Carbon $magento_sale_price_end_date
+ *
+ * @property Product $product
  */
 class MagentoProduct extends BaseModel
 {
