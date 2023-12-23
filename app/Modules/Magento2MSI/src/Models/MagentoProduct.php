@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Integrations\Magento2MSI\src\Models;
+namespace App\Modules\Magento2MSI\src\Models;
 
 use App\BaseModel;
 use App\Models\Product;

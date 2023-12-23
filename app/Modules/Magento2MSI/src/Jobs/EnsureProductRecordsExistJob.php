@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Integrations\Magento2MSI\src\Jobs;
+namespace App\Modules\Magento2MSI\src\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

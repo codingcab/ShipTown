@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Integrations\Magento2MSI\src\Http\Requests;
+namespace App\Modules\Magento2MSI\src\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Integrations\Magento2MSI\src\Api;
+namespace App\Modules\Magento2MSI\src\Api;
 
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Arr;
@@ -95,7 +95,8 @@ class MagentoApi
         ]);
     }
 
-    public static function postInventorySourceItems($token, $sku, $storeCode, $quantity): ?Response
+//    public static function postInventorySourceItems($token, $sku, $storeCode, $quantity): ?Response
+    public static function postInventorySourceItems($token, $sourceItems): ?Response
     {
         return Client::post($token, '/inventory/source-items', [
             'sourceItems' => [

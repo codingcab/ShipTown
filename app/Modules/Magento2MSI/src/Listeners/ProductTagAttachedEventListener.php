@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Modules\Integrations\Magento2MSI\src\Listeners;
+namespace App\Modules\Magento2MSI\src\Listeners;
 
 use App\Events\Product\ProductTagAttachedEvent;
-use App\Modules\Integrations\Magento2MSI\src\Models\MagentoConnection;
-use App\Modules\Integrations\Magento2MSI\src\Models\MagentoProduct;
+use App\Modules\Magento2MSI\src\Models\MagentoConnection;
+use App\Modules\Magento2MSI\src\Models\MagentoProduct;
 
 class ProductTagAttachedEventListener
 {

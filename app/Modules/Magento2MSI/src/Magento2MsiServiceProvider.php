@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Integrations\Magento2MSI\src;
+namespace App\Modules\Magento2MSI\src;
 
 use App\Events\EveryTenMinutesEvent;
 use App\Events\Product\ProductTagAttachedEvent;
@@ -10,7 +10,7 @@ use App\Modules\BaseModuleServiceProvider;
 
 class Magento2MsiServiceProvider extends BaseModuleServiceProvider
 {
-    public static string $module_name = 'Integration - Magento 2 MSI API';
+    public static string $module_name = 'eCommerce - Magento 2 MSI';
 
     public static string $module_description = 'Module provides connectivity to Magento 2 API - Multi Source Inventory';
 
@@ -20,19 +20,19 @@ class Magento2MsiServiceProvider extends BaseModuleServiceProvider
 
     protected $listen = [
         SyncRequestedEvent::class => [
-            Listeners\SyncRequestedEventListener::class,
+            \App\Modules\Magento2MSI\src\Listeners\SyncRequestedEventListener::class,
         ],
 
         EveryTenMinutesEvent::class => [
-            Listeners\EveryTenMinutesEventListener::class
+            \App\Modules\Magento2MSI\src\Listeners\EveryTenMinutesEventListener::class
         ],
 
         ProductTagAttachedEvent::class => [
-            Listeners\ProductTagAttachedEventListener::class,
+            \App\Modules\Magento2MSI\src\Listeners\ProductTagAttachedEventListener::class,
         ],
 
         ProductTagDetachedEvent::class => [
-            Listeners\ProductTagDetachedEventListener::class,
+            \App\Modules\Magento2MSI\src\Listeners\ProductTagDetachedEventListener::class,
         ],
     ];
 }

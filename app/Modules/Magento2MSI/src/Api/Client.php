@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Integrations\Magento2MSI\src\Api;
+namespace App\Modules\Magento2MSI\src\Api;
 
 use Exception;
 use Illuminate\Http\Client\Response;

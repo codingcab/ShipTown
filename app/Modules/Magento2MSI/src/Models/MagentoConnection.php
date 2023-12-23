@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Integrations\Magento2MSI\src\Models;
+namespace App\Modules\Magento2MSI\src\Models;
 
 use App\BaseModel;
 use App\Traits\HasTagsTrait;
@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Crypt;
 /**
  * @property string $base_url
  * @property string $api_access_token
- * @property string $store_code
+ * @property string $magento_store_code
  * @property integer inventory_source_warehouse_tag_id
  */
 class MagentoConnection extends BaseModel

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Modules\Integrations\Magento2MSI\src\Jobs;
+namespace App\Modules\Magento2MSI\src\Jobs;
 
 use App\Abstracts\UniqueJob;
-use App\Modules\Integrations\Magento2MSI\src\Api\MagentoApi;
-use App\Modules\Integrations\Magento2MSI\src\Models\MagentoConnection;
-use App\Modules\Integrations\Magento2MSI\src\Models\MagentoProduct;
+use App\Modules\Magento2MSI\src\Api\MagentoApi;
+use App\Modules\Magento2MSI\src\Models\MagentoConnection;
+use App\Modules\Magento2MSI\src\Models\MagentoProduct;
 use Exception;
 use Illuminate\Support\Collection;
 
