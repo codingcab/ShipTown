@@ -1,31 +1,39 @@
 <?php
 
-namespace Tests\Feature\Routes\Web\Shipping_labels;
+namespace Tests\Feature\Routes\Web\Admin\Settings\MailTemplates\MailTemplate;
 
-use App\Models\Order;
-use App\Models\ShippingLabel;
+use App\Models\MailTemplate;
 use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
  *
  */
-class Shipping_labelTest extends TestCase
+class PreviewTest extends TestCase
 {
-    protected string $uri = '/shipping-labels';
+    use RefreshDatabase;
 
+    /**
+     * @var string
+     */
+    protected string $uri = '';
+
+    /**
+     * @var User
+     */
     protected User $user;
 
+    /**
+     *
+     */
     protected function setUp(): void
     {
         parent::setUp();
-        $order = Order::factory()->create();
-        $shippingLabel = ShippingLabel::factory()->create([
-            'order_id' => $order->getKey(),
-            'shipping_number' => 'test'
-        ]);
-        $this->uri = route('shipping-labels', [$shippingLabel->getKey()]);
         $this->user = User::factory()->create();
+        $mailTemplate = MailTemplate::factory()->create();
+
+        $this->uri = route('settings.mail_template_preview', ['mailTemplate' => $mailTemplate]);
     }
 
     /** @test */
@@ -49,9 +57,7 @@ class Shipping_labelTest extends TestCase
 
         $response = $this->get($this->uri);
 
-        ray($response);
-
-        $response->assertOk();
+        $response->assertForbidden();
     }
 
     /** @test */
@@ -63,6 +69,6 @@ class Shipping_labelTest extends TestCase
 
         $response = $this->get($this->uri);
 
-        $response->assertOk();
+        $response->assertSuccessful();
     }
 }

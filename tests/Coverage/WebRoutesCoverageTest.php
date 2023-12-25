@@ -46,10 +46,12 @@ class WebRoutesCoverageTest extends TestCase
     {
         $routeName = $route->uri . 'Test';
 
+
         $routeName = str_replace('-', '_', $routeName);
         $routeName = str_replace('.', '_', $routeName);
         $routeName = str_replace('{', '', $routeName);
         $routeName = str_replace('}', '', $routeName);
+        $routeName = Str::camel($routeName);
 
         return implode('/', collect(explode('/', $routeName))
             ->map(function ($part) {

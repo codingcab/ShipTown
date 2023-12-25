@@ -1,19 +1,24 @@
 <?php
 
-namespace Tests\Feature\Routes\Web\Reports;
+namespace Tests\Feature\Routes\Web\DataCollector;
 
+use App\Models\DataCollection;
+use App\Models\Warehouse;
 use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
  *
  */
-class Inventory_movements_summaryTest extends TestCase
+class DataCollectionIdTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * @var string
      */
-    protected string $uri = 'reports/inventory-movements-summary';
+    protected string $uri = 'data-collector';
 
     /**
      * @var User
@@ -48,7 +53,12 @@ class Inventory_movements_summaryTest extends TestCase
     {
         $this->actingAs($this->user, 'web');
 
-        $response = $this->get($this->uri);
+        $dataCollection = DataCollection::factory()->create([
+            'warehouse_id' => Warehouse::factory()->create()->getKey(),
+            'name' => 'test'
+        ]);
+
+        $response = $this->get($this->uri . '/' . $dataCollection->id);
 
         $response->assertSuccessful();
     }
@@ -60,7 +70,12 @@ class Inventory_movements_summaryTest extends TestCase
 
         $this->actingAs($this->user, 'web');
 
-        $response = $this->get($this->uri);
+        $dataCollection = DataCollection::factory()->create([
+            'warehouse_id' => Warehouse::factory()->create()->getKey(),
+            'name' => 'test'
+        ]);
+
+        $response = $this->get($this->uri . '/' . $dataCollection->id);
 
         $response->assertSuccessful();
     }

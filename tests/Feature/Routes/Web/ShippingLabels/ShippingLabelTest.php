@@ -1,41 +1,31 @@
 <?php
 
-namespace Tests\Feature\Routes\Web\Pdf\Orders\Order_number;
+namespace Tests\Feature\Routes\Web\ShippingLabels;
 
 use App\Models\Order;
+use App\Models\ShippingLabel;
 use App\User;
 use Tests\TestCase;
 
 /**
  *
  */
-class TemplateTest extends TestCase
+class Shipping_labelTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    protected string $uri = 'this set in setUp() method';
+    protected string $uri = '/shipping-labels';
 
-    /**
-     * @var User
-     */
     protected User $user;
 
-    /**
-     * @var Order
-     */
-    protected Order $order;
-
-    /**
-     *
-     */
     protected function setUp(): void
     {
         parent::setUp();
+        $order = Order::factory()->create();
+        $shippingLabel = ShippingLabel::factory()->create([
+            'order_id' => $order->getKey(),
+            'shipping_number' => 'test'
+        ]);
+        $this->uri = route('shipping-labels', [$shippingLabel->getKey()]);
         $this->user = User::factory()->create();
-        $this->order = Order::factory()->create();
-
-        $this->uri = '/pdf/orders/'.$this->order->order_number. '/address_label';
     }
 
     /** @test */
@@ -59,7 +49,9 @@ class TemplateTest extends TestCase
 
         $response = $this->get($this->uri);
 
-        $response->assertSuccessful();
+        ray($response);
+
+        $response->assertOk();
     }
 
     /** @test */
@@ -71,6 +63,6 @@ class TemplateTest extends TestCase
 
         $response = $this->get($this->uri);
 
-        $response->assertSuccessful();
+        $response->assertOk();
     }
 }
