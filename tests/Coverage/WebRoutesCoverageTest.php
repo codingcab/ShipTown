@@ -46,6 +46,7 @@ class WebRoutesCoverageTest extends TestCase
     {
         $routeName = $route->uri . 'Test';
 
+
         $routeName = str_replace('-', '_', $routeName);
         $routeName = str_replace('.', '_', $routeName);
         $routeName = str_replace('{', '', $routeName);
