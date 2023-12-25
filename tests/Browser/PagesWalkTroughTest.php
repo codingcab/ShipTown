@@ -21,7 +21,7 @@ class PagesWalkTroughTest extends DuskTestCase
     private Order $order;
     private User $user;
     private int $shortDelay = 120;
-    private int $longDelay = 2000;
+    private int $longDelay = 0;
 
 
     /**

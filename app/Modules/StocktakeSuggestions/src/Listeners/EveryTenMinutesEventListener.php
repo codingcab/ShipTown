@@ -6,7 +6,7 @@ use App\Modules\StocktakeSuggestions\src\Jobs\RunAllJobsJob;
 
 class EveryTenMinutesEventListener
 {
-    public function handle()
+    public function handle(): void
     {
         RunAllJobsJob::dispatch();
     }
