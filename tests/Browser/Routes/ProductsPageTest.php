@@ -74,8 +74,7 @@ class ProductsPageTest extends DuskTestCase
             /** @var Product $product */
             $product = Product::factory()->create();
 
-            $browser->type('@barcode-input-field', $product->sku)
-                ->keys('@barcode-input-field', [WebDriverKeys::ENTER])
+            $browser->keys('@barcode-input-field', $product->sku, '{enter}')->pause(101)
                 ->waitForText($product->name)
                 ->assertFocused('@barcode-input-field');
         });

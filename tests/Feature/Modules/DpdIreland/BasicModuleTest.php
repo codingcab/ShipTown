@@ -26,19 +26,26 @@ class BasicModuleTest extends TestCase
 
         DpdIrelandServiceProvider::enableModule();
 
-        $address = OrderAddress::factory()->create([
-            'address1' => '6-9 Trinity Street',
-            'address2' => '',
-            'city' => 'Dublin',
-            'postcode' => 'D02EY47',
-            'country_code' => 'IE',
-        ]);
+        /** @var OrderAddress $testAddress */
+        $testAddress = OrderAddress::factory()->make();
+        $testAddress->first_name = 'John';
+        $testAddress->last_name = 'Smith';
+        $testAddress->phone = '12345678901';
+        $testAddress->company = "DPD Group Ltd";
+        $testAddress->country_code = "IE";
+        $testAddress->postcode = "B661BY";
+        $testAddress->address1 = "DPD Ireland";
+        $testAddress->address2 = "Unit 2B Midland Gateway Bus";
+        $testAddress->city = "Westmeath";
+        $testAddress->state_code = "Kilbeggan";
+        $testAddress->email = 'john.smith@dpd.ie';
+        $testAddress->save();
 
         /** @var Order $order */
         $order = Order::factory()->create([
-            'shipping_address_id' => $address->getKey(),
-            'status_code' => 'anpost_courier',
-            'label_template' => 'dpd_irl_next_day'
+            'shipping_address_id' => $testAddress->getKey(),
+            'status_code' => 'test_orders_courier_dpd_ireland',
+            'label_template' => 'dpd_irl_next_day',
         ]);
 
         $this->actingAs(User::factory()->create(), 'api');

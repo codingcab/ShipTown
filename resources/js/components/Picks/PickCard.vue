@@ -14,7 +14,7 @@
                             <div class="row">
                                 <div class="col-md-8 col-lg-6">
                                     <div class="text-primary h5">{{ pick['name_ordered'] }}</div>
-                                    <div>sku: <b> {{ pick['sku_ordered'] }} </b></div>
+                                    <div>sku: <div dusk="product_sku" id="product_sku" class="font-weight-bold d-inline"> {{ pick['sku_ordered'] }} </div></div>
                                     <div>product: <b> <a target="_blank" :href="'/products?hide_nav_bar=true&filter[sku]=' + product_sku ">{{ product_sku }}</a></b></div>
                                 </div>
                                 <div class="col-md-4 col-lg-6">

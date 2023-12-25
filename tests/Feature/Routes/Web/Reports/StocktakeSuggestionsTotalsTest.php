@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Routes\Web\Quick_connect;
+namespace Tests\Feature\Routes\Web\Reports;
 
 use App\User;
 use Tests\TestCase;
@@ -8,18 +8,17 @@ use Tests\TestCase;
 /**
  *
  */
-class MagentoTest extends TestCase
+class StocktakeSuggestionsTotalsTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    protected string $uri = '/quick-connect/magento';
+    protected string $uri = '/reports/stocktake-suggestions';
 
     protected mixed $user;
 
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->user = User::factory()->create();
     }
 
     /** @test */
@@ -39,10 +38,7 @@ class MagentoTest extends TestCase
     /** @test */
     public function test_user_call()
     {
-        /** @var User user */
-        $user = User::factory()->create();
-
-        $this->actingAs($user, 'web');
+        $this->actingAs($this->user, 'web');
 
         $response = $this->get($this->uri);
 
@@ -52,12 +48,9 @@ class MagentoTest extends TestCase
     /** @test */
     public function test_admin_call()
     {
-        /** @var User user */
-        $user = User::factory()->create();
+        $this->user->assignRole('admin');
 
-        $user->assignRole('admin');
-
-        $this->actingAs($user, 'web');
+        $this->actingAs($this->user, 'web');
 
         $response = $this->get($this->uri);
 

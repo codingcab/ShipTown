@@ -1,28 +1,30 @@
 <?php
 
-namespace Tests\Feature\Routes\Web\Admin\Settings\Mail_templates\MailTemplate;
+namespace Tests\Feature\Routes\Web\Pdf\Orders\OrderNumber;
 
-use App\Models\MailTemplate;
+use App\Models\Order;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
  *
  */
-class PreviewTest extends TestCase
+class TemplateTest extends TestCase
 {
-    use RefreshDatabase;
-
     /**
      * @var string
      */
-    protected string $uri = '';
+    protected string $uri = 'this set in setUp() method';
 
     /**
      * @var User
      */
     protected User $user;
+
+    /**
+     * @var Order
+     */
+    protected Order $order;
 
     /**
      *
@@ -31,9 +33,9 @@ class PreviewTest extends TestCase
     {
         parent::setUp();
         $this->user = User::factory()->create();
-        $mailTemplate = MailTemplate::factory()->create();
+        $this->order = Order::factory()->create();
 
-        $this->uri = route('settings.mail_template_preview', ['mailTemplate' => $mailTemplate]);
+        $this->uri = '/pdf/orders/'.$this->order->order_number. '/address_label';
     }
 
     /** @test */
@@ -57,7 +59,7 @@ class PreviewTest extends TestCase
 
         $response = $this->get($this->uri);
 
-        $response->assertForbidden();
+        $response->assertSuccessful();
     }
 
     /** @test */

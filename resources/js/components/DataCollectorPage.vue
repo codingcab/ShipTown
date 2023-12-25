@@ -23,7 +23,7 @@
                 <barcode-input-field @barcodeScanned="onBarcodeScanned" placeholder="Scan sku or alias" class="text-center font-weight-bold"></barcode-input-field>
             </div>
 
-            <barcode-input-field :url_param_name="'filter[shelf_location_greater_than]'" @barcodeScanned="setMinShelfLocation" placeholder="shelf" style="width: 75px" class="text-center ml-2 font-weight-bold"></barcode-input-field>
+            <barcode-input-field v-bind:auto-focus-after=0 :url_param_name="'filter[shelf_location_greater_than]'" @barcodeScanned="setMinShelfLocation" placeholder="shelf" style="width: 75px" class="text-center ml-2 font-weight-bold"></barcode-input-field>
 
             <button id="showConfigurationButton" v-b-modal="'configuration-modal'" type="button" class="btn btn-primary ml-2"><font-awesome-icon icon="cog" class="fa-lg"></font-awesome-icon></button>
         </div>
@@ -79,7 +79,7 @@
 
         <b-modal id="configuration-modal" no-fade hide-header
                  @shown="onShownConfigurationModal"
-                 @hidden="setFocusElementById(100,'barcodeInput', true, true)"
+                 @hidden="setFocusElementById('barcodeInput')"
         >
             <div v-if="dataCollection">
                 <stocktake-input></stocktake-input>
@@ -157,7 +157,7 @@
 
         </b-modal>
 
-        <b-modal id="transferToModal" no-fade hide-header @hidden="setFocusElementById(100,'barcodeInput', true, true)">
+        <b-modal id="transferToModal" no-fade hide-header @hidden="setFocusElementById('barcodeInput', true, true)">
             <template v-for="warehouse in warehouses">
                 <button @click.prevent="transferToWarehouse(warehouse)" v-if="warehouse.id !== dataCollection.warehouse_id" v-b-toggle class="col btn mb-2 btn-primary">{{ warehouse.name }}</button>
             </template>
@@ -253,7 +253,7 @@
             },
 
             onModalHidden() {
-                this.setFocusElementById(100, 'barcodeInput', true, true);
+                this.setFocusElementById('barcodeInput', true, true);
 
                 setTimeout(() => {
                     this.reloadDataCollection();
@@ -261,7 +261,7 @@
             },
 
             onShownConfigurationModal() {
-                this.setFocusElementById(100,'stocktake-input', true, true);
+                this.setFocusElementById('stocktake-input', true, true);
                 this.buttonsEnabled = true;
             },
 

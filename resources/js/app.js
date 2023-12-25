@@ -138,6 +138,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon);
 /**
  * Application mixins
  */
+Vue.component('stocktake-suggestions-page', require('./components/settings/modules/StocktakaSuggestionsPage.vue').default);
 Vue.component('activity-log-page', require('./components/ActivityLogPage.vue').default);
 Vue.component('admin-modules-slack-config-page', require('./components/admin/modules/slack/config-page.vue').default);
 Vue.component('api', require('./mixins/api.vue').default);

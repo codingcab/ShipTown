@@ -7,7 +7,7 @@ use App\Models\StocktakeSuggestion;
 
 class InventoryMovementCreatedEventListener
 {
-    public function handle(InventoryMovementCreatedEvent $event)
+    public function handle(InventoryMovementCreatedEvent $event): void
     {
         $reason = 'negative stock - have you received in the stock correctly?';
         $points = 5;

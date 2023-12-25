@@ -54,13 +54,11 @@
         <modal-inventory-movement :product_sku="showMovementSku" :warehouse_code="warehouse_code"/>
 
         <div class="row col" ref="loadingContainerOverride" style="height: 32px"></div>
-
     </div>
 </template>
 
 <script>
     import loadingOverlay from '../mixins/loading-overlay';
-    import BarcodeInputField from "./SharedComponents/BarcodeInputField";
     import api from "../mixins/api";
     import helpers from "../mixins/helpers";
     import url from "../mixins/url";
@@ -71,7 +69,6 @@
         mixins: [loadingOverlay, url, api, helpers],
 
         components: {
-            BarcodeInputField,
             SuggestionRecord,
             ModalInventoryMovement,
         },

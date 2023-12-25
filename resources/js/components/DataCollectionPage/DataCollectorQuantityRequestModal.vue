@@ -108,7 +108,7 @@
             },
 
             modalShown() {
-                this.setFocusElementById(300, 'data-collection-record-quantity-request-input', true, false);
+                this.setFocusElementById('data-collection-record-quantity-request-input', true);
             },
 
             barcodeScanned: async function (barcode) {
@@ -153,7 +153,7 @@
 
                 if (this.quantity.length > 7) {
                     this.notifyError('Quantity is too large', {'timeout': 5000});
-                    this.setFocusElementById(100,'data-collection-record-quantity-request-input', true, false);
+                    this.setFocusElementById('data-collection-record-quantity-request-input', true);
                     return;
                 }
 

@@ -1,17 +1,12 @@
 <template>
     <div>
-        <input :id="input_id"
-               placeholder="Scan SKU to stocktake"
-               type="text"
-               class="form-control"
-               @keyup.enter="showStocktakeModal"
-               autocomplete="off"
-               enterkeyhint="done"
-        >
+        <barcode-input-field :input_id="input_id" placeholder="Search products using name, sku, alias or command"
+                             @barcodeScanned="showStocktakeModal"></barcode-input-field>
 
-        <b-modal @ok="submitStocktake" :id="modal_name" scrollable no-fade hide-header
-                 @shown="setFocusElementById(100, 'quantity-request-input', true, false)"
-                 @hidden="setFocusElementById(100, input_id, true, true)"
+        <b-modal :id="modal_name" scrollable no-fade hide-header
+                 @ok="submitStocktake"
+                 @shown="setFocusElementById('quantity-request-input')"
+                 @hidden="setFocusElementById(input_id)"
         >
             <template v-if="inventory">
                 <product-info-card :product="inventory.product"></product-info-card>
@@ -20,7 +15,7 @@
                 <div class="row mt-2">
                     <div class="col-6">
                         <label class="small" for="adjust-by-request-input">adjust by</label>
-                        <input class="form-control " :placeholder="'Adjust by'" :class="{ 'border-danger': this.adjustByQuantity < 0, 'border-success': this.adjustByQuantity > 0}"
+                         <input class="form-control " :placeholder="'Adjust by'" :class="{ 'border-danger': this.adjustByQuantity < 0, 'border-success': this.adjustByQuantity > 0}"
                                id="adjust-by-request-input"
                                dusk="adjust-by-request-input"
                                v-model="adjustByQuantity"
@@ -34,6 +29,8 @@
                         <input class="form-control" :placeholder="'New quantity'" :class="{ 'border-danger': this.adjustByQuantity < 0, 'border-success': this.adjustByQuantity > 0}"
                                id="quantity-request-input"
                                dusk="quantity-request-input"
+                               ref="quantity-request-input"
+                               name="quantity-request-input"
                                v-model="newQuantity"
                                type="number"
                                inputmode="numeric"
@@ -66,10 +63,16 @@
     export default {
         mixins: [url, api, helpers],
 
+        props: {
+            autoFocusAfter: {
+                type: Number,
+                default: 100,
+            }
+        },
+
         data: function() {
             return {
                 modal_name: 'stocktake-modal',
-                input_id: 'stocktake-input',
                 inventory: null,
                 adjustByQuantity: null,
                 newQuantity: null,
@@ -77,6 +80,19 @@
                 recentStocktakes: [],
                 stocktakeSuggestions: [],
             };
+        },
+
+        computed: {
+            input_id() {
+                return `stocktake_input_${Math.floor(Math.random() * 10000000)}`;
+            }
+        },
+
+        mounted() {
+            if (! this.currentUser()['warehouse_id']) {
+                this.$snotify.error('You do not have warehouse assigned. Please contact administrator', {timeout: 50000});
+                this.$bvModal.hide(this.modal_name);
+            }
         },
 
         watch: {
@@ -125,16 +141,35 @@
             }
         },
 
-        mounted() {
-            if (! this.currentUser()['warehouse_id']) {
-                this.$snotify.error('You do not have warehouse assigned. Please contact administrator', {timeout: 50000});
-                this.$bvModal.hide(this.modal_name);
-            }
-
-            this.setFocusElementById(100, this.input_id, true, true);
-        },
-
         methods: {
+            focusAndOpenKeyboard(el, timeout) {
+                if(!timeout) {
+                    timeout = 100;
+                }
+                if(el) {
+                    // Align temp input element approximately where the input element is
+                    // so the cursor doesn't jump around
+                    var __tempEl__ = document.createElement('input');
+                    __tempEl__.style.position = 'absolute';
+                    __tempEl__.style.top = (el.offsetTop + 7) + 'px';
+                    __tempEl__.style.left = el.offsetLeft + 'px';
+                    __tempEl__.style.height = 0;
+                    __tempEl__.style.opacity = 0;
+                    // Put this temp element as a child of the page <body> and focus on it
+                    document.body.appendChild(__tempEl__);
+                    __tempEl__.focus();
+                    console.log('test');
+
+                    // The keyboard is open. Now do a delayed focus on the target element
+                    setTimeout(function() {
+                        el.focus();
+                        el.click();
+                        // Remove the temp element
+                        document.body.removeChild(__tempEl__);
+                    }, timeout);
+                }
+            },
+
             isCountedRecently(last_counted_at, days) {
                 const minDateAllowed = moment().subtract(days, 'days');
 
@@ -142,7 +177,7 @@
             },
 
             showStocktakeModal(event) {
-                this.stocktakeSKU(event.target.value);
+                this.stocktakeSKU(event);
             },
 
             stocktakeSKU: async function (sku) {
@@ -167,18 +202,17 @@
                     .then(e => {
                         if (e.data.meta.total === 0) {
                             this.notifyError('Product not found - "' + sku + '"');
-                            this.setFocusElementById(100, 'stocktake-input', true, true);
+                            this.setFocusElementById('stocktake-input', true, true);
                             return;
                         }
 
                         this.inventory = e.data.data[0];
-                        this.newQuantity = this.inventory.quantity;
 
                         this.$bvModal.show(this.modal_name);
                     })
                     .catch((error) => {
                         this.displayApiCallError(error);
-                        this.setFocusElementById(100, 'stocktake-input', true, true);
+                        this.setFocusElementById('stocktake-input', true, true);
                     });
             },
 

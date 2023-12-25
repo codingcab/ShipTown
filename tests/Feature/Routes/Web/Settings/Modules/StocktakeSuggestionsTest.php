@@ -1,28 +1,23 @@
 <?php
 
-namespace Tests\Feature\Routes\Web\Reports;
+namespace Tests\Feature\Routes\Web\Settings\Modules;
 
 use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
  *
  */
-class Inventory_movements_summaryTest extends TestCase
+class Stocktake_suggestionsTest extends TestCase
 {
     /**
      * @var string
      */
-    protected string $uri = 'reports/inventory-movements-summary';
+    protected string $uri = '';
 
-    /**
-     * @var User
-     */
-    protected User $user;
+    protected mixed $user;
 
-    /**
-     *
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -50,7 +45,7 @@ class Inventory_movements_summaryTest extends TestCase
 
         $response = $this->get($this->uri);
 
-        $response->assertSuccessful();
+        $response->assertForbidden();
     }
 
     /** @test */

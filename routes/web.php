@@ -69,6 +69,11 @@ Route::get('csv/products/picked', [Csv\ProductsPickedInWarehouse::class, 'index'
 Route::get('csv/products/shipped', [Csv\ProductsShippedFromWarehouseController::class, 'index'])->name('warehouse_shipped.csv');
 Route::get('csv/boxtop/stock', [Csv\BoxTopStockController::class, 'index'])->name('boxtop-warehouse-stock.csv');
 
+
+Route::middleware(['role:admin'])->group(function () {
+    Route::view('settings/modules/stocktake-suggestions', 'settings/modules/stocktake-suggestions');
+});
+
 Route::prefix('admin')->middleware(['web', 'auth', 'role:admin', 'twofactor'])->group(function () {
     Route::view('modules/slack/config', 'modules/slack/config')->name('modules.slack.config');
 

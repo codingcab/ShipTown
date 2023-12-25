@@ -122,6 +122,7 @@ class AppGenerateRoutesTests extends Command
         $routeName = str_replace('.', '_', $routeName);
         $routeName = str_replace('{', '', $routeName);
         $routeName = str_replace('}', '', $routeName);
+        $routeName = Str::camel($routeName);
 
         return implode('/', collect(explode('/', $routeName))->map(function ($part) {
             return Str::ucfirst($part);

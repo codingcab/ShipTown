@@ -13,9 +13,9 @@ class DpdIrelandFactory extends Factory
     {
         return [
             'live'              => false,
-            'token'             => env('TEST_DPD_TOKEN', $this->faker->randomNumber(9)),
-            'user'              => env('TEST_DPD_USER', $this->faker->randomNumber(6)),
-            'password'          => env('TEST_DPD_PASSWORD', $this->faker->randomNumber(6)),
+            'token'             => $this->faker->randomNumber(9),
+            'user'              => $this->faker->randomNumber(6),
+            'password'          => $this->faker->randomNumber(6),
             'contact'           => 'John Smith',
             'contact_telephone' => '12345678901',
             'contact_email'     => 'john.smith@dpd.ie',

@@ -1,30 +1,29 @@
 <?php
 
-namespace Tests\Feature\Routes\Web\Pdf\Orders\Order_number;
+namespace Tests\Feature\Routes\Web\DataCollector;
 
-use App\Models\Order;
+use App\Models\DataCollection;
+use App\Models\Warehouse;
 use App\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
  *
  */
-class TemplateTest extends TestCase
+class DataCollectionIdTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * @var string
      */
-    protected string $uri = 'this set in setUp() method';
+    protected string $uri = 'data-collector';
 
     /**
      * @var User
      */
     protected User $user;
-
-    /**
-     * @var Order
-     */
-    protected Order $order;
 
     /**
      *
@@ -33,9 +32,6 @@ class TemplateTest extends TestCase
     {
         parent::setUp();
         $this->user = User::factory()->create();
-        $this->order = Order::factory()->create();
-
-        $this->uri = '/pdf/orders/'.$this->order->order_number. '/address_label';
     }
 
     /** @test */
@@ -57,7 +53,12 @@ class TemplateTest extends TestCase
     {
         $this->actingAs($this->user, 'web');
 
-        $response = $this->get($this->uri);
+        $dataCollection = DataCollection::factory()->create([
+            'warehouse_id' => Warehouse::factory()->create()->getKey(),
+            'name' => 'test'
+        ]);
+
+        $response = $this->get($this->uri . '/' . $dataCollection->id);
 
         $response->assertSuccessful();
     }
@@ -69,7 +70,12 @@ class TemplateTest extends TestCase
 
         $this->actingAs($this->user, 'web');
 
-        $response = $this->get($this->uri);
+        $dataCollection = DataCollection::factory()->create([
+            'warehouse_id' => Warehouse::factory()->create()->getKey(),
+            'name' => 'test'
+        ]);
+
+        $response = $this->get($this->uri . '/' . $dataCollection->id);
 
         $response->assertSuccessful();
     }

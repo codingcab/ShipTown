@@ -20,8 +20,32 @@ class PagesWalkTroughTest extends DuskTestCase
 {
     private Order $order;
     private User $user;
-    private int $shortDelay = 200;
+    private int $shortDelay = 120;
     private int $longDelay = 0;
+
+
+    /**
+     * A Dusk test example.
+     *
+     * @return void
+     * @throws Throwable
+     */
+    public function testExample()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->disableFitOnFailure();
+
+            $this->login($browser);
+            $this->products($browser);
+            $this->orders($browser);
+            $this->dataCollectorStockDelivery($browser);
+            $this->stocktaking($browser);
+            $this->picklist($browser);
+            $this->packlist($browser);
+            $this->dashboard($browser);
+            $this->restocking($browser);
+        });
+    }
 
     protected function setUp(): void
     {
@@ -30,11 +54,13 @@ class PagesWalkTroughTest extends DuskTestCase
         /** @var Warehouse $warehouse */
         $warehouse = Warehouse::factory()->create();
 
-        $this->user = User::factory()->create(['password' => bcrypt('password')]);
-        $this->user->warehouse()->associate($warehouse);
+        $this->user = User::factory()->create([
+            'warehouse_id' => $warehouse->getKey(),
+            'password' => bcrypt('password')
+        ]);
 
-        $product1 = Product::factory()->create(['sku' => '111576']);
-        $product2 = Product::factory()->create(['sku' => '222957']);
+        $product1 = Product::query()->where(['sku' => '111576'])->first() ?? Product::factory()->create(['sku' => '111576']);
+        $product2 = Product::query()->where(['sku' => '222957'])->first() ?? Product::factory()->create(['sku' => '222957']);
 
         $inventory1 = Inventory::query()->where(['product_id' => $product1->getKey(), 'warehouse_id' => $warehouse->getKey()])->first();
         $inventory2 = Inventory::query()->where(['product_id' => $product2->getKey(), 'warehouse_id' => $warehouse->getKey()])->first();
@@ -59,31 +85,8 @@ class PagesWalkTroughTest extends DuskTestCase
         ]);
 
 
-        InventoryService::stocktake($inventory1, $orderProduct1->quantity_ordered);
-        InventoryService::stocktake($inventory2, $orderProduct2->quantity_ordered);
-    }
-
-    /**
-     * A Dusk test example.
-     *
-     * @return void
-     * @throws Throwable
-     */
-    public function testExample()
-    {
-        $this->browse(function (Browser $browser) {
-            $browser->disableFitOnFailure();
-
-            $this->login($browser);
-            $this->products($browser);
-            $this->orders($browser);
-            $this->transferIn($browser);
-            $this->stocktaking($browser);
-            $this->picklist($browser);
-            $this->packlist($browser);
-            $this->dashboard($browser);
-            $this->restocking($browser);
-        });
+        InventoryService::stocktake($inventory1, $orderProduct1->quantity_ordered+1);
+        InventoryService::stocktake($inventory2, $orderProduct2->quantity_ordered+1);
     }
 
     /**
@@ -94,13 +97,15 @@ class PagesWalkTroughTest extends DuskTestCase
      */
     private function packlist(Browser $browser): void
     {
-        $browser->mouseover('#navToggleButton')->pause($this->shortDelay)
-            ->click('#navToggleButton')->pause($this->shortDelay)
-            ->mouseover('#packlists_link')->pause($this->shortDelay)
-            ->clickLink('Packlist')->pause($this->shortDelay)
-            ->clickLink('Status: paid')->pause($this->longDelay)
-            ->assertSee('Start AutoPilot Packing')
-            ->click('@startAutopilotButton')
+        $browser->pause($this->shortDelay)->mouseover('#navToggleButton')
+            ->pause($this->shortDelay)->click('#navToggleButton')
+            ->pause($this->shortDelay)->mouseover('#packlists_link')
+            ->pause($this->shortDelay)->clickLink('Packlist')
+            ->pause($this->shortDelay)->clickLink('Status: paid')
+            ->pause($this->longDelay)
+            ->pause($this->shortDelay)->assertSee('Start AutoPilot Packing')
+            ->pause($this->longDelay)
+            ->pause($this->shortDelay)->click('@startAutopilotButton')
             ->pause($this->longDelay);
 
         while ($this->order->orderProducts()->where('quantity_to_ship', '>', 0)->exists()) {
@@ -116,8 +121,8 @@ class PagesWalkTroughTest extends DuskTestCase
 
             $browser->driver->getKeyboard()->sendKeys($orderProduct->product->sku);
             $browser->pause($this->shortDelay)
-                ->keys('#barcodeInput', '{enter}')
-                ->pause(1500);
+                ->keys('@barcode-input-field', '{enter}')
+                ->pause($this->shortDelay);
         }
 
         $browser->pause(2000)
@@ -146,47 +151,49 @@ class PagesWalkTroughTest extends DuskTestCase
      * @throws NoSuchElementException
      * @throws TimeOutException
      */
-    private function transferIn(Browser $browser): void
+    private function dataCollectorStockDelivery(Browser $browser): void
     {
-        $browser->mouseover('#tools_link')->pause($this->shortDelay)
-            ->click('#tools_link')->pause($this->shortDelay)
-            ->mouseover('#data_collector_link')->pause($this->shortDelay)
-            ->clickLink('Data Collector')->pause($this->longDelay)
-            ->click('#new_data_collection')->pause($this->longDelay)
-            ->typeSlowly('#collection_name_input', 'Stock delivery')
-            ->press('OK')
-            ->waitUntilMissing('#collection_name_input');
-
-        $browser->waitFor('@data_collection_record')
-            ->pause($this->longDelay)
-            ->mouseover('@data_collection_record')->pause($this->shortDelay)
-            ->click('@data_collection_record')
-            ->waitUntilMissing('@data_collection_record')
-            ->waitFor('#data_collection_name');
+        $browser
+            ->pause($this->shortDelay)->mouseover('#tools_link')
+            ->pause($this->shortDelay)->click('#tools_link')
+            ->pause($this->shortDelay)->mouseover('#data_collector_link')
+            ->pause($this->shortDelay)->clickLink('Data Collector')
+            ->pause($this->shortDelay)->click('#new_data_collection')
+            ->pause($this->shortDelay)->typeSlowly('@collection_name_input', 'Stock delivery', 50)
+            ->pause($this->shortDelay)->keys('@collection_name_input', '{enter}')
+            ->pause($this->shortDelay)
+            ->pause($this->shortDelay)->waitUntilMissing('#collection_name_input')
+            ->pause($this->shortDelay)->waitFor('@data_collection_record')
+            ->pause($this->shortDelay)
+            ->pause($this->shortDelay)->mouseover('@data_collection_record')->pause($this->shortDelay)
+            ->pause($this->shortDelay)->click('@data_collection_record')
+            ->pause($this->shortDelay)->waitUntilMissing('@data_collection_record')
+            ->pause($this->shortDelay)->waitFor('#data_collection_name')
+            ->pause($this->longDelay);
 
         $this->order->orderProducts()
             ->where('quantity_to_ship', '>', 0)
-            ->first()
+            ->limit(4)
+            ->get()
             ->each(function (OrderProduct $orderProduct) use ($browser) {
-                $browser->pause(210);// wait for input to be focused
-                $browser->screenshot('01');
-                $browser->keys('#barcodeInput', $orderProduct->product->sku, '{ENTER}');
-                $browser->pause($this->shortDelay);
-                $browser->screenshot('02');
-                $browser->waitForText($orderProduct->product->sku);
-                $browser->pause($this->shortDelay);
-                $browser->screenshot('04');
-                $browser->waitFor('#data-collection-record-quantity-request-input')
-                    ->pause($this->shortDelay)
-                    ->screenshot('04')
-                    ->typeSlowly('#data-collection-record-quantity-request-input', 12)->pause($this->shortDelay)
-                    ->keys('#data-collection-record-quantity-request-input', '{ENTER}')
-                    ->pause($this->shortDelay);
+                $browser
+                ->pause($this->shortDelay)
+                ->pause($this->shortDelay)->keys('@barcode-input-field', $orderProduct->sku_ordered, '{ENTER}')
+                ->pause($this->shortDelay)
+                ->pause($this->shortDelay)->waitForText($orderProduct->sku_ordered)
+                ->pause($this->shortDelay)
+                ->pause($this->shortDelay)->waitFor('#data-collection-record-quantity-request-input')
+                ->pause($this->shortDelay)->typeSlowly('#data-collection-record-quantity-request-input', 12)->pause($this->shortDelay)
+                ->pause($this->shortDelay)->keys('#data-collection-record-quantity-request-input', '{ENTER}')
+                ->pause($this->longDelay);
             });
 
-        $browser->mouseover('#showConfigurationButton')->pause($this->shortDelay)
-            ->click('#showConfigurationButton')->pause($this->shortDelay)
-            ->mouseover('#transferInButton')->pause(500)->click('#transferInButton')->pause($this->longDelay)
+        $browser
+            ->pause($this->shortDelay)->mouseover('#showConfigurationButton')
+            ->pause($this->shortDelay)->click('#showConfigurationButton')
+            ->pause($this->longDelay)
+            ->pause($this->shortDelay)->mouseover('#transferInButton')
+            ->pause($this->shortDelay)->click('#transferInButton')
             ->pause($this->longDelay);
     }
 
@@ -197,41 +204,75 @@ class PagesWalkTroughTest extends DuskTestCase
      */
     private function picklist(Browser $browser): void
     {
-        $browser->mouseover('#navToggleButton')->pause($this->shortDelay)->click('#navToggleButton')->pause($this->shortDelay)
-            ->mouseover('#picklists_link')->pause($this->shortDelay)->clickLink('Picklist')->pause($this->shortDelay)
-            ->pause($this->shortDelay)->clickLink('Status: paid')->pause($this->longDelay);
+        $this->order = Order::factory()->create([
+            'is_active' => true,
+            'status_code' => 'paid'
+        ]);
 
-        $this->order->orderProducts()
-            ->where('quantity_to_pick', '>', 0)
-            ->first()
-            ->each(function (OrderProduct $orderProduct) use ($browser) {
-                $browser->waitForText($orderProduct->product->sku);
-                $browser->assertSee($orderProduct->product->sku);
-                $browser->type('#barcodeInput', $orderProduct->product->sku);
-                $browser->pause(500)
-                    ->keys('#barcodeInput', '{enter}')
-                    ->pause($this->longDelay);
-            });
+        /** @var OrderProduct $orderProduct */
+        OrderProduct::factory()->create([
+            'order_id' => $this->order->id,
+            'product_id' => Product::first()->getKey(),
+            'quantity_ordered' => 1
+        ]);
+
+        $browser->pause($this->shortDelay)
+            ->pause($this->shortDelay)->mouseover('#navToggleButton')
+            ->pause($this->shortDelay)->click('#navToggleButton')
+            ->pause($this->longDelay)->mouseover('#picklists_link')
+            ->pause($this->shortDelay)->clickLink('Picklist')
+            ->pause($this->longDelay)->clickLink('Status: paid')
+            ->pause($this->longDelay);
+
+        $skuToScan = collect($browser->elements('@product_sku'))->first();
+        $browser->pause($this->shortDelay)
+            ->pause($this->shortDelay)->keys('@barcode-input-field', $skuToScan->getText())
+            ->pause($this->shortDelay)->keys('@barcode-input-field', '{enter}')
+            ->pause($this->longDelay);
+
+        $skuToScan = collect($browser->elements('@product_sku'))->first();
+        $browser->pause($this->shortDelay)
+            ->pause($this->shortDelay)->keys('@barcode-input-field', $skuToScan->getText())
+            ->pause($this->shortDelay)->keys('@barcode-input-field', '{enter}')
+            ->pause($this->longDelay);
     }
 
     /**
-     * @param Browser $browser
      * @throws ElementClickInterceptedException
      * @throws NoSuchElementException
      */
     private function dashboard(Browser $browser): void
     {
-        $browser->mouseover('#dashboard_link')->pause($this->shortDelay)->click('#dashboard_link')->pause($this->longDelay)
+        $browser->mouseover('#dashboard_link')->pause($this->shortDelay)
+            ->click('#dashboard_link')->pause($this->longDelay)
             ->pause($this->longDelay);
     }
 
     /**
      * @param Browser $browser
+     * @throws TimeoutException
      */
     private function stocktaking(Browser $browser): void
     {
-        $browser->mouseover('#tools_link')->pause($this->shortDelay)->clickLink('Tools')->pause($this->shortDelay)
-            ->mouseover('#stocktaking_link')->pause($this->shortDelay)->clickLink('Stocktaking')->pause($this->shortDelay)
+        /** @var Product $product */
+        $product = Product::first();
+
+        $browser
+            ->pause($this->shortDelay)->mouseover('#tools_link')
+            ->pause($this->shortDelay)->clickLink('Tools')
+            ->pause($this->shortDelay)
+            ->pause($this->shortDelay)->mouseover('#stocktaking_link')
+            ->pause($this->shortDelay)->clickLink('Stocktaking')
+            ->pause($this->shortDelay)
+            ->pause($this->shortDelay)->typeSlowly('@barcode-input-field', $product->sku, 50)
+            ->pause($this->shortDelay)->screenshot('stocktaking')
+            ->pause($this->shortDelay)->keys('@barcode-input-field', '{enter}')
+            ->pause($this->shortDelay)
+            ->pause($this->shortDelay)->waitForText($product->name)
+            ->pause($this->shortDelay)
+            ->pause($this->shortDelay)->waitFor('#quantity-request-input')
+            ->pause($this->shortDelay)->typeSlowly('#quantity-request-input', 12)
+            ->pause($this->shortDelay)->keys('#quantity-request-input', '{ENTER}')
             ->pause($this->longDelay);
     }
 
@@ -240,15 +281,22 @@ class PagesWalkTroughTest extends DuskTestCase
      */
     private function products(Browser $browser): void
     {
-        $browser->mouseover('#products_link')->pause($this->shortDelay)->clickLink('Products')->pause($this->longDelay);
+        $browser->mouseover('#products_link')
+            ->pause($this->shortDelay)->clickLink('Products')
+            ->pause($this->longDelay)
+            ->pause($this->shortDelay)->keys('@barcode-input-field', Product::first('sku')['sku'], '{enter}')
+            ->pause($this->longDelay)
+            ->pause($this->shortDelay)->keys('@barcode-input-field', 'yellow warning sign', '{enter}')
+            ->pause($this->longDelay);
     }
 
-    /**
-     * @param Browser $browser
-     */
     private function orders(Browser $browser): void
     {
-        $browser->mouseover('#orders_link')->pause($this->shortDelay)->clickLink('Orders')->pause($this->longDelay);
+        $browser->mouseover('#orders_link')
+            ->pause($this->shortDelay)->clickLink('Orders')
+            ->pause($this->longDelay)
+            ->pause($this->shortDelay)->keys('@barcode-input-field', Order::first()->getAttribute('order_number'), '{enter}')
+            ->pause($this->longDelay);
     }
 
     /**
@@ -256,7 +304,9 @@ class PagesWalkTroughTest extends DuskTestCase
      */
     private function restocking(Browser $browser): void
     {
-        $browser->mouseover('#tools_link')->pause($this->shortDelay)->clickLink('Tools')->pause($this->shortDelay)
-            ->mouseover('#restocking_link')->pause($this->shortDelay)->clickLink('Restocking')->pause($this->longDelay);
+        $browser->mouseover('#tools_link')->pause($this->shortDelay)
+            ->clickLink('Tools')->pause($this->shortDelay)
+            ->mouseover('#restocking_link')->pause($this->shortDelay)
+            ->clickLink('Restocking')->pause($this->longDelay);
     }
 }

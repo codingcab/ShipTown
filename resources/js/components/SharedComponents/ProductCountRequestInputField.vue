@@ -6,7 +6,7 @@
 
         <b-modal @ok="submitStocktake" id="quantity-request-modal" scrollable centered no-fade hide-header
                  @shown="modalShown"
-                 @hidden="setFocusElementById(300, 'barcodeInput', true, true)"
+                 @hidden="setFocusElementById('barcodeInput')"
         >
             <template v-if="product">
                 <div class="col-sm-12 col-lg-12">

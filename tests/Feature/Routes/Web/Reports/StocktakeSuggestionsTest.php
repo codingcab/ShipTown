@@ -8,16 +8,24 @@ use Tests\TestCase;
 /**
  *
  */
-class Stocktake_suggestions_totalsTest extends TestCase
+class StocktakeSuggestionsTest extends TestCase
 {
-    protected string $uri = '/reports/stocktake-suggestions';
+    /**
+     * @var string
+     */
+    protected string $uri = 'reports/stocktake-suggestions';
 
-    protected mixed $user;
+    /**
+     * @var User
+     */
+    protected User $user;
 
+    /**
+     *
+     */
     protected function setUp(): void
     {
         parent::setUp();
-
         $this->user = User::factory()->create();
     }
 

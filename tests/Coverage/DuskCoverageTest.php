@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Coverage;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;

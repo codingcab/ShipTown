@@ -12,7 +12,7 @@
                     <div class="col m-0 p-0">
                         <form class="m-0 p-0" method="POST" @submit.prevent="setShippingNumber">
                             <div class="form-group form-check m-0 p-0">
-                                <input ref="shipping_number" class="form-control" placeholder="Scan shipping number"
+                                <input id="shipping_number_input" ref="shipping_number" class="form-control" placeholder="Scan shipping number"
                                        v-model="shipping_number"
                                        @focus="simulateSelectAll"/>
                             </div>
@@ -50,7 +50,7 @@ export default {
 
     methods: {
         focusOnInput() {
-            setTimeout(() => { this.setFocus() }, 500);
+            this.setFocusElementById('shipping_number_input')
         },
 
         setFocus() {

@@ -31,19 +31,18 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             Demo\ConfigurationSeeder::class,
+            Demo\NavigationSeeder::class,
             Demo\OrderStatusesSeeder::class,
             Demo\UsersSeeder::class,
 
             Demo\WarehousesSeeder::class,
+
             Demo\ProductsSeeder::class,
+            Demo\ProductsTagsSeeder::class,
 
             Demo\TestOrdersSeeder::class,
 
             Demo\PaidOrdersSeeder::class,
-            Demo\PaidOrdersSeeder::class,
-            Demo\CollectionOrdersSeeder::class,
-
-            Demo\ProductsTagsSeeder::class,
 
             Demo\DataCollections\TransferToCorkBranchSeeder::class,
             Demo\DataCollections\TransfersFromWarehouseSeeder::class,
@@ -78,16 +77,8 @@ class DatabaseSeeder extends Seeder
 //            PicksSeeder::class,
 //            OrderShipmentsSeeder::class,
 
-//        Modules Seeders
-//            WebhooksTestSeeder::class,
-//            DpdUk\DpdUkTestOrdersSeeder::class,
-
+            Demo\CollectionOrdersSeeder::class,
         ]);
-
-//        RunHourlyJobs::dispatchSync();
-//        CopyInventoryMovementsToNewTableJob::dispatch();
-
-//        SyncRequestedEvent::dispatch();
 
         DispatchEveryMinuteEventJob::dispatch();
         DispatchEveryFiveMinutesEventJob::dispatch();

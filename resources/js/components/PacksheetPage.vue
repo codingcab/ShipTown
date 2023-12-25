@@ -65,8 +65,8 @@
         </div>
 
         <b-modal ref="shippingNumberModal2" no-fade hide-footer hide-header
-                 @shown="setFocusElementById(300,'shipping_number_input', true, false)"
-                 @hidden="setFocusOnBarcodeInput(100)">
+                 @shown="setFocusElementById('shipping_number_input')"
+                 @hidden="setFocusOnBarcodeInput()">
             <input id="shipping_number_input" class="form-control" placeholder="Scan shipping number"
                    v-model="shippingNumberInput"
                    @focus="simulateSelectAll"
@@ -79,7 +79,7 @@
         </b-modal>
 
         <b-modal id="filtersModal" ref="filtersModal" no-fade hide-footer hide-header
-                 @shown="setFocusElementById(100,'stocktake-input', true, true)"
+                 @shown="setFocusElementById('stocktake-input')"
                  @hidden="modalHidden">
                 <stocktake-input></stocktake-input>
                 <hr>
@@ -209,7 +209,7 @@
 
             methods: {
                 modalHidden() {
-                    this.setFocusOnBarcodeInput(100);
+                    this.setFocusOnBarcodeInput();
                     this.reloadData();
                 },
 
@@ -383,7 +383,7 @@
 
                 changeStatus() {
                     this.$refs.filtersModal.hide();
-                    this.setFocusOnBarcodeInput(500);
+                    this.setFocusOnBarcodeInput();
 
                     this.apiUpdateOrder(this.order['id'], {'status_code': this.order.status_code})
                         .then(() => {
@@ -588,7 +588,7 @@
 
                 printExtraLabelClick: function () {
                     this.$refs.filtersModal.hide();
-                    this.setFocusOnBarcodeInput(500);
+                    this.setFocusOnBarcodeInput();
 
                     this.printShippingLabel();
                 },
@@ -636,7 +636,7 @@
 
                 openPreviousOrder: function (){
                     this.$refs.filtersModal.hide();
-                    this.setFocusOnBarcodeInput(500);
+                    this.setFocusOnBarcodeInput();
 
                     if (! this.previous_order_id) {
                         this.notifyError('Not Available');
