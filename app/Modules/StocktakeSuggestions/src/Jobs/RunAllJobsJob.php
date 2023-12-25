@@ -10,7 +10,6 @@ class RunAllJobsJob extends UniqueJob
     {
         NoMovementJob::dispatch();
         BarcodeScannedToQuantityFieldJob::dispatch();
-        OutdatedCountsJob::dispatch();
 
         return true;
     }
