@@ -37,11 +37,11 @@ class AppGenerateRoutesTests extends Command
             });
         })
         ->each(function ($route) {
-            $testName = $this->getApiRouteTestName($route);
+            $testName = self::getWebRouteTestName($route);
 
             $fullFileName = app()->basePath();
             $fullFileName .= '/tests/Feature/';
-            $fullFileName .= AppGenerateRoutesTests::getWebRouteTestName($route);
+            $fullFileName .= $testName;
             $fullFileName .= '.php';
 
             if (! file_exists($fullFileName)) {
@@ -87,28 +87,6 @@ class AppGenerateRoutesTests extends Command
                 $this->info(Artisan::output());
             }
         });
-    }
-
-    /**
-     * @param $route
-     *
-     * @return string
-     */
-    public function getApiRouteTestName($route): string
-    {
-        $methodName = Str::after($route->action, '@');
-
-        $routeName = $route->uri .'/'.$methodName.'Test';
-
-        $routeName = str_replace('-', '_', $routeName);
-        $routeName = str_replace('.', '_', $routeName);
-        $routeName = str_replace('{', '', $routeName);
-        $routeName = str_replace('}', '', $routeName);
-        $routeName = Str::camel($routeName);
-
-        return implode('/', collect(explode('/', $routeName))->map(function ($part) {
-            return Str::ucfirst($part);
-        })->toArray());
     }
 
     /**
