@@ -13,7 +13,7 @@ class StocktakeSuggestionsTest extends TestCase
     /**
      * @var string
      */
-    protected string $uri = '';
+    protected string $uri = 'settings/modules/stocktake-suggestions';
 
     protected mixed $user;
 
