@@ -130,6 +130,7 @@ class PagesWalkTroughTest extends DuskTestCase
             $browser->pause($this->shortDelay);
         }
 
+        $browser->pause($this->shortDelay);
         $browser->pause($this->longDelay);
         $browser->driver->getKeyboard()->sendKeys('CB100023444');
         $browser->pause($this->shortDelay);
