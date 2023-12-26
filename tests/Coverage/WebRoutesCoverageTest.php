@@ -27,7 +27,7 @@ class WebRoutesCoverageTest extends TestCase
             })
             ->map(function ($route) {
                 $fullFileName = app()->basePath();
-                $fullFileName .= '/tests/Feature/Routes/Web/';
+                $fullFileName .= '/tests/Feature/';
                 $fullFileName .= $this->getWebRouteTestName($route);
                 $fullFileName .= '.php';
 

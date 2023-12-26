@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
@@ -13,26 +12,10 @@ use Illuminate\Support\Str;
  */
 class AppGenerateRoutesTests extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'app:generate-routes-tests';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Generates tests for all not test covered routes';
 
-    /**
-     * Command will not override existing files
-     * It will only add new if do not exists.
-     *
-     * @return int
-     */
     public function handle(): int
     {
         $except = collect(['telescope']);
@@ -42,9 +25,6 @@ class AppGenerateRoutesTests extends Command
         return 0;
     }
 
-    /**
-     *
-     */
     private function generateApiRoutesTestsFiles(Collection $except): void
     {
         Artisan::call('route:list --json --path=api --env=production');
@@ -85,7 +65,7 @@ class AppGenerateRoutesTests extends Command
 
 
         $routes->each(function ($route) {
-            $testName = 'Routes/Web/'.$this->getWebRouteTestName($route);
+            $testName = 'Web/'.$this->getWebRouteTestName($route);
             $this->comment($testName);
             Artisan::call('app:make-test '.$testName.' --stub=test.web_route');
             $this->info(Artisan::output());
