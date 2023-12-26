@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Feature\Api\PrintOrderController\Order\OrderNumber\View;
+namespace Tests\Feature\Api\Print\Order\OrderNumber\View;
 
 use Tests\TestCase;
 
-class StoreTest extends TestCase
+class UpdateTest extends TestCase
 {
     /** @test */
     public function test_store_call_returns_ok()

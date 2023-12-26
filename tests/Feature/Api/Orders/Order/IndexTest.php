@@ -6,7 +6,7 @@ use App\Models\Order;
 use App\User;
 use Tests\TestCase;
 
-class ShowTest extends TestCase
+class IndexTest extends TestCase
 {
     public function test_show_call_returns_ok()
     {

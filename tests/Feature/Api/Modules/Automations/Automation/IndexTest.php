@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Api\Modules\OrderAutomations\AutomationController;
+namespace Tests\Feature\Api\Modules\Automations\Automation;
 
 use App\Events\Order\OrderCreatedEvent;
 use App\Modules\Automations\src\Models\Automation;
@@ -8,7 +8,7 @@ use App\User;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
-class ShowTest extends TestCase
+class IndexTest extends TestCase
 {
     protected function setUp(): void
     {
