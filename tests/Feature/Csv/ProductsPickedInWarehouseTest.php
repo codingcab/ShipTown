@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Http\Controllers\Csv;
+namespace Tests\Feature\Csv;
 
 use App\User;
 use Tests\TestCase;
