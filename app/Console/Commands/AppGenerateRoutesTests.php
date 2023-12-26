@@ -41,7 +41,7 @@ class AppGenerateRoutesTests extends Command
 
             $fullFileName = app()->basePath();
             $fullFileName .= '/tests/Feature/';
-            $fullFileName .= $testName;
+            $fullFileName .= AppGenerateRoutesTests::getWebRouteTestName($route);
             $fullFileName .= '.php';
 
             if (! file_exists($fullFileName)) {
