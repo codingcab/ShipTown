@@ -15,6 +15,6 @@ class BasicModuleTest extends TestCase
 
         SampleJob::dispatch();
 
-        $this->assertTrue(true, 'Job dispatched without errors');
+        $this->assertTrue(true, 'Jobs dispatched without errors');
     }
 }

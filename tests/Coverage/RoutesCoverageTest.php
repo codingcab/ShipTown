@@ -21,19 +21,12 @@ class RoutesCoverageTest extends TestCase
 
         collect($artisanOutput)
             ->map(function ($route) {
-                $fullFileNameOld = app()->basePath();
-                $fullFileNameOld .= '/tests/Feature/';
-                $fullFileNameOld .= $this->getTestFileName($route);
-                $fullFileNameOld .= '.php';
+                $fullFileName = app()->basePath();
+                $fullFileName .= '/tests/Feature/';
+                $fullFileName .= $this->getWebRouteTestName($route);
+                $fullFileName .= '.php';
 
-                $fullFileNameNew = app()->basePath();
-                $fullFileNameNew .= '/tests/Feature/';
-                $fullFileNameNew .= $this->getWebRouteTestName($route);
-                $fullFileNameNew .= '.php';
-
-//                move_uploaded_file($fullFileNameOld, $fullFileNameNew);
-
-                return $fullFileNameNew;
+                return $fullFileName;
             })
             ->each(function ($fileName) {
                 $this->assertFileExists($fileName, 'Run "php artisan app:generate-routes-tests"');
