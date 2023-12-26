@@ -8,6 +8,11 @@
             </div>
         </div>
 
+        <div v-if="finished" class="m-auto text-center">
+            You've finished packing all orders!<br>
+            <span class="small">There are no more orders to pack with specified filters</span>
+        </div>
+
         <template v-for="order in orders">
             <packsheet-page
                 :key="'order_id_' + order.id"
@@ -32,6 +37,7 @@
 
         data: function() {
             return {
+                finished: false,
                 orders: [],
                 order_id: null,
                 previous_order_id: null,
@@ -77,7 +83,9 @@
                         let msg = error.response.data.errors;
 
                         if (error.response.status === 404) {
-                            msg = "No orders available with specified filters"
+                            this.finished = true;
+                            // msg = "No orders available with specified filters"
+                            return;
                         }
                         this.notifyError(msg);
                         this.errorBeep();
