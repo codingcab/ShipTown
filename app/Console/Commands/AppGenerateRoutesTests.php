@@ -74,7 +74,7 @@ class AppGenerateRoutesTests extends Command
 
 
         $routes->each(function ($route) {
-            $testName = $this->getWebRouteTestName($route);
+            $testName = self::getWebRouteTestName($route);
 
             $fullFileName = app()->basePath();
             $fullFileName .= '/tests/Feature/';
@@ -115,9 +115,17 @@ class AppGenerateRoutesTests extends Command
      * @param $route
      * @return string
      */
-    private function getWebRouteTestName($route): string
+    public static function getWebRouteTestName($route): string
     {
-        $routeName = $route->uri . 'Test';
+        $m = [
+            'GET|HEAD'  => 'index',
+            'POST'      => 'store',
+            'PUT|PATCH' => 'update',
+            'PUT'       => 'update',
+            'DELETE'    => 'destroy',
+        ];
+
+        $routeName = $route->uri . '/'. $m[$route->method] .'Test';
 
         $routeName = str_replace('-', '_', $routeName);
         $routeName = str_replace('.', '_', $routeName);

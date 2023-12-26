@@ -5,7 +5,7 @@ namespace Tests\Feature\Api\Admin\Users\User;
 use App\User;
 use Tests\TestCase;
 
-class ShowTest extends TestCase
+class IndexTest extends TestCase
 {
     /** @test */
     public function test_show_call_returns_ok()

@@ -2,6 +2,7 @@
 
 namespace Tests\Coverage;
 
+use App\Console\Commands\AppGenerateRoutesTests;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -28,7 +29,7 @@ class WebRoutesCoverageTest extends TestCase
             ->map(function ($route) {
                 $fullFileName = app()->basePath();
                 $fullFileName .= '/tests/Feature/';
-                $fullFileName .= $this->getWebRouteTestName($route);
+                $fullFileName .= AppGenerateRoutesTests::getWebRouteTestName($route);
                 $fullFileName .= '.php';
 
                 return $fullFileName;
@@ -36,34 +37,5 @@ class WebRoutesCoverageTest extends TestCase
             ->each(function ($fileName) {
                 $this->assertFileExists($fileName, 'run "php artisan app:generate-routes-tests"');
             });
-    }
-
-    /**
-     * @param $route
-     * @return string
-     */
-    private function getWebRouteTestName($route): string
-    {
-        $m = [
-            'GET|HEAD' => 'index',
-            'POST' => 'store',
-            'PUT' => 'update',
-            'DELETE' => 'destroy',
-        ];
-
-        $methodName = Str::after($route->action, '@');
-        $routeName = $route->uri . '/'. $m[$route->method] .'Test';
-
-        $routeName = str_replace('-', '_', $routeName);
-        $routeName = str_replace('.', '_', $routeName);
-        $routeName = str_replace('{', '', $routeName);
-        $routeName = str_replace('}', '', $routeName);
-        $routeName = Str::camel($routeName);
-
-        return implode('/', collect(explode('/', $routeName))
-            ->map(function ($part) {
-                return Str::ucfirst($part);
-            })
-            ->toArray());
     }
 }
