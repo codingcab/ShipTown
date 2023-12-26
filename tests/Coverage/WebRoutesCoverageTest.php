@@ -44,7 +44,15 @@ class WebRoutesCoverageTest extends TestCase
      */
     private function getWebRouteTestName($route): string
     {
-        $routeName = $route->uri . 'Test';
+        $m = [
+            'GET|HEAD' => 'index',
+            'POST' => 'store',
+            'PUT' => 'update',
+            'DELETE' => 'destroy',
+        ];
+
+        $methodName = Str::after($route->action, '@');
+        $routeName = $route->uri . '/'. $m[$route->method] .'Test';
 
         $routeName = str_replace('-', '_', $routeName);
         $routeName = str_replace('.', '_', $routeName);
