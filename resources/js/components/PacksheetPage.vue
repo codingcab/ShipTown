@@ -64,13 +64,12 @@
             </template>
         </div>
 
-        <b-modal ref="shippingNumberModal2" no-fade hide-footer hide-header
+        <b-modal ref="shippingNumberModal2" no-fade hide-footer hide-header dusk="shippingNumberModal"
                  @shown="setFocusElementById('shipping_number_input')"
                  @hidden="setFocusOnBarcodeInput()">
             <input id="shipping_number_input" class="form-control" placeholder="Scan shipping number"
                    v-model="shippingNumberInput"
-                   @focus="simulateSelectAll"
-                   @keypress.enter.prevent="addShippingNumber"/>
+                   @keyup.enter.prevent="addShippingNumber"/>
             <hr>
             <div class="text-right">
                 <button type="button" @click.prevent="closeAskForShippingNumberModal" class="btn btn-secondary">Cancel</button>
@@ -418,6 +417,8 @@
                         return;
                     }
 
+                    this.$refs.shippingNumberModal2.hide();
+
                     let data = {
                         'order_id': this.order_id,
                         'shipping_number': this.shippingNumberInput,
@@ -425,8 +426,6 @@
 
                     this.apiPostOrderShipment(data)
                         .then(() => {
-                            this.$refs.shippingNumberModal2.hide();
-
                             if(this.packlist.length === 0) {
                                 this.$emit('orderCompleted')
                             }

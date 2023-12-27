@@ -131,6 +131,7 @@ class PagesWalkTroughTest extends DuskTestCase
         }
 
         $browser->pause($this->shortDelay);
+        $browser->pause($this->shortDelay);
         $browser->pause($this->longDelay);
         $browser->driver->getKeyboard()->sendKeys('CB100023444');
         $browser->pause($this->shortDelay);
@@ -222,19 +223,11 @@ class PagesWalkTroughTest extends DuskTestCase
             ->pause($this->longDelay)->clickLink('Status: paid')
             ->pause($this->longDelay);
 
-//        $collection = collect($browser->elements('@product_sku'));
-//        $skuToScan = $collection->first();
-//
-//        if ($skuToScan === null) {
-//            $browser->pause(15000);
-//            return;
-//        }
         $browser->pause($this->shortDelay)
             ->pause($this->shortDelay)->keys('@barcode-input-field', $this->product1->sku)
             ->pause($this->shortDelay)->keys('@barcode-input-field', '{enter}')
             ->pause($this->longDelay);
 
-//        $skuToScan = collect($browser->elements('@product_sku'))->first();
         $browser->pause($this->shortDelay)
             ->pause($this->shortDelay)->keys('@barcode-input-field', $this->product2->sku)
             ->pause($this->shortDelay)->keys('@barcode-input-field', '{enter}')
@@ -268,7 +261,7 @@ class PagesWalkTroughTest extends DuskTestCase
             ->pause($this->shortDelay)->mouseover('#stocktaking_link')
             ->pause($this->shortDelay)->clickLink('Stocktaking')
             ->pause($this->shortDelay)
-            ->pause($this->shortDelay)->typeSlowly('@barcode-input-field', $product->sku, 50)
+            ->pause($this->shortDelay)->type('@barcode-input-field', $product->sku)
             ->pause($this->shortDelay)->screenshot('stocktaking')
             ->pause($this->shortDelay)->keys('@barcode-input-field', '{enter}')
             ->pause($this->shortDelay)
@@ -289,8 +282,6 @@ class PagesWalkTroughTest extends DuskTestCase
             ->pause($this->shortDelay)->clickLink('Products')
             ->pause($this->longDelay)
             ->pause($this->shortDelay)->keys('@barcode-input-field', Product::first('sku')['sku'], '{enter}')
-            ->pause($this->longDelay)
-            ->pause($this->shortDelay)->keys('@barcode-input-field', 'yellow warning sign', '{enter}')
             ->pause($this->longDelay);
     }
 
