@@ -27,8 +27,9 @@ class WebRoutesCoverageTest extends TestCase
             })
             ->map(function ($route) {
                 $fullFileName = app()->basePath();
-                $fullFileName .= '/tests/Feature/Routes/Web/';
-                $fullFileName .= $this->getWebRouteTestName($route);
+
+                $fullFileName .= '/tests/Feature/';
+                $fullFileName .= AppGenerateRoutesTests::getWebRouteTestName($route);
                 $fullFileName .= '.php';
 
                 return $fullFileName;
@@ -36,26 +37,5 @@ class WebRoutesCoverageTest extends TestCase
             ->each(function ($fileName) {
                 $this->assertFileExists($fileName, 'run "php artisan app:generate-routes-tests"');
             });
-    }
-
-    /**
-     * @param $route
-     * @return string
-     */
-    private function getWebRouteTestName($route): string
-    {
-        $routeName = $route->uri . 'Test';
-
-        $routeName = str_replace('-', '_', $routeName);
-        $routeName = str_replace('.', '_', $routeName);
-        $routeName = str_replace('{', '', $routeName);
-        $routeName = str_replace('}', '', $routeName);
-        $routeName = Str::camel($routeName);
-
-        return implode('/', collect(explode('/', $routeName))
-            ->map(function ($part) {
-                return Str::ucfirst($part);
-            })
-            ->toArray());
     }
 }

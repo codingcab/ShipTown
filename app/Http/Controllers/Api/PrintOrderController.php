@@ -18,7 +18,7 @@ class PrintOrderController extends Controller
     /**
      * @throws Exception
      */
-    public function store(Request $request, string $order_number, string $template): PrintJobResource
+    public function update(Request $request, string $order_number, string $template): PrintJobResource
     {
         $pdfString = OrderService::getOrderPdf($order_number, $template);
 
