@@ -2,6 +2,7 @@
 
 namespace Tests\Coverage;
 
+use App\Console\Commands\AppGenerateRoutesTests;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Tests\TestCase;
