@@ -26,6 +26,7 @@ class PagesWalkTroughTest extends DuskTestCase
     private int $shortDelay = 120;
     private int $longDelay = 0;
 
+
     private Product $product1;
     private Product $product2;
 
@@ -170,7 +171,7 @@ class PagesWalkTroughTest extends DuskTestCase
             ->pause($this->shortDelay)->mouseover('#data_collector_link')
             ->pause($this->shortDelay)->clickLink('Data Collector')
             ->pause($this->shortDelay)->click('#new_data_collection')
-            ->pause($this->shortDelay)->typeSlowly('@collection_name_input', 'Stock delivery', 30)
+            ->pause($this->shortDelay)->typeSlowly('@collection_name_input', 'Stock delivery', 20)
             ->pause($this->shortDelay)->keys('@collection_name_input', '{enter}')
             ->pause($this->shortDelay)
             ->pause($this->shortDelay)->waitUntilMissing('#collection_name_input')

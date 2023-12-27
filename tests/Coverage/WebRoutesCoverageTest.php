@@ -2,7 +2,6 @@
 
 namespace Tests\Coverage;
 
-use App\Console\Commands\AppGenerateRoutesTests;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -28,6 +27,7 @@ class WebRoutesCoverageTest extends TestCase
             })
             ->map(function ($route) {
                 $fullFileName = app()->basePath();
+
                 $fullFileName .= '/tests/Feature/';
                 $fullFileName .= AppGenerateRoutesTests::getWebRouteTestName($route);
                 $fullFileName .= '.php';
