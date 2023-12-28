@@ -8,7 +8,7 @@ use Tests\TestCase;
 /**
  *
  */
-class Data_collectorTest extends TestCase
+class IndexTest extends TestCase
 {
     /**
      * @var string
