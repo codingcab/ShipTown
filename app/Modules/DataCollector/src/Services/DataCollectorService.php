@@ -161,8 +161,9 @@ class DataCollectorService
                 $custom_uuid = implode('-', ['source_data_collections_records_id', $record->getKey()]);
 
                 InventoryMovement::query()->firstOrCreate([
-                    'custom_uuid' => $custom_uuid,
+                    'custom_unique_reference_id' => $custom_uuid,
                 ], [
+                    'occurred_at' => now()->utc(),
                     'inventory_id' => $inventory->id,
                     'type' => InventoryMovement::TYPE_STOCKTAKE,
                     'product_id' => $inventory->product_id,
@@ -170,7 +171,7 @@ class DataCollectorService
                     'quantity_before' => $inventory->quantity,
                     'quantity_delta' => $quantityDelta,
                     'quantity_after' => $inventory->quantity + $quantityDelta,
-                    'description' => 'stocktake',
+                    'description' => 'Data Collection - ' . $dataCollection->name,
                     'user_id' => Auth::id(),
                 ]);
             });
