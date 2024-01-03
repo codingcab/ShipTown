@@ -167,6 +167,8 @@ class DataCollectorService
                     'quantity_after' => $inventory->quantity + $quantityDelta,
                     'description' => Str::substr('Data Collection - ' . $dataCollection->name, 0, 50),
                     'user_id' => Auth::id(),
+                    'created_at' => now()->utc()->toDateTimeLocalString(),
+                    'updated_at' => now()->utc()->toDateTimeLocalString(),
                 ];
             });
 
