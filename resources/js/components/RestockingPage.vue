@@ -35,7 +35,7 @@
             </div>
         </div>
 
-        <modal-inventory-movement :product_sku="showMovementSku" />
+        <modal-inventory-movement :product_sku="showMovementSku"/>
     </div>
 
 </template>
