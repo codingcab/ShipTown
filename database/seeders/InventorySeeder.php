@@ -4,12 +4,13 @@ namespace Database\Seeders;
 
 use App\Models\Inventory;
 use App\Models\InventoryMovement;
+use App\Models\Product;
 use App\Modules\InventoryMovements\src\Jobs\SequenceNumberJob;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class   InventorySeeder extends Seeder
+class InventorySeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -45,6 +46,12 @@ class   InventorySeeder extends Seeder
             });
 
         InventoryMovement::query()->insert($movements->toArray());
+
+        $product_id = Product::findBySKU('45')->getKey();
+
+        Inventory::query()
+            ->where(['product_id' => $product_id])
+            ->update(['shelve_location' => 'A1']);
 
         SequenceNumberJob::dispatch();
     }

@@ -1,24 +1,36 @@
 <template>
     <div>
-        <input class="form-control"
-               autocomplete="off"
-               enterkeyhint="done"
-               :placeholder="placeholder"
-               ref="barcode"
-               id="barcodeInput"
-               dusk="barcode-input-field"
-               v-model.trim="barcode"
-               @focus="simulateSelectAll"
-               @keyup.enter="barcodeScanned(barcode)"
-        />
+        <div class="bg-warning">
+            <input :id="getInputId"
+                   :placeholder="placeholder"
+                   type=text
+                   class="form-control barcode-input"
+                   autocomplete="off"
+                   autocapitalize="off"
+                   enterkeyhint="done"
+                   ref="barcode"
+                   dusk="barcode-input-field"
+                   v-model.trim="barcode"
+                   @keyup.enter="barcodeScanned(barcode)"
+            />
+        </div>
 
-      <b-modal :id="getModalID" @submit="updateShelfLocation" @shown="updateShelfLocationShown" @hidden="updateShelfLocationHidden" scrollable no-fade hide-header>
+      <b-modal :id="getModalID" scrollable no-fade hide-header
+               @submit="updateShelfLocation"
+               @shown="updateShelfLocationShown"
+               @hidden="updateShelfLocationHidden">
           <div class="h5 text-center">{{ command['name'] }} : {{ command['value'] }}</div>
           <div v-if="shelfLocationModalContinuesScan" class="alert-success text-center mb-2 small">CONTINUES SCAN ENABLED</div>
 
-          <input id="set-shelf-location-command-modal-input" class="form-control" :placeholder="'Scan product to update shelf location: ' + command[1]"
-               @focus="simulateSelectAll"
-               @keyup.enter="updateShelfLocation"/>
+          <input id="set-shelf-location-command-modal-input"
+                 :placeholder="'Scan product to update shelf location: ' + command[1]"
+                 type=text
+                 class="form-control"
+                 autocomplete="off"
+                 autocapitalize="off"
+                 enterkeyhint="done"
+                 @focus="simulateSelectAll"
+                 @keyup.enter="updateShelfLocation"/>
 
           <div class="mt-2 small">
               <div>
@@ -29,6 +41,7 @@
               </div>
           </div>
       </b-modal>
+
     </div>
 </template>
 
@@ -44,12 +57,23 @@
         mixins: [helpers, url, FiltersModal, api],
 
         props: {
+            input_id: null,
             url_param_name: null,
             placeholder: '',
+            autoFocusAfter: {
+                type: Number,
+                default: 100,
+            },
         },
 
-
         computed: {
+            getInputId() {
+                if (this.input_id) {
+                    return this.input_id;
+                }
+
+                return `barcode-input-field-${Math.floor(Math.random() * 10000000)}`;
+            },
             getModalID() {
                 return `set-shelf-location-command-modal-${Math.floor(Math.random() * 10000000)}`;
             }
@@ -57,6 +81,7 @@
 
         data: function() {
             return {
+                typedInText: '',
                 currentLocation: '',
                 barcode: '',
                 command: ['',''],
@@ -67,10 +92,36 @@
             }
         },
 
-
         mounted() {
-            this.resetInputValue();
-            this.setFocusOnBarcodeInput();
+            const isIos = () => !!window.navigator.userAgent.match(/iPad|iPhone/i);
+
+            if (isIos()) {
+                console.log('On iPhones and iPads, devices autofocus on input fields is disabled due to a bug in iOS. This works ok with external keyboards on iOS >16');
+            }
+
+            this.importValueFromUrlParam();
+
+            if (this.autoFocusAfter > 0) {
+                this.setFocusElementById(this.getInputId)
+            }
+
+            window.addEventListener('keydown', (e) => {
+                if (e.target.nodeName !== 'BODY') {
+                    return;
+                }
+
+                if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
+                    return;
+                }
+
+                if (e.key === 'Enter') {
+                    this.barcode = this.typedInText;
+                    this.barcodeScanned(this.typedInText);
+                    return;
+                }
+
+                this.typedInText += e.key;
+            });
         },
 
         methods: {
@@ -87,6 +138,7 @@
 
                 if (this.tryToRunCommand(barcode)) {
                     this.barcode = '';
+                    this.typedInText = '';
                     return;
                 }
 
@@ -95,28 +147,29 @@
                 }
 
                 this.$emit('barcodeScanned', barcode);
+                this.typedInText = '';
+                this.barcode = barcode;
 
                 this.setFocusOnBarcodeInput();
-                this.simulateSelectAll();
             },
 
             updateShelfLocationShown: function (bvEvent, modalId) {
                 this.shelfLocationModalShowing = true;
                 this.shelfLocationModalContinuesScan = false;
                 this.shelfLocationModalCommandScanCount = 0;
-                this.setFocusElementById(100, 'set-shelf-location-command-modal-input', true, true)
+                this.setFocusElementById('set-shelf-location-command-modal-input')
             },
 
             updateShelfLocationHidden: function (bvEvent, modalId) {
                 this.shelfLocationModalShowing = false;
                 this.shelfLocationModalContinuesScan = false;
                 this.shelfLocationModalCommandScanCount = 0;
-                this.resetInputValue();
-                this.setFocusElementById(300, 'barcodeInput', true, true)
+                this.importValueFromUrlParam();
+                this.setFocusElementById('barcodeInput')
                 this.$emit('refreshRequest');
             },
 
-            resetInputValue: function () {
+            importValueFromUrlParam: function () {
                 if (this.url_param_name) {
                     this.barcode = this.getUrlParameter(this.url_param_name);
                 }
@@ -125,7 +178,7 @@
             showShelfLocationModal: function () {
                 this.$bvModal.show(this.getModalID);
                 this.warningBeep();
-                this.setFocusElementById(1, 'set-shelf-location-command-modal-input')
+                this.setFocusElementById('set-shelf-location-command-modal-input')
             },
 
             tryToRunCommand: function (textEntered) {
@@ -169,20 +222,21 @@
                     return;
                 }
 
-                if (textEntered === this.command['name'] + ':' + this.command['value']) {
-                    this.shelfLocationModalCommandScanCount = this.shelfLocationModalCommandScanCount + 1;
+                let s = this.command['name'] + ':' + this.command['value'];
 
-                    switch (this.shelfLocationModalCommandScanCount)
-                    {
-                        case 1:
-                            this.shelfLocationModalContinuesScan = true;
-                            break;
-                        case 2:
-                            this.$bvModal.hide('set-shelf-location-command-modal');
-                            break;
+                this.notifySuccess('Scanned: ' + textEntered);
+                this.notifySuccess('Command: ' + s);
+
+                if (textEntered === s) {
+                    event.target.value = '';
+
+                    if (this.shelfLocationModalContinuesScan) {
+                        this.$bvModal.hide(this.getModalID);
+                        return;
+
                     }
 
-                    event.target.value = '';
+                    this.shelfLocationModalContinuesScan = true;
                     return ;
                 }
 
@@ -213,22 +267,23 @@
                     });
 
                 if(this.shelfLocationModalContinuesScan) {
-                    this.setFocusElementById(1, 'set-shelf-location-command-modal-input', true, true)
+                    this.setFocusElementById('set-shelf-location-command-modal-input')
                     return;
                 }
 
                 this.$bvModal.hide(this.getModalID);
             },
 
-            setFocusOnBarcodeInput(delay = 1) {
-                setTimeout(() => {
-                    this.setFocus(document.getElementById('barcodeInput'), true,true)
-                }, delay);
+            setFocusOnBarcodeInput(showKeyboard = false, autoSelectAll = true, delay = 100) {
+                this.setFocusElementById(this.getInputId, showKeyboard, autoSelectAll, delay)
             },
         }
     }
 </script>
 
 <style scoped>
-
+.barcode-input::selection {
+    color: black;
+    background: #cce3ff;
+}
 </style>

@@ -155,11 +155,10 @@ class DpdUkService
         $dpdShippingLabel = $this->apiClient->getShipmentLabel($dpdShipment->getShipmentId());
 
         $content = $dpdShippingLabel->response->getBody()->getContents();
-        ray($content);
 
         $shipment = new ShippingLabel();
-        $shipment->order()->associate($order);
-        $shipment->user()->associate(Auth::user());
+        $shipment->order_id = $order->id;
+        $shipment->user_id = auth()->id();
         $shipment->carrier = 'DPD UK';
         $shipment->service = 'overnight';
         $shipment->shipping_number = $dpdShipment->getConsignmentNumber();

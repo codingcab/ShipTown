@@ -23,6 +23,7 @@ class UsersSeeder extends Seeder
             'name' => 'Artur Hanusek',
             'warehouse_id' => Warehouse::firstOrCreate(['code' => 'DUB'], ['name' => 'Dublin'])->getKey(),
             'password' => bcrypt('secret1144'),
+            'ask_for_shipping_number' => false,
         ]);
         $admin->assignRole(Role::findOrCreate('admin'));
 

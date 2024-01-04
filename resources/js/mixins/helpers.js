@@ -15,10 +15,11 @@ export default {
                 return datetime ? moment(datetime).format(format) : defaultValue;
             },
 
-            simulateSelectAll() {
-                setTimeout(() => {
-                    document.execCommand('selectall', null, false);
-                }, 1);
+            simulateSelectAll(e) {
+                console.log(e);
+                // setTimeout(() => {
+                //     document.execCommand('selectall', false, 'tet');
+                // }, 50);
             },
 
             copyToClipBoard(textToCopy){
@@ -57,38 +58,69 @@ export default {
                 return (value && value !== 0) ? value : '-';
             },
 
-            setFocus: function (input, autoSelectAll = false, hideOnScreenKeyboard = false, delay = 100) {
-                setTimeout(() => {
-                    if (input === null) {
-                        return;
-                    }
+            setFocusElementById(elementId, showKeyboard = false, autoSelectAll = true, delay = 100) {
+                const element = document.getElementById(elementId);
 
-                    if (hideOnScreenKeyboard) {
-                        // this simple hack of setting focus when field is read only will
-                        // prevent showing on screen keyboard on mobile devices
-                        input.readOnly = true;
-                    }
+                if (element === null) {
+                    return;
+                }
 
-                    input.focus();
+                const isIos = () => !!window.navigator.userAgent.match(/Mac OS|iPad|iPhone/i);
 
-                    if (hideOnScreenKeyboard) {
-                        input.readOnly = false;
-                    }
+                if (isIos()) {
+                    this.focusAndOpenKeyboard(element, delay, showKeyboard);
+                    return;
+                }
 
-                    if (autoSelectAll) {
-                        document.execCommand('selectall');
-                    }
-
-                    }, delay);
-            },
-
-            setFocusElementById(delay = 1, elementId, autoSelectAll = false, hideOnScreenKeyboard = false) {
-                if (hideOnScreenKeyboard) {
+                if (showKeyboard === false) {
                     // this simple hack of setting focus when field is read only will
                     // prevent showing on screen keyboard on mobile devices
-                    document.getElementById(elementId).readOnly = true;
+                    element.readOnly = true;
                 }
-                this.setFocus(document.getElementById(elementId), autoSelectAll, hideOnScreenKeyboard, delay);
+
+                setTimeout(() => {
+                    element.focus();
+                    element.click();
+
+                    element.readOnly = false;
+
+                    if (autoSelectAll) {
+                        element.select();
+                    }
+
+                }, delay);
+            },
+
+            focusAndOpenKeyboard(element, delay= 100, showKeyboard = false, autoSelectAll = true) {
+                if (showKeyboard) {
+                    // Align temp input element approximately where the input element is
+                    // so the cursor doesn't jump around
+                    var __tempEl__ = document.createElement('input');
+                    __tempEl__.style.position = 'absolute';
+                    __tempEl__.style.top = (element.offsetTop + 7) + 'px';
+                    __tempEl__.style.left = element.offsetLeft + 'px';
+                    __tempEl__.style.height = 0;
+                    __tempEl__.style.opacity = 0;
+                    // Put this temp element as a child of the page <body> and focus on it
+                    document.body.appendChild(__tempEl__);
+                    __tempEl__.focus();
+                }
+
+                // The keyboard is open. Now do a delayed focus on the target element
+                setTimeout(function() {
+                    element.focus();
+                    element.click();
+
+                    if (autoSelectAll) {
+                        element.select();
+                    }
+
+                    if (__tempEl__) {
+                        document.body.removeChild(__tempEl__);
+                    }
+
+
+                }, delay);
             },
 
             isMoreThanPercentageScrolled: function (percentage) {

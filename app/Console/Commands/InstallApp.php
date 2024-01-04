@@ -54,6 +54,10 @@ class InstallApp extends Command
             $this->createPassportKeys();
         }
 
+        if (env('APP_KEY') === '') {
+            $this->call('key:generate');
+        }
+
         $this->createDefaultConfigurationRecord();
         $this->createDefaultUserRoles();
         $this->createDefaultNavigationLinks();
@@ -62,9 +66,9 @@ class InstallApp extends Command
         $this->createDefaultMailTemplateShipmentNotification();
         $this->createDefaultMailTemplateOversoldProduct();
 
+//        $this->createPaidToPickedAutomation();
         $this->createPaidToCompleteAutomation();
         $this->createPickedToCompleteAutomation();
-        $this->createPaidToPickedAutomation();
         $this->createPaidToSingleLineOrdersAutomation();
 
         \App\Services\ModulesService::updateModulesTable();
@@ -192,7 +196,7 @@ class InstallApp extends Command
     {
         /** @var Automation $automation */
         $automation = Automation::create([
-            'name' => '"paid" to "picked"',
+            'name' => '"paid" to "packing"',
             'priority' => 10,
             'enabled' => false,
         ]);
@@ -209,7 +213,7 @@ class InstallApp extends Command
 
         $automation->actions()->create([
             'action_class' => SetStatusCodeAction::class,
-            'action_value' => 'picked'
+            'action_value' => 'packing'
         ]);
 
         $automation->update(['enabled' => true]);

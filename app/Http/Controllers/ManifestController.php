@@ -19,7 +19,7 @@ class ManifestController extends Controller
 
         return response()->json([
             'name'       => 'Product Management ' . $config->business_name,
-            'short_name' => 'PM ' . $config->business_name,
+            'short_name' => 'ShipTown ' . $config->business_name,
             "description" => "Helps businesses increase profits by simplifying and automating order fulfilment process",
             "categories" => ["ecommerce", "business", "productivity", "utilities"],
             'icons'      => [

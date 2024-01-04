@@ -25,6 +25,8 @@ class StocktakeSuggestionsServiceProvider extends BaseModuleServiceProvider
     public static string $module_description = 'This AI prevents stock issues and suggests stocktakes' .
     ' based various product factors';
 
+    public static string $settings_link = '/settings/modules/stocktake-suggestions';
+
     /**
      * @var bool
      */

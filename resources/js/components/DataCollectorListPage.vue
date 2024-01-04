@@ -50,7 +50,7 @@
         </div>
 
         <b-modal id="new-collection-modal" no-fade hide-header title="New Data Collection" @ok="createCollectionAndRedirect" @shown="prepareNewCollectionModal">
-            <input id="collection_name_input" v-model="newCollectionName" type="text" @keyup.enter="createCollectionAndRedirect" class="form-control" placeholder="New Collection name">
+            <input dusk="collection_name_input" id="collection_name_input" v-model="newCollectionName" type="text" @keyup.enter="createCollectionAndRedirect" class="form-control" placeholder="New Collection name">
             <hr>
             <vue-csv-import
                 v-model="csv"
@@ -179,7 +179,7 @@
                     this.csv = null;
                     this.newCollectionName = null;
                     this.$nextTick(() => {
-                        this.setFocusElementById(10, 'collection_name_input');
+                        this.setFocusElementById('collection_name_input');
                     });
                 },
 

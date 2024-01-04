@@ -58,7 +58,7 @@ Route::prefix('modules')->name('api.modules.')->group(function () {
     Route::apiResource('inventory-reservations/configuration', Api\Modules\InventoryReservation\InventoryReservationController::class, ['as' => 'inventory-reservations'])->only(['index', 'update']);
 });
 
-Route::put('print/order/{order_number}/{view}', [Api\PrintOrderController::class, 'store']);
+Route::put('print/order/{order_number}/{view}', [Api\PrintOrderController::class, 'update']);
 
 Route::apiResource('packlist/order', Api\PacklistOrderController::class, ['as' => 'packlist'])->only(['index']);
 

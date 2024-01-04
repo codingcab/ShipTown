@@ -19,6 +19,8 @@ class TestOrdersSeeder extends Seeder
      */
     public function run()
     {
+        $this->create_test_paid_order();
+
         $this->create_test_unpaid_order();
 
         $this->create_order_with_sku_not_in_our_database();
@@ -63,12 +65,16 @@ class TestOrdersSeeder extends Seeder
             'order_id' => $order->getKey(),
             'quantity_ordered' => 1,
             'product_id' => $product1->getKey(),
+            'sku_ordered' => $product1->sku,
+            'name_ordered' => $product1->name,
         ]);
 
         OrderProduct::factory()->create([
             'order_id' => $order->getKey(),
             'quantity_ordered' => 2,
             'product_id' => $product2->getKey(),
+            'sku_ordered' => $product2->sku,
+            'name_ordered' => $product2->name,
         ]);
 
         Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => DB::raw('total_order')]);
@@ -85,12 +91,16 @@ class TestOrdersSeeder extends Seeder
             'order_id' => $order->getKey(),
             'quantity_ordered' => 1,
             'product_id' => $product1->getKey(),
+            'sku_ordered' => $product1->sku,
+            'name_ordered' => $product1->name,
         ]);
 
         OrderProduct::factory()->create([
             'order_id' => $order->getKey(),
             'quantity_ordered' => 2,
             'product_id' => $product2->getKey(),
+            'sku_ordered' => $product2->sku,
+            'name_ordered' => $product2->name,
         ]);
     }
 
@@ -117,6 +127,32 @@ class TestOrdersSeeder extends Seeder
         ]);
 
         OrderProduct::factory()->create(['order_id' => $order->getKey()]);
+
+        Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => DB::raw('total_order')]);
+    }
+
+    private function create_test_paid_order(): void
+    {
+        $product1 = Product::query()->firstOrCreate(['sku' => '45'], ['name' => 'Test Product - 45']);
+        $product2 = Product::query()->firstOrCreate(['sku' => '44'], ['name' => 'Test Product - 44']);
+
+        $order = Order::factory()->create(['status_code' => 'paid', 'order_placed_at' => now()->subDays(3)]);
+
+        OrderProduct::factory()->create([
+            'order_id' => $order->getKey(),
+            'quantity_ordered' => 12,
+            'product_id' => $product1->getKey(),
+            'sku_ordered' => $product1->sku,
+            'name_ordered' => $product1->name,
+        ]);
+
+        OrderProduct::factory()->create([
+            'order_id' => $order->getKey(),
+            'quantity_ordered' => 2,
+            'product_id' => $product2->getKey(),
+            'sku_ordered' => $product2->sku,
+            'name_ordered' => $product2->name,
+        ]);
 
         Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => DB::raw('total_order')]);
     }

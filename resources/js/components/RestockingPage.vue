@@ -18,7 +18,7 @@
         </div>
 
         <b-modal id="configuration-modal" no-fade hide-footer hide-header
-                 @shown="setFocusElementById(100,'stocktake-input', true, true)"
+                 @shown="setFocusElementById('stocktake-input')"
                  @hidden="focusOnInputAndReload">
             <stocktake-input></stocktake-input>
             <hr>
@@ -35,7 +35,7 @@
             </div>
         </div>
 
-        <modal-inventory-movement :product_sku="showMovementSku" />
+        <modal-inventory-movement :product_sku="showMovementSku"/>
     </div>
 
 </template>

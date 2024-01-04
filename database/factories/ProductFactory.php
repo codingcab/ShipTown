@@ -26,7 +26,7 @@ class ProductFactory extends Factory
         .' '.$this->faker->randomElement($productNameBricks['product']);
 
         return [
-            'sku'                   => (string) $this->faker->unique()->randomNumber(8),
+            'sku'                   => (string) $this->faker->unique()->randomNumber(4),
             'name'                  => $randomProductName,
             'price'                 => $this->faker->randomFloat(2, 0.01, 110),
             'sale_price'            => $this->faker->randomFloat(2, 0.01, 110),

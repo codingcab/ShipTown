@@ -16,6 +16,7 @@ use App\Modules\DataCollector\src\Jobs\TransferToJob;
 use App\Services\InventoryService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class DataCollectorService
 {
@@ -76,9 +77,7 @@ class DataCollectorService
         }
 
         if ($action === 'import_as_stocktake') {
-            DB::transaction(function () use ($dataCollection) {
-                self::importAsStocktake($dataCollection);
-            });
+            self::importAsStocktake($dataCollection);
         }
     }
 
@@ -139,16 +138,12 @@ class DataCollectorService
         return $destinationDataCollection;
     }
 
-    public static function importAsStocktake(DataCollection $dataCollection)
+    public static function importAsStocktake(DataCollection $dataCollection): void
     {
-        $dataCollection->update(['type' => DataCollectionStocktake::class]);
-
-        $dataCollection->delete();
-
-        $dataCollection->records()
+        $inventoryMovementRecords = $dataCollection->records()
             ->where('quantity_scanned', '!=', DB::raw(0))
             ->get()
-            ->each(function (DataCollectionRecord $record) use ($dataCollection) {
+            ->map(function (DataCollectionRecord $record) use ($dataCollection) {
                 /** @var Inventory $inventory */
                 $inventory = Inventory::where([
                         'product_id' => $record->product_id,
@@ -160,9 +155,9 @@ class DataCollectorService
 
                 $custom_uuid = implode('-', ['source_data_collections_records_id', $record->getKey()]);
 
-                InventoryMovement::query()->firstOrCreate([
-                    'custom_uuid' => $custom_uuid,
-                ], [
+                return [
+                    'custom_unique_reference_id' => $custom_uuid,
+                    'occurred_at' => now()->utc()->toDateTimeLocalString(),
                     'inventory_id' => $inventory->id,
                     'type' => InventoryMovement::TYPE_STOCKTAKE,
                     'product_id' => $inventory->product_id,
@@ -170,10 +165,20 @@ class DataCollectorService
                     'quantity_before' => $inventory->quantity,
                     'quantity_delta' => $quantityDelta,
                     'quantity_after' => $inventory->quantity + $quantityDelta,
-                    'description' => 'stocktake',
+                    'description' => Str::substr('Data Collection - ' . $dataCollection->name, 0, 50),
                     'user_id' => Auth::id(),
-                ]);
+                    'created_at' => now()->utc()->toDateTimeLocalString(),
+                    'updated_at' => now()->utc()->toDateTimeLocalString(),
+                ];
             });
+
+        DB::transaction(function () use ($dataCollection, $inventoryMovementRecords) {
+            $dataCollection->update(['type' => DataCollectionStocktake::class]);
+
+            $dataCollection->delete();
+
+            InventoryMovement::query()->insert($inventoryMovementRecords->toArray());
+        });
     }
 
     public static function transferInRecord(DataCollectionRecord $record): void
@@ -230,7 +235,7 @@ class DataCollectorService
             ]);
 
             InventoryService::adjust($inventory, $record->quantity_scanned * -1, [
-                'description' => 'data collection transfer put',
+                'description' => 'data collection transfer out',
                 'custom_unique_reference_id' => $custom_unique_reference_id
             ]);
 

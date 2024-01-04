@@ -7,6 +7,7 @@ use App\Models\OrderAddress;
 use App\Models\OrderComment;
 use App\Models\OrderProduct;
 use App\Models\OrderStatus;
+use App\Models\Product;
 use App\Modules\ScurriAnpost\src\ScurriServiceProvider;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -40,7 +41,17 @@ class ScurriAnpostSeeder extends Seeder
             'label_template' => 'anpost_3day'
         ]);
 
-        OrderProduct::factory()->create(['order_id' => $order->getKey()]);
+        /** @var Product $product */
+        $product = Product::findBySku('45');
+
+        OrderProduct::factory()->create([
+            'order_id' => $order->getKey(),
+            'product_id' => $product->getKey(),
+            'quantity_ordered' => 1,
+            'price' => $product->price,
+            'name_ordered' => $product->name,
+            'sku_ordered' => $product->sku,
+        ]);
 
         $order->refresh();
 
@@ -59,7 +70,7 @@ class ScurriAnpostSeeder extends Seeder
         ]);
 
         $order = Order::factory()->create([
-            'status_code' => 'test_orders_courier_anpost_ireland',
+            'status_code' => 'packing',
             'label_template' => 'anpost_3day',
             'shipping_address_id' => $orderAddress->getKey(),
             'order_placed_at' => now()->subDays(3)
@@ -70,7 +81,17 @@ class ScurriAnpostSeeder extends Seeder
             'comment' => 'Test with incorrect address (too long)'
         ]);
 
-        OrderProduct::factory()->create(['order_id' => $order->getKey()]);
+        /** @var Product $product */
+        $product = Product::findBySku('45');
+
+        OrderProduct::factory()->create([
+            'order_id' => $order->getKey(),
+            'product_id' => $product->getKey(),
+            'quantity_ordered' => 1,
+            'price' => $product->price,
+            'name_ordered' => $product->name,
+            'sku_ordered' => $product->sku,
+        ]);
 
         Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => DB::raw('total_order')]);
     }

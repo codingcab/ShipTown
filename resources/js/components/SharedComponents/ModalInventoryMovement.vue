@@ -77,6 +77,12 @@ export default {
         },
     },
 
+    mounted: function () {
+        if (this.currentUser()['warehouse']) {
+            this.warehouse_code = this.currentUser()['warehouse']['code'];
+        }
+    },
+
     methods: {
         loadRecords: function(page = 1) {
             this.showLoading();
@@ -90,10 +96,7 @@ export default {
                 per_page: 50
             };
 
-            if (this.currentUser()['warehouse']) {
-                params["filter[warehouse_code]"] = this.warehouse_code;
-            }
-
+            params["filter[warehouse_code]"] = this.warehouse_code;
             params["filter[search]"] = this.product_sku
 
             this.apiGetInventoryMovements(params)
