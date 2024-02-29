@@ -36,5 +36,4 @@ class OrderProductUpdatedEventListener
 
         UpdateInventoryQuantityReservedJob::dispatchSync($event->orderProduct->product_id);
     }
-
 }
