@@ -61,6 +61,8 @@ class ClearDatabaseCommand extends Command
         App\Modules\Rmsapi\src\Models\RmsapiSaleImport::query()->forceDelete();
         App\Modules\Magento2MSI\src\Models\Magento2msiConnection::query()->forceDelete();
 
+        App\Modules\InventoryReservations\src\Models\InventoryReservation::query()->forceDelete();
+
         App\Models\NavigationMenu::query()->forceDelete();
         App\Models\ProductAlias::query()->forceDelete();
         App\Models\Product::query()->forceDelete();
