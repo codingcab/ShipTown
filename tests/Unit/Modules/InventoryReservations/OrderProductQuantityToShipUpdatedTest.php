@@ -17,7 +17,7 @@ class OrderProductQuantityToShipUpdatedTest extends TestCase
     // this test checks that the quantity_reserved field in the inventory_reservations table is updated
     // when the quantity_to_ship field in the order_products table is updated
     /** @test */
-    public function orderProductQuantityToShippedUpdatedTest()
+    public function orderProductQuantityToShipUpdatedTest()
     {
         // prepare database
         $warehouse = Warehouse::factory()->create();
