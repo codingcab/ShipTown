@@ -19,30 +19,6 @@
         <div v-if="!isLoading">
             <div class="row-col mb-2">
                 <order-details :order="order" />
-
-                <div v-show="showExpandedComments" class="row mb-2 mt-1">
-                    <input id="comment-input" ref="newCommentInput" v-model="input_comment" class="form-control" placeholder="Add comment here" @keypress.enter="addComment"/>
-                </div>
-
-                <div class="row" v-if="showExpandedComments" v-for="order_comment in order['order_comments']">
-                    <div class="col">
-                        <b>{{ order_comment['user'] ? order_comment['user']['name'] : 'AutoPilot' }}: </b>{{ order_comment['comment'] }}
-                    </div>
-                </div>
-
-                <div class="row" v-if="!showExpandedComments && order['order_comments'].length">
-                    <div class="col">
-                        <b>{{ order['order_comments'][0]['user'] ? order['order_comments'][0]['user']['name'] : 'AutoPilot' }}: </b>{{ order['order_comments'][0]['comment'] }}
-                    </div>
-                </div>
-
-                <div v-show="order['order_comments'].length" class="row text-center text-secondary" @click="toggleExpandComments">
-                    <div class="col">
-                        <font-awesome-icon v-if="showExpandedComments" icon="chevron-up" class="fa fa-xs"></font-awesome-icon>
-                        <font-awesome-icon v-if="!showExpandedComments" icon="chevron-down" class="fa fa-xs"></font-awesome-icon>
-                        {{ showExpandedComments ? 'hide' : 'expand' }} comments
-                    </div>
-                </div>
             </div>
 
             <div class="row m-1 pb-2 sticky-top bg-light" style="z-index: 10;">
@@ -51,6 +27,27 @@
                 </div>
 
                 <button type="button" v-b-modal="'filtersModal'" class="btn btn-primary ml-2"><font-awesome-icon icon="cog" class="fa-lg"></font-awesome-icon></button>
+            </div>
+
+            <div v-show="manuallyExpandComments" class="row mx-1 my-2">
+                <input id="comment-input" ref="newCommentInput" v-model="input_comment" class="form-control" placeholder="Add comment here" @keypress.enter="addComment"/>
+            </div>
+            <div class="my-1" v-if="commentsToShow.length">
+                <div class="d-flex mx-1" v-for="(comment, index) in commentsToShow" @click="toggleExpandComments">
+                    <div>
+                        <b>{{ comment.user ? comment.user.name : 'AutoPilot' }}: </b>{{ comment.comment }}
+                    </div>
+                    <div class="ml-auto" v-if="index === 0">
+                        <font-awesome-icon v-if="manuallyExpandComments" icon="chevron-up" class="fa fa-xs"></font-awesome-icon>
+                        <font-awesome-icon v-if="!manuallyExpandComments" icon="chevron-down" class="fa fa-xs"></font-awesome-icon>
+                    </div>
+                </div>
+            </div>
+            <div v-else class="row text-center text-secondary" @click="toggleExpandComments">
+                <div class="col">
+                    <font-awesome-icon v-if="manuallyExpandComments" icon="chevron-up" class="fa fa-xs"></font-awesome-icon>
+                    <font-awesome-icon v-if="!manuallyExpandComments" icon="chevron-down" class="fa fa-xs"></font-awesome-icon>
+                </div>
             </div>
 
             <template v-if="orderProducts.length === 0" >
@@ -261,7 +258,7 @@
                     };
 
                     // quick hack to immediately display comment
-                    this.order['order_comments'].unshift(data);
+                    this.order.order_comments.unshift(data);
 
                     this.apiPostOrderComment(data)
                         .then(() => {
@@ -272,6 +269,8 @@
 
                         })
                         .catch((error) => {
+                            // remove first comment if it was not saved
+                            this.order.order_comments.shift();
                             console.log(error)
                             this.displayApiCallError(error);
                         });
@@ -279,7 +278,7 @@
 
                 toggleExpandComments() {
                     this.manuallyExpandComments = !this.manuallyExpandComments;
-                    this.setFocusElementById(this.manuallyExpandComments ? 'comment-input': 'barcode-input');
+                    this.setFocusElementById(this.manuallyExpandComments ? 'comment-input': 'barcode-input', this.manuallyExpandComments);
                 },
 
                 checkIfPacker: async function() {
@@ -717,17 +716,11 @@
                     return (this.order['packer_user_id']  && this.order['packer_user_id'] !== Vue.prototype.$currentUser['id']);
                 },
 
-                showExpandedComments(){
-
-                    if(this.manuallyExpandComments) return true;
-
-                    if(this.order === null) return false;
-
-                    if(this.order['order_comments'].length === 0) return true;
-
-                    return false;
+                commentsToShow() {
+                    return this.order.order_comments.length
+                        ? (this.manuallyExpandComments ? this.order.order_comments : [this.order.order_comments[0]])
+                        : [];
                 }
-
             },
     }
     </script>
