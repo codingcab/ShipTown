@@ -6,7 +6,7 @@
                 <div class="card">
                     <div class="row p-2 pl-2 rounded">
 
-                        <div class="col-lg-6">
+                        <div class="col-lg-5">
                             <h5 class="text-primary">
                                 <font-awesome-icon icon="copy" class="fa-xs" role="button"
                                                    @click="copyToClipBoard(order['order_number'])"></font-awesome-icon>
@@ -24,7 +24,6 @@
                                         </a>
                                     </template>
                                 </div>
-
                                 <template v-for="tag in order.tags">
                                     <a class="badge text-uppercase" :key="tag.id" :href="'orders?has_tags=' + tag.name">
                                         {{ tag.name }} </a>
@@ -32,44 +31,41 @@
                             </div>
                         </div>
 
-                        <div class="col-lg-6 align-text-top">
-                            <div v-if="order['order_products_totals']" class="col text-center"
-                                 @click="toggleOrderDetails">
-                                <div class="row ">
-                                    <div class="col">
-                                        <number-card label="age" :number="order['age_in_days']"></number-card>
+                        <div class="col-lg-7 align-text-top mt-1">
+                            <div v-if="order['order_products_totals']" class="col text-center" @click="toggleOrderDetails">
+                                <div class="d-flex flex-nowrap justify-content-between">
+                                    <div>
+                                        <number-card label="age" :number="order['age_in_days']" :min-width="'50px'"></number-card>
                                     </div>
-                                    <div class="col">
-                                        <number-card label="lines" :number="order['order_products_totals']['count']"></number-card>
+                                    <div>
+                                        <number-card label="lines" :number="order['order_products_totals']['count']" :min-width="'50px'"></number-card>
                                     </div>
-                                    <div class="col d-none d-md-block text-right align-text-top" v-bind:class="{ 'bg-warning': order['total_paid'] < 0.01 }">
+                                    <div class="d-none d-md-block" v-bind:class="{ 'bg-warning': order['total_paid'] < 0.01 }">
                                         <div class="text-center w-100 text-secondary small">
                                             <small>total paid</small>
                                         </div>
-                                        <span class="pr-0 mr-2 h5 w-100">{{
-                                                Math.floor(order['total_paid']) }}<span class="" style="font-size: 8pt"><template
-                                                v-if="(order['total_paid']) % 1 === 0"> .00</template><template
-                                                v-if="(order['total_paid']) % 1 > 0"> .{{ Math.floor((order['total_paid']) % 1 * 100) }} </template></span></span>
+                                        <h4 class="text-center">
+                                            {{ financial(order.total_paid).split('.')[0] }}<!--
+                                                --><span style="font-size: 8pt">.{{ financial(order.total_paid).split('.')[1] }}</span>
+                                        </h4>
                                     </div>
-                                    <div class="col d-none d-sm-block">
-                                        <number-card label="ordered" :number="order['order_products_totals']['quantity_ordered']"></number-card>
+                                    <div class="d-none d-sm-block">
+                                        <number-card label="ordered" :number="order['order_products_totals']['quantity_ordered']" :min-width="'50px'"></number-card>
                                     </div>
-                                    <div class="col bg-warning"
-                                         v-if="Number(order['order_products_totals']['quantity_split']) > 0">
-                                        <number-card label="split" :number="order['order_products_totals']['quantity_split']"></number-card>
+                                    <div class="bg-warning" v-if="Number(order['order_products_totals']['quantity_split']) > 0">
+                                        <number-card label="split" :number="order['order_products_totals']['quantity_split']" :min-width="'50px'"></number-card>
                                     </div>
-                                    <div class="col">
-                                        <number-card label="picked" :number="order['order_products_totals']['quantity_picked']"></number-card>
+                                    <div>
+                                        <number-card label="picked" :number="order['order_products_totals']['quantity_picked']" :min-width="'50px'"></number-card>
                                     </div>
-                                    <div class="col bg-warning"
-                                         v-if="Number(order['order_products_totals']['quantity_skipped_picking']) > 0">
-                                        <number-card label="skipped" :number="order['order_products_totals']['quantity_skipped_picking']"></number-card>
+                                    <div class="bg-warning" v-if="Number(order['order_products_totals']['quantity_skipped_picking']) > 0">
+                                        <number-card label="skipped" :number="order['order_products_totals']['quantity_skipped_picking']" :min-width="'50px'"></number-card>
                                     </div>
-                                    <div class="col d-none d-md-block">
-                                        <number-card label="shipped" :number="order['order_products_totals']['quantity_shipped']"></number-card>
+                                    <div class="d-none d-md-block">
+                                        <number-card label="shipped" :number="order['order_products_totals']['quantity_shipped']" :min-width="'50px'"></number-card>
                                     </div>
-                                    <div class="col">
-                                        <number-card label="to ship" :number="order['order_products_totals']['quantity_to_ship']"></number-card>
+                                    <div>
+                                        <number-card label="to ship" :number="order['order_products_totals']['quantity_to_ship']" :min-width="'50px'"></number-card>
                                     </div>
                                 </div>
                             </div>

@@ -25,6 +25,7 @@ class PicklistController extends Controller
                 DB::raw('sum(`quantity_to_pick`) as total_quantity_to_pick'),
                 DB::raw('max(`inventory_source_quantity`) as inventory_source_quantity'),
                 DB::raw("GROUP_CONCAT(id ORDER BY id SEPARATOR ',' ) AS order_product_ids"),
+                DB::raw("GROUP_CONCAT(order_id ORDER BY order_id SEPARATOR ',' ) AS order_ids"),
             ])
             ->groupBy([
                 'orders_products.name_ordered',

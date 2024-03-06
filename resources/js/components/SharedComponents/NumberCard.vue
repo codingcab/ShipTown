@@ -1,5 +1,5 @@
 <template>
-    <text-card :label="label" :text="numberFormatted"></text-card>
+    <text-card :label="label" :text="numberFormatted" :min-width="minWidth"></text-card>
 </template>
 
 <script>
@@ -12,6 +12,10 @@
         props: {
             label: null,
             number: null,
+            minWidth: {
+                type: String,
+                default: '70px'
+            }
         },
         computed: {
             labelFormatted() {

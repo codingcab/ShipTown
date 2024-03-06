@@ -39,16 +39,17 @@ class DatabaseSeeder extends Seeder
 
             Demo\ProductsSeeder::class,
             Demo\ProductsTagsSeeder::class,
+            ProductPriceSeeder::class,
 
+            // Orders Seeders
             Demo\TestOrdersSeeder::class,
-
             Demo\PaidOrdersSeeder::class,
+            Demo\CollectionOrdersSeeder::class,
 
+            // Data Collector Seeders
             Demo\DataCollections\TransferToCorkBranchSeeder::class,
             Demo\DataCollections\TransfersFromWarehouseSeeder::class,
             Demo\DataCollections\ArchivedTransfersFromWarehouseSeeder::class,
-
-            ProductPriceSeeder::class,
 
             InventorySeeder::class,
             SalesSeeder::class,
@@ -78,7 +79,6 @@ class DatabaseSeeder extends Seeder
 //            PicksSeeder::class,
 //            OrderShipmentsSeeder::class,
 
-            Demo\CollectionOrdersSeeder::class,
         ]);
 
         DispatchEveryMinuteEventJob::dispatch();

@@ -23,6 +23,7 @@ class OrderPicklistResource extends JsonResource
             'inventory_source_shelf_location' => $this->inventory_source_shelf_location,
             'inventory_source_quantity'       => (float) $this->inventory_source_quantity,
             'order_product_ids'               => explode(',', $this->order_product_ids),
+            'order_ids'                       => explode(',', $this->order_ids),
             'product'                         => new ProductResource($this->whenLoaded('product')),
 
             // to remove

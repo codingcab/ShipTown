@@ -103,6 +103,22 @@ class Report extends Model
             'data' => $resource,
         ];
 
+        $data['field_links'] = collect($data['fields'])->map(function ($field) {
+
+            $sortIsDesc = request()->has('sort') && str_starts_with(request()->sort, '-');
+            $currentSortName = str_replace('-', '', request()->sort);
+            $isCurrent = $currentSortName === $field;
+            $url = request()->fullUrlWithQuery(['sort' => $isCurrent && !$sortIsDesc ? "-".$field : $field]);
+
+            return [
+                'name' => $field,
+                'url' => $url,
+                'is_current' => $isCurrent,
+                'is_desc' => $sortIsDesc,
+                'display_name' => str_replace('_', ' ', ucwords($field, '_'))
+            ];
+        });
+
         return view($this->view, $data);
     }
 

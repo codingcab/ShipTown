@@ -1,9 +1,9 @@
 <template>
-    <div class="text-center border-0 d-inline-block p-0 m-0" style="min-width: 70px">
-            <div class="small text-secondary">
-                <small class="small text-secondary">{{ this.label }}</small>
-            </div>
-            <h4>{{ this.text || '&nbsp;'}}</h4>
+    <div class="text-center border-0 d-inline-block p-0 m-0" :style="{ minWidth: minWidth}">
+        <div class="small text-secondary">
+            <small class="small text-secondary">{{ this.label }}</small>
+        </div>
+        <h4>{{ this.text || '&nbsp;'}}</h4>
     </div>
 </template>
 
@@ -14,6 +14,10 @@
         props: {
             label: null,
             text: null,
+            minWidth: {
+                type: String,
+                default: '70px'
+            }
         },
     }
 </script>

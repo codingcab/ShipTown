@@ -20,16 +20,21 @@ class PaidOrdersSeeder extends Seeder
             ->count(1)
             ->create(['status_code' => 'paid', 'label_template' => 'address_label'])
             ->each(function (Order $order) {
-                OrderProduct::factory()->count(1)->create([
-                    'sku_ordered' => '45',
-                    'order_id' => $order->getKey(),
-                    'quantity_ordered' => 6,
-                ]);
-                OrderProduct::factory()->count(1)->create([
-                    'sku_ordered' => '46',
-                    'order_id' => $order->getKey(),
-                    'quantity_ordered' => 6,
-                ]);
+                Product::query()
+                    ->whereIn('sku', ['45', '46'])
+                    ->inRandomOrder()
+                    ->get()
+                    ->each(function (Product $product) use ($order) {
+                        return OrderProduct::create([
+                            'order_id' => $order->getKey(),
+                            'product_id' => $product->getKey(),
+                            'quantity_ordered' => rand(2, 6),
+                            'price' => $product->price,
+                            'name_ordered' => $product->name,
+                            'sku_ordered' => $product->sku,
+                        ]);
+                    });
+
                 $order = $order->refresh();
                 Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => $order->total_order]);
             });
@@ -38,7 +43,21 @@ class PaidOrdersSeeder extends Seeder
             ->count(1)
             ->create(['status_code' => 'paid', 'label_template' => 'address_label'])
             ->each(function (Order $order) {
-                OrderProduct::factory()->count(1)->create(['order_id' => $order->getKey()]);
+                Product::query()
+                    ->inRandomOrder()
+                    ->limit(1)
+                    ->get()
+                    ->each(function (Product $product) use ($order) {
+                        return OrderProduct::create([
+                            'order_id' => $order->getKey(),
+                            'product_id' => $product->getKey(),
+                            'quantity_ordered' => rand(2, 6),
+                            'price' => $product->price,
+                            'name_ordered' => $product->name,
+                            'sku_ordered' => $product->sku,
+                        ]);
+                    });
+
                 $order = $order->refresh();
                 Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => $order->total_order]);
             });
@@ -47,7 +66,21 @@ class PaidOrdersSeeder extends Seeder
             ->count(10)
             ->create(['status_code' => 'paid', 'label_template' => 'address_label'])
             ->each(function (Order $order) {
-                OrderProduct::factory()->count(2)->create(['order_id' => $order->getKey()]);
+                Product::query()
+                    ->inRandomOrder()
+                    ->limit(2)
+                    ->get()
+                    ->each(function (Product $product) use ($order) {
+                        return OrderProduct::create([
+                            'order_id' => $order->getKey(),
+                            'product_id' => $product->getKey(),
+                            'quantity_ordered' => rand(2, 6),
+                            'price' => $product->price,
+                            'name_ordered' => $product->name,
+                            'sku_ordered' => $product->sku,
+                        ]);
+                    });
+
                 $order = $order->refresh();
                 Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => $order->total_order]);
             });
@@ -56,7 +89,21 @@ class PaidOrdersSeeder extends Seeder
             ->count(3)
             ->create(['status_code' => 'paid', 'label_template' => 'address_label'])
             ->each(function (Order $order) {
-                OrderProduct::factory()->count(3)->create(['order_id' => $order->getKey()]);
+                Product::query()
+                    ->inRandomOrder()
+                    ->limit(3)
+                    ->get()
+                    ->each(function (Product $product) use ($order) {
+                        return OrderProduct::create([
+                            'order_id' => $order->getKey(),
+                            'product_id' => $product->getKey(),
+                            'quantity_ordered' => rand(2, 6),
+                            'price' => $product->price,
+                            'name_ordered' => $product->name,
+                            'sku_ordered' => $product->sku,
+                        ]);
+                    });
+
                 $order = $order->refresh();
                 Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => $order->total_order]);
             });
@@ -65,7 +112,21 @@ class PaidOrdersSeeder extends Seeder
             ->count(2)
             ->create(['status_code' => 'paid'])
             ->each(function (Order $order) {
-                OrderProduct::factory()->count(4)->create(['order_id' => $order->getKey()]);
+                Product::query()
+                    ->inRandomOrder()
+                    ->limit(4)
+                    ->get()
+                    ->each(function (Product $product) use ($order) {
+                        return OrderProduct::create([
+                            'order_id' => $order->getKey(),
+                            'product_id' => $product->getKey(),
+                            'quantity_ordered' => rand(2, 6),
+                            'price' => $product->price,
+                            'name_ordered' => $product->name,
+                            'sku_ordered' => $product->sku,
+                        ]);
+                    });
+
                 $order = $order->refresh();
                 Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => $order->total_order]);
             });
@@ -74,17 +135,20 @@ class PaidOrdersSeeder extends Seeder
             ->count(1)
             ->create(['status_code' => 'packing', 'label_template' => 'address_label'])
             ->each(function (Order $order) {
-                /** @var Product $product */
-                $product = Product::findBySku('45');
-
-                OrderProduct::factory()->create([
-                    'order_id' => $order->getKey(),
-                    'product_id' => $product->getKey(),
-                    'quantity_ordered' => 1,
-                    'price' => $product->price,
-                    'name_ordered' => $product->name,
-                    'sku_ordered' => $product->sku,
-                ]);
+                Product::query()
+                    ->whereIn('sku', ['45'])
+                    ->inRandomOrder()
+                    ->get()
+                    ->each(function (Product $product) use ($order) {
+                        return OrderProduct::create([
+                            'order_id' => $order->getKey(),
+                            'product_id' => $product->getKey(),
+                            'quantity_ordered' => rand(2, 6),
+                            'price' => $product->price,
+                            'name_ordered' => $product->name,
+                            'sku_ordered' => $product->sku,
+                        ]);
+                    });
 
                 $order = $order->refresh();
                 Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => $order->total_order]);
