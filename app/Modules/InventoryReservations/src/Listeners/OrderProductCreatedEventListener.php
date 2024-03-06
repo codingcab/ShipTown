@@ -20,6 +20,10 @@ class OrderProductCreatedEventListener
      */
     public function handle(OrderProductCreatedEvent $event)
     {
+        if ($event->orderProduct->product_id === null) {
+            return;
+        }
+
         $config = Configuration::first();
 
         $inventory = Inventory::where('product_id', $event->orderProduct->product_id)
@@ -38,11 +42,6 @@ class OrderProductCreatedEventListener
         ]);
 
         ReservationsService::recalculateTotalQuantityReserved($inventory->id);
-
-        // todo - in what circumstances would product_id be null?
-        if ($event->orderProduct->product_id === null) {
-            return;
-        }
 
         UpdateInventoryQuantityReservedJob::dispatchSync($event->orderProduct->product_id);
     }

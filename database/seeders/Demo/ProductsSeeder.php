@@ -18,6 +18,7 @@ class ProductsSeeder extends Seeder
     public function run()
     {
 
+        Product::query()->updateOrCreate(['sku' => '1'], ['name' => 'Tennis Racket']);
         Product::factory()->create(['sku' => '41', 'name' => 'Tennis Balls 6pk']);
         Product::factory()->create(['sku' => '42', 'name' => 'White Tennis Shirt L']);
         Product::factory()->create(['sku' => '43', 'name' => 'Equipment Trolley Black']);
