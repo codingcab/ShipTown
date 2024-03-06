@@ -44,7 +44,8 @@ class RecalculateInventoryRecordsJob extends UniqueJob
                     inventory.last_sold_at          = (SELECT MAX(occurred_at) FROM inventory_movements WHERE inventory_id = inventory.id AND type = "sale"),
                     inventory.first_received_at     = (SELECT MIN(occurred_at) FROM inventory_movements WHERE inventory_id = inventory.id AND quantity_delta > 0),
                     inventory.last_received_at      = (SELECT MAX(occurred_at) FROM inventory_movements WHERE inventory_id = inventory.id AND quantity_delta > 0),
-                    inventory.updated_at            = now()
+                    inventory.updated_at            = now(),
+                    inventory.quantity_reserved     = (SELECT IFNULL(SUM(quantity_reserved), 0) FROM inventory_reservations WHERE inventory_id = inventory.id)
             ');
 
             $inventoryRecordsIds = DB::table('inventory_movements_to_recalculate')->pluck('inventory_id');
