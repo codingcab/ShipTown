@@ -30,7 +30,7 @@ class ImportOrdersJobs extends UniqueJob
 
     public function handle(): void
     {
-        $batchSize = 100;
+        $batchSize = 200;
 
         do {
             $recordsImported = $this->importOrders($this->api2cartConnection, $batchSize);
@@ -48,7 +48,7 @@ class ImportOrdersJobs extends UniqueJob
         // initialize params
         $params = [
             'params'         => 'force_all',
-            'created_from'   => '2022-01-01 00:00:00',
+            'created_from'   => '2024-03-07 00:00:00',
             'sort_by'        => 'modified_at',
             'sort_direction' => 'asc',
             'count'          => $batchSize,
