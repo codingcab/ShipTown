@@ -4,7 +4,6 @@ namespace App\Modules\InventoryReservations\src\Listeners;
 
 use App\Events\OrderProduct\OrderProductCreatedEvent;
 use App\Models\Inventory;
-use App\Modules\InventoryReservations\src\Jobs\UpdateInventoryQuantityReservedJob;
 use App\Modules\InventoryReservations\src\Models\Configuration;
 use App\Modules\InventoryReservations\src\Models\InventoryReservation;
 use App\Modules\InventoryReservations\src\Services\ReservationsService;
@@ -28,21 +27,19 @@ class OrderProductCreatedEventListener
 
         $inventory = Inventory::where('product_id', $event->orderProduct->product_id)
             ->where('warehouse_id', $config->warehouse_id)
-            ->first(['id', 'warehouse_code', 'quantity_reserved']);
+            ->first(['id', 'warehouse_code']);
 
-        $inventoryReservationUuid = implode('_', ['order_product_id', $event->orderProduct->getKey()]);
+        $uuid = ReservationsService::generateOrderProductUuid($event->orderProduct->order->getKey(), $event->orderProduct->getKey());
 
         InventoryReservation::create([
             'inventory_id' => $inventory->id,
             'product_sku' => $event->orderProduct->sku_ordered,
             'warehouse_code' => $inventory->warehouse_code,
             'quantity_reserved' => $event->orderProduct->quantity_to_ship,
-            'comment' => 'Order #' . $event->orderProduct->order->order_number, // Order #1
-            'custom_uuid' => $inventoryReservationUuid, // 123
+            'comment' => 'Order #' . $event->orderProduct->order->order_number,
+            'custom_uuid' => $uuid,
         ]);
 
-        ReservationsService::recalculateTotalQuantityReserved($inventory->id);
-
-        UpdateInventoryQuantityReservedJob::dispatchSync($event->orderProduct->product_id);
+        ReservationsService::recalculateTotalQuantityReserved([$inventory->id]);
     }
 }

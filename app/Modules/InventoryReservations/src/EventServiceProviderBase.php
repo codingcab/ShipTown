@@ -3,12 +3,12 @@
 namespace App\Modules\InventoryReservations\src;
 
 use App\Events\EveryDayEvent;
+use App\Events\Inventory\RecalculateInventoryRequestEvent;
 use App\Events\Order\OrderUpdatedEvent;
 use App\Events\OrderProduct\OrderProductCreatedEvent;
 use App\Events\OrderProduct\OrderProductUpdatedEvent;
 use App\Models\Warehouse;
 use App\Modules\BaseModuleServiceProvider;
-use App\Modules\InventoryReservations\src\Jobs\RecalculateQuantityReservedJob;
 use App\Modules\InventoryReservations\src\Models\Configuration;
 
 class EventServiceProviderBase extends BaseModuleServiceProvider
@@ -22,6 +22,10 @@ class EventServiceProviderBase extends BaseModuleServiceProvider
     public static bool $autoEnable = false;
 
     protected $listen = [
+        RecalculateInventoryRequestEvent::class => [
+            Listeners\RecalculateInventoryRequestEventListener::class,
+        ],
+
         OrderProductUpdatedEvent::class => [
             Listeners\OrderProductUpdatedEventListener::class,
         ],
@@ -32,10 +36,6 @@ class EventServiceProviderBase extends BaseModuleServiceProvider
 
         OrderUpdatedEvent::class => [
             Listeners\OrderUpdatedEventListener::class,
-        ],
-
-        EveryDayEvent::class => [
-            Listeners\EveryDayEventListener::class,
         ],
     ];
 
@@ -48,8 +48,6 @@ class EventServiceProviderBase extends BaseModuleServiceProvider
                 'warehouse_id' => $warehouse->id,
             ]);
         }
-
-        RecalculateQuantityReservedJob::dispatch();
 
         return parent::enableModule();
     }

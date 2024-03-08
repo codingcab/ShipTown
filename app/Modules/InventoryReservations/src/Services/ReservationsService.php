@@ -7,29 +7,26 @@ use App\Modules\InventoryReservations\src\Models\InventoryReservation;
 
 class ReservationsService
 {
-    public static function recalculateTotalQuantityReserved(int $inventory_id): mixed
+    public static function recalculateTotalQuantityReserved(array $inventory_ids): void
     {
-        $newTotalQuantityReserved = InventoryReservation::query()
-            ->where(['inventory_id' => $inventory_id])
-            ->sum('quantity_reserved');
+        foreach ($inventory_ids as $inventory_id) {
+            $newTotalQuantityReserved = InventoryReservation::query()
+                ->where(['inventory_id' => $inventory_id])
+                ->sum('quantity_reserved');
 
-        Inventory::where(['id' => $inventory_id])->update(['quantity_reserved' => $newTotalQuantityReserved]);
+            Inventory::where(['id' => $inventory_id])->update(['quantity_reserved' => $newTotalQuantityReserved]);
+        }
+    }
 
-        return $newTotalQuantityReserved;
+    public static function generateOrderProductUuid(int $order_id, int $order_product_id): string
+    {
+        return "order_id_{$order_id};order_product_id_{$order_product_id}";
+    }
 
-//        CREATE TEMPORARY TABLE tempTable AS
-//SELECT inventory_id, SUM(quantity_reserved) as quantity_reserved_total
-//FROM inventory_reservations
-//
-//WHERE product_id IN (SELECT product_id FROM order_products WHERE order_id = 123)
-//GROUP BY inventory_id;
-//
-//
-//UPDATE inventory
-//
-//INNER JOIN tempTable
-//  ON tempTable.inventory_id = inventory.id
-//
-//SET quantity_reserved = tempTable.quantity_reserved_total
+    public static function getProductIdFromUuid(string $uuid): int
+    {
+        $productString = explode(';', $uuid)[1];
+        $parts = explode('_', $productString);
+        return end($parts);
     }
 }

@@ -61,6 +61,12 @@ class OrderStatusChangedTest extends TestCase
 
         $order_id = $response->json('id');
 
+//        OrderStatus::query()->create([
+//            'code'           => 'cancelled',
+//            'name'           => 'cancelled',
+//            'order_active'   => false,
+//        ]);
+
         $response = $this->putJson('api/orders/'.$order_id, ['status_code' => 'cancelled']);
         ray('response', $response->json());
         $response->assertOk();
