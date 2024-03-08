@@ -30,21 +30,21 @@ class ImportOrdersJobs extends UniqueJob
 
     public function handle(): void
     {
+        $batchSize = 100;
+
         do {
-            $recordsImported = $this->importOrders($this->api2cartConnection);
+            $recordsImported = $this->importOrders($this->api2cartConnection, $batchSize);
 
             // sleep for a second to avoid API2CART rate limits
             sleep(1);
-        } while ($recordsImported > 0);
+        } while ($recordsImported = 0);
 
         // finalize
         $this->finishedSuccessfully = true;
     }
 
-    private function importOrders(Api2cartConnection $api2cartConnection): int
+    private function importOrders(Api2cartConnection $api2cartConnection, int $batchSize): int
     {
-        $batchSize = 100;
-
         // initialize params
         $params = [
             'params'         => 'force_all',
@@ -110,7 +110,7 @@ class ImportOrdersJobs extends UniqueJob
      * @param Api2cartConnection $connection
      * @param $order
      */
-    private function updateLastSyncedTimestamp(Api2cartConnection $connection, $order)
+    private function updateLastSyncedTimestamp(Api2cartConnection $connection, $order): void
     {
         if (empty($order)) {
             return;
@@ -121,8 +121,9 @@ class ImportOrdersJobs extends UniqueJob
             $order['modified_at']['value']
         );
 
+        $connection->refresh();
         $connection->update([
-            'last_synced_modified_at' => $lastTimeStamp->addSecond(),
+            'last_synced_modified_at' => max($lastTimeStamp->addSecond(), $connection->last_synced_modified_at)
         ]);
     }
 }
