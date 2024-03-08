@@ -8,15 +8,16 @@ use App\Services\OrderService;
 
 class ProcessImportedOrdersJob extends UniqueJob
 {
-    public function handle()
+    public function handle(): void
     {
         Api2cartOrderImports::query()
             ->whereNull('when_processed')
             ->orderBy('id')
-            ->chunk(1, function ($api2cartOrderImports) {
+            ->chunk(10, function ($api2cartOrderImports) {
                 foreach ($api2cartOrderImports as $api2cartOrderImport) {
                     $this->processOrder($api2cartOrderImport);
                 }
+                usleep(10000); // 100ms
             });
     }
 

@@ -8,8 +8,6 @@ use App\Modules\Api2cart\src\Api\Orders;
 use App\Modules\Api2cart\src\Models\Api2cartConnection;
 use App\Modules\Api2cart\src\Models\Api2cartOrderImports;
 use Carbon\Carbon;
-use Exception;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
@@ -30,20 +28,20 @@ class ImportOrdersJobs extends UniqueJob
         return implode('-', [parent::uniqueId(), $this->api2cartConnection->id]);
     }
 
-    public function handle()
+    public function handle(): void
     {
-        $this->importOrders($this->api2cartConnection);
+        do {
+            $recordsImported = $this->importOrders($this->api2cartConnection);
+
+            // sleep for a second to avoid API2CART rate limits
+            sleep(1);
+        } while ($recordsImported > 0);
 
         // finalize
         $this->finishedSuccessfully = true;
     }
 
-    /**
-     * @param Api2cartConnection $api2cartConnection
-     *
-     * @throws Exception|GuzzleException
-     */
-    private function importOrders(Api2cartConnection $api2cartConnection): void
+    private function importOrders(Api2cartConnection $api2cartConnection): int
     {
         $batchSize = 100;
 
@@ -72,7 +70,7 @@ class ImportOrdersJobs extends UniqueJob
 
         if ($orders === null) {
             Log::warning("API2CART: Could not fetch orders");
-            return;
+            return 0;
         }
 
         info('API2CART: Imported orders', ['count' => count($orders)]);
@@ -86,12 +84,7 @@ class ImportOrdersJobs extends UniqueJob
             'expires_at' => now()->addHour()
         ]);
 
-        // for better performance and no long blocking jobs
-        // recursively dispatch another import job
-        // if there might be still some more to import
-        if (count($orders) >= $batchSize) {
-            self::dispatch($api2cartConnection);
-        }
+        return count($orders);
     }
 
     /**
