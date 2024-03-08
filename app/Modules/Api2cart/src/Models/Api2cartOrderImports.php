@@ -19,6 +19,7 @@ use Illuminate\Support\Collection;
  * @property string|null    $when_processed
  * @property string|null    $order_number
  * @property integer|null   $api2cart_order_id
+ * @property Carbon|null    $api2cart_modified_at
  * @property string|null    $shipping_method_name
  * @property string|null    $shipping_method_code
  * @property array          $raw_import
@@ -56,6 +57,7 @@ class Api2cartOrderImports extends BaseModel
         'connection_id',
         'when_processed',
         'order_number',
+        'api2cart_modified_at',
         'raw_import',
     ];
 
@@ -63,6 +65,7 @@ class Api2cartOrderImports extends BaseModel
      * @var string[]
      */
     protected $casts = [
+        'api2cart_modified_at' => 'datetime',
         'raw_import' => 'array',
     ];
 

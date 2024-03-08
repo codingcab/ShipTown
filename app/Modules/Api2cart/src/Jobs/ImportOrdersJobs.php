@@ -99,6 +99,7 @@ class ImportOrdersJobs extends UniqueJob
                 'api2cart_order_id' => data_get($order, 'id'),
                 'when_processed' => null,
             ], [
+                'api2cart_modified_at' => data_get($order, 'modified_at.value'),
                 'raw_import' => $order,
             ]);
 
