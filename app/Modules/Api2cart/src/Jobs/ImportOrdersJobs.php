@@ -37,7 +37,7 @@ class ImportOrdersJobs extends UniqueJob
 
             // sleep for a second to avoid API2CART rate limits
             sleep(1);
-        } while ($recordsImported = 0);
+        } while ($recordsImported > 0);
 
         // finalize
         $this->finishedSuccessfully = true;
