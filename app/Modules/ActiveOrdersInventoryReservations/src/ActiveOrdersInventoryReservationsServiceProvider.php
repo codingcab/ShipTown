@@ -4,6 +4,7 @@ namespace App\Modules\ActiveOrdersInventoryReservations\src;
 
 use App\Events\Order\OrderUpdatedEvent;
 use App\Events\OrderProduct\OrderProductCreatedEvent;
+use App\Events\OrderProduct\OrderProductDeletedEvent;
 use App\Events\OrderProduct\OrderProductUpdatedEvent;
 use App\Models\Warehouse;
 use App\Modules\ActiveOrdersInventoryReservations\src\Models\Configuration;
@@ -30,6 +31,10 @@ class ActiveOrdersInventoryReservationsServiceProvider extends BaseModuleService
 
         OrderUpdatedEvent::class => [
             Listeners\OrderUpdatedEventListener::class,
+        ],
+
+        OrderProductDeletedEvent::class => [
+            Listeners\OrderProductDeletedEventListener::class,
         ],
     ];
 

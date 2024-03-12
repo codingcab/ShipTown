@@ -4,6 +4,7 @@ namespace App\Modules\ActiveOrdersInventoryReservations\src\Services;
 
 use App\Models\Inventory;
 use App\Models\InventoryReservation;
+use App\Models\OrderProduct;
 
 class ReservationsService
 {
@@ -18,15 +19,8 @@ class ReservationsService
         }
     }
 
-    public static function generateOrderProductUuid(int $order_id, int $order_product_id): string
+    public static function generateOrderProductUuid(OrderProduct $orderProduct): string
     {
-        return "order_id_{$order_id};order_product_id_{$order_product_id}";
-    }
-
-    public static function getProductIdFromUuid(string $uuid): int
-    {
-        $productString = explode(';', $uuid)[1];
-        $parts = explode('_', $productString);
-        return end($parts);
+        return "order_id_{$orderProduct->order_id};order_product_id_{$orderProduct->getKey()}";
     }
 }

@@ -19,12 +19,13 @@ class OrderProductCreatedEventListener
         /** @var Configuration $config */
         $config = Configuration::first();
 
+        /** @var Inventory $inventory */
         $inventory = Inventory::query()
             ->where('product_id', $event->orderProduct->product_id)
             ->where('warehouse_id', $config->warehouse_id)
             ->first(['id', 'warehouse_code']);
 
-        $uuid = ReservationsService::generateOrderProductUuid($event->orderProduct->order->getKey(), $event->orderProduct->getKey());
+        $uuid = ReservationsService::generateOrderProductUuid($event->orderProduct);
 
         InventoryReservation::create([
             'inventory_id' => $inventory->id,
@@ -34,7 +35,5 @@ class OrderProductCreatedEventListener
             'comment' => 'Order #' . $event->orderProduct->order->order_number,
             'custom_uuid' => $uuid,
         ]);
-
-        ReservationsService::recalculateTotalQuantityReserved([$inventory->id]);
     }
 }

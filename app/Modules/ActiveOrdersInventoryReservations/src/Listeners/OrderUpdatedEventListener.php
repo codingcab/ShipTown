@@ -37,7 +37,7 @@ class OrderUpdatedEventListener
         $orderProducts = $event->order->orderProducts->whereNotNull('product_id');
 
         $dataToAdd = $orderProducts->map(function (OrderProduct $orderProduct) use ($event, $config) {
-            $uuid = ReservationsService::generateOrderProductUuid($event->order->getKey(), $orderProduct->getKey());
+            $uuid = ReservationsService::generateOrderProductUuid($orderProduct);
 
             $inventory = Inventory::query()
                 ->where('product_id', $orderProduct->product_id)

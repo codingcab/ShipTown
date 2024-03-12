@@ -4,19 +4,13 @@ namespace App\Observers;
 
 use App\Events\Order\OrderUpdatedEvent;
 use App\Events\OrderProduct\OrderProductCreatedEvent;
+use App\Events\OrderProduct\OrderProductDeletedEvent;
 use App\Events\OrderProduct\OrderProductUpdatedEvent;
 use App\Models\OrderProduct;
 
 class OrderProductObserver
 {
-    /**
-     * Handle the order product "created" event.
-     *
-     * @param OrderProduct $orderProduct
-     *
-     * @return void
-     */
-    public function created(OrderProduct $orderProduct)
+    public function created(OrderProduct $orderProduct): void
     {
         optional($orderProduct->product, function () use ($orderProduct) {
             $orderProduct->product->log('order placed', [
@@ -28,14 +22,7 @@ class OrderProductObserver
         OrderProductCreatedEvent::dispatch($orderProduct);
     }
 
-    /**
-     * Handle the order product "updated" event.
-     *
-     * @param OrderProduct $orderProduct
-     *
-     * @return void
-     */
-    public function updated(OrderProduct $orderProduct)
+    public function updated(OrderProduct $orderProduct): void
     {
         $this->setOrdersPickedAtIfAllPicked($orderProduct);
 
@@ -43,6 +30,11 @@ class OrderProductObserver
 
         // we do it here because touch() does not dispatch models UpdatedEvent
         OrderUpdatedEvent::dispatch($orderProduct->order);
+    }
+
+    public function deleted(OrderProduct $orderProduct): void
+    {
+        OrderProductDeletedEvent::dispatch($orderProduct);
     }
 
     /**

@@ -2,23 +2,21 @@
 
 namespace App\Modules\ActiveOrdersInventoryReservations\src\Listeners;
 
-use App\Events\OrderProduct\OrderProductUpdatedEvent;
+use App\Events\OrderProduct\OrderProductDeletedEvent;
 use App\Models\InventoryReservation;
 use App\Modules\ActiveOrdersInventoryReservations\src\Services\ReservationsService;
 
-class OrderProductUpdatedEventListener
+class OrderProductDeletedEventListener
 {
-    public function handle(OrderProductUpdatedEvent $event): void
+    public function handle(OrderProductDeletedEvent $event): void
     {
         if ($event->orderProduct->product_id === null) {
             return;
         }
 
-        $event->orderProduct->refresh();
-
         InventoryReservation::query()
             ->where('custom_uuid', ReservationsService::generateOrderProductUuid($event->orderProduct))
             ->first()
-            ->update(['quantity_reserved' => $event->orderProduct->quantity_to_ship]);
+            ->delete();
     }
 }

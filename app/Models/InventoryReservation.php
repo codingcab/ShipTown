@@ -17,4 +17,8 @@ class InventoryReservation extends Model
         'comment',
         'custom_uuid'
     ];
+
+    protected $casts = [
+        'quantity_reserved' => 'real'
+    ];
 }
