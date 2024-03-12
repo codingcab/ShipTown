@@ -12,7 +12,7 @@ class ActiveOrdersInventoryReservationsController extends Controller
 {
     public function index(InventoryReservationsConfigurationIndexRequest $request): ConfigurationResource
     {
-        $configuration = Configuration::first();
+        $configuration = Configuration::query()->firstOrCreate();
 
         return new ConfigurationResource($configuration);
     }
