@@ -30,12 +30,12 @@ class ActiveOrdersInventoryReservationsServiceProvider extends BaseModuleService
             Listeners\OrderProductCreatedEventListener::class,
         ],
 
-        OrderUpdatedEvent::class => [
-            Listeners\OrderUpdatedEventListener::class,
-        ],
-
         OrderProductDeletedEvent::class => [
             Listeners\OrderProductDeletedEventListener::class,
+        ],
+
+        OrderUpdatedEvent::class => [
+            Listeners\OrderUpdatedEventListener::class,
         ],
 
         ConfigurationUpdatedEvent::class => [

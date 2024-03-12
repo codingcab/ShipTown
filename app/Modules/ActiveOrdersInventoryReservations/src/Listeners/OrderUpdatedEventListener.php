@@ -11,49 +11,52 @@ use App\Modules\ActiveOrdersInventoryReservations\src\Services\ReservationsServi
 
 class OrderUpdatedEventListener
 {
-    public function handle(OrderUpdatedEvent $event): void
+    public function handle(OrderUpdatedEvent $event)
     {
         if ($event->order->isAttributeNotChanged('is_active')) {
-            return;
+            return true;
         }
 
-        if ($event->order->is_active) {
-            $this->reserveInventoryForAllOrderProducts($event);
+        if ($event->order->refresh()->is_active) {
+            $this->createInventoryReservationsForOrderProducts($event);
         } else {
-            $uuidPrefix = 'order_id_' . $event->order->getKey();
-
-            InventoryReservation::query()
-                ->where('custom_uuid', 'like', $uuidPrefix .'%')
-                ->get()
-                ->each
-                ->delete();
+            $this->deleteInventoryReservationsForOrderProducts($event);
         }
+
+        return true;
     }
 
-    public function reserveInventoryForAllOrderProducts(OrderUpdatedEvent $event): void
+    public function createInventoryReservationsForOrderProducts(OrderUpdatedEvent $event): void
     {
         /** @var Configuration $config */
         $config = Configuration::first();
-        $orderProducts = $event->order->orderProducts->whereNotNull('product_id');
 
-        $dataToAdd = $orderProducts->map(function (OrderProduct $orderProduct) use ($event, $config) {
-            $uuid = ReservationsService::generateOrderProductUuid($orderProduct);
+        $inventoryReservations = $event->order
+            ->orderProducts()
+            ->whereNotNull('product_id')
+            ->map(function (OrderProduct $orderProduct) use ($event, $config) {
+                $inventory = Inventory::find($orderProduct->product_id, $config->warehouse_id);
 
-            $inventory = Inventory::query()
-                ->where('product_id', $orderProduct->product_id)
-                ->where('warehouse_id', $config->warehouse_id)
-                ->first(['id', 'warehouse_code']);
+                return [
+                    'inventory_id' => $inventory->id,
+                    'product_sku' => $orderProduct->sku_ordered,
+                    'warehouse_code' => $inventory->warehouse_code,
+                    'quantity_reserved' => $orderProduct->quantity_to_ship,
+                    'comment' => 'Order #' . $event->order->order_number,
+                    'custom_uuid' => ReservationsService::getUuid($orderProduct),
+                ];
+            });
 
-            return [
-                'inventory_id' => $inventory->id,
-                'product_sku' => $orderProduct->sku_ordered,
-                'warehouse_code' => $inventory->warehouse_code,
-                'quantity_reserved' => $orderProduct->quantity_to_ship,
-                'comment' => 'Order #' . $event->order->order_number,
-                'custom_uuid' => $uuid,
-            ];
-        });
+        InventoryReservation::query()->create($inventoryReservations->toArray());
+    }
 
-        InventoryReservation::query()->create($dataToAdd->toArray());
+    public function deleteInventoryReservationsForOrderProducts(OrderUpdatedEvent $event): void
+    {
+        $uuidPrefix = 'module_active_order_inventory_reservations;order_id_' . $event->order->getKey();
+
+        InventoryReservation::query()
+            ->where('custom_uuid', 'like', $uuidPrefix . ';%')
+            ->get()
+            ->each(fn(InventoryReservation $inventoryReservation) => $inventoryReservation->delete());
     }
 }

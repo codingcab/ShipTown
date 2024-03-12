@@ -65,7 +65,7 @@ class BasicModuleTest extends TestCase
 
         // assert something
         $this->assertDatabaseHas('inventory_reservations', [
-            'custom_uuid' => ReservationsService::generateOrderProductUuid($orderProduct1),
+            'custom_uuid' => ReservationsService::getUuid($orderProduct1),
             'inventory_id' => $inventory->id,
             'warehouse_code' => $warehouse->code,
             'product_sku' => $orderProduct1->sku_ordered,
@@ -74,7 +74,7 @@ class BasicModuleTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('inventory_reservations', [
-            'custom_uuid' => ReservationsService::generateOrderProductUuid($orderProduct2),
+            'custom_uuid' => ReservationsService::getUuid($orderProduct2),
             'inventory_id' => $inventory->id,
             'warehouse_code' => $warehouse->code,
             'product_sku' => $orderProduct2->sku_ordered,
@@ -117,7 +117,7 @@ class BasicModuleTest extends TestCase
 
         // assert something
         $this->assertDatabaseHas('inventory_reservations', [
-            'custom_uuid' => ReservationsService::generateOrderProductUuid($orderProduct1),
+            'custom_uuid' => ReservationsService::getUuid($orderProduct1),
             'inventory_id' => $inventory->id,
             'warehouse_code' => $warehouse->code,
             'product_sku' => $orderProduct1->sku_ordered,
@@ -126,7 +126,7 @@ class BasicModuleTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('inventory_reservations', [
-            'custom_uuid' => ReservationsService::generateOrderProductUuid($orderProduct2),
+            'custom_uuid' => ReservationsService::getUuid($orderProduct2),
             'inventory_id' => $inventory->id,
             'warehouse_code' => $warehouse->code,
             'product_sku' => $orderProduct2->sku_ordered,
@@ -138,7 +138,7 @@ class BasicModuleTest extends TestCase
 
         // assert something
         $this->assertDatabaseMissing('inventory_reservations', [
-            'custom_uuid' => ReservationsService::generateOrderProductUuid($orderProduct1),
+            'custom_uuid' => ReservationsService::getUuid($orderProduct1),
         ]);
     }
 
@@ -177,7 +177,7 @@ class BasicModuleTest extends TestCase
 
         // assert something
         $this->assertDatabaseHas('inventory_reservations', [
-            'custom_uuid' => ReservationsService::generateOrderProductUuid($orderProduct1),
+            'custom_uuid' => ReservationsService::getUuid($orderProduct1),
             'inventory_id' => $inventory->id,
             'warehouse_code' => $warehouse->code,
             'product_sku' => $orderProduct1->sku_ordered,
@@ -186,7 +186,7 @@ class BasicModuleTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('inventory_reservations', [
-            'custom_uuid' => ReservationsService::generateOrderProductUuid($orderProduct2),
+            'custom_uuid' => ReservationsService::getUuid($orderProduct2),
             'inventory_id' => $inventory->id,
             'warehouse_code' => $warehouse->code,
             'product_sku' => $orderProduct2->sku_ordered,

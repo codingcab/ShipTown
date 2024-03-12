@@ -17,7 +17,7 @@ class OrderProductUpdatedEventListener
         $event->orderProduct->refresh();
 
         InventoryReservation::query()
-            ->where('custom_uuid', ReservationsService::generateOrderProductUuid($event->orderProduct))
+            ->where('custom_uuid', ReservationsService::getUuid($event->orderProduct))
             ->first()
             ->update(['quantity_reserved' => $event->orderProduct->quantity_to_ship]);
     }

@@ -19,8 +19,12 @@ class ReservationsService
         }
     }
 
-    public static function generateOrderProductUuid(OrderProduct $orderProduct): string
+    public static function getUuid(OrderProduct $orderProduct): string
     {
-        return "order_id_{$orderProduct->order_id};order_product_id_{$orderProduct->getKey()}";
+        return implode('', [
+            "module_active_order_inventory_reservations;",
+            "order_id_", $orderProduct->order_id,
+            ";order_product_id_", $orderProduct->getKey()
+        ]);
     }
 }
