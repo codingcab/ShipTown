@@ -54,6 +54,6 @@ class OrderUpdatedEventListener
             ];
         });
 
-        InventoryReservation::create($dataToAdd->toArray());
+        InventoryReservation::query()->create($dataToAdd->toArray());
     }
 }
