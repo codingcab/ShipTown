@@ -5,7 +5,7 @@ namespace App\Modules\BoxTop\src;
 use App\Modules\BaseModuleServiceProvider;
 
 /**
- * Class EventServiceProviderBase.
+ * Class InventoryQuantityReservedServiceProvider.
  */
 class BoxTopServiceProvider extends BaseModuleServiceProvider
 {

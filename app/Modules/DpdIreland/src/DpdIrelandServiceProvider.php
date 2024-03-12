@@ -6,7 +6,7 @@ use App\Models\ShippingService;
 use App\Modules\BaseModuleServiceProvider;
 
 /**
- * Class EventServiceProviderBase.
+ * Class InventoryQuantityReservedServiceProvider.
  */
 class DpdIrelandServiceProvider extends BaseModuleServiceProvider
 {

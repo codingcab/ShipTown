@@ -11,7 +11,7 @@ use App\Modules\BaseModuleServiceProvider;
 use App\Modules\InventoryQuantityIncoming\src\Jobs\FixIncorrectQuantityIncomingJob;
 
 /**
- * Class EventServiceProviderBase.
+ * Class InventoryQuantityReservedServiceProvider.
  */
 class InventoryQuantityIncomingServiceProvider extends BaseModuleServiceProvider
 {

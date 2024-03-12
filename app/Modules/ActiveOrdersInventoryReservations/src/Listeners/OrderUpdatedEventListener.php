@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Modules\InventoryReservations\src\Listeners;
+namespace App\Modules\ActiveOrdersInventoryReservations\src\Listeners;
 
 use App\Events\Order\OrderUpdatedEvent;
 use App\Models\Inventory;
+use App\Models\InventoryReservation;
 use App\Models\OrderProduct;
-use App\Modules\InventoryReservations\src\Models\Configuration;
-use App\Modules\InventoryReservations\src\Models\InventoryReservation;
+use App\Modules\ActiveOrdersInventoryReservations\src\Models\Configuration;
 use App\Modules\InventoryReservations\src\Services\ReservationsService;
 
 class OrderUpdatedEventListener
@@ -30,7 +30,6 @@ class OrderUpdatedEventListener
         $inventoryReservations->each->delete();
 
         if ($event->order->is_active) {
-
             $config = Configuration::first();
             $orderProducts = $event->order->orderProducts->whereNotNull('product_id');
 

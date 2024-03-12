@@ -10,7 +10,7 @@ use App\Events\EveryTenMinutesEvent;
 use App\Modules\BaseModuleServiceProvider;
 
 /**
- * Class EventServiceProviderBase.
+ * Class InventoryQuantityReservedServiceProvider.
  */
 class SystemHeartbeatsServiceProvider extends BaseModuleServiceProvider
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\InventoryReservations\src\Models;
+namespace App\Modules\ActiveOrdersInventoryReservations\src\Models;
 
 use App\BaseModel;
 

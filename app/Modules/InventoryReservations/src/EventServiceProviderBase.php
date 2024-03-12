@@ -2,7 +2,6 @@
 
 namespace App\Modules\InventoryReservations\src;
 
-use App\Events\EveryDayEvent;
 use App\Events\Inventory\RecalculateInventoryRequestEvent;
 use App\Events\Order\OrderUpdatedEvent;
 use App\Events\OrderProduct\OrderProductCreatedEvent;
@@ -21,34 +20,10 @@ class EventServiceProviderBase extends BaseModuleServiceProvider
 
     public static bool $autoEnable = false;
 
-    protected $listen = [
-        RecalculateInventoryRequestEvent::class => [
-            Listeners\RecalculateInventoryRequestEventListener::class,
-        ],
-
-        OrderProductUpdatedEvent::class => [
-            Listeners\OrderProductUpdatedEventListener::class,
-        ],
-
-        OrderProductCreatedEvent::class => [
-            Listeners\OrderProductCreatedEventListener::class,
-        ],
-
-        OrderUpdatedEvent::class => [
-            Listeners\OrderUpdatedEventListener::class,
-        ],
-    ];
+    protected $listen = [];
 
     public static function enableModule(): bool
     {
-        if (Configuration::query()->doesntExist()) {
-            $warehouse = Warehouse::query()->firstOrCreate(['code' => '999'], ['name' => '999']);
-
-            Configuration::updateOrCreate([], [
-                'warehouse_id' => $warehouse->id,
-            ]);
-        }
-
         return parent::enableModule();
     }
 

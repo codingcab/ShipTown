@@ -165,7 +165,7 @@ Vue.component('dpd-configuration', require('./components/Settings/DpdConfigurati
 Vue.component('dpd-uk-configuration', require('./components/Settings/DpdUkConfiguration.vue').default);
 Vue.component('heartbeats', require('./components/Heartbeats.vue').default);
 Vue.component('inventory-movements-report-page', require('./components/InventoryMovementsReportPage.vue').default);
-Vue.component('inventory-reservations-configuration-page', require('./components/Settings/InventoryReservationsConfigurationPage.vue').default);
+Vue.component('active-orders-inventory-reservations-page', require('./components/Settings/Modules/ActiveOrdersInventoryReservationsConfigurationPage.vue').default);
 Vue.component('magento-api-configuration-page', require('./components/Settings/MagentoApiConfigurationPage.vue').default);
 Vue.component('magento2msi-configuration-page', require('./components/Settings/Modules/Magento2msiConfigurationPage.vue').default);
 Vue.component('mail-template-table', require('./components/Settings/MailTemplateTable.vue').default);

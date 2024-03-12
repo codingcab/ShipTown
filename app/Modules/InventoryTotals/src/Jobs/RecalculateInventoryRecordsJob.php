@@ -23,20 +23,21 @@ class RecalculateInventoryRecordsJob extends UniqueJob
                 LIMIT 10
             ');
 
+            $inventoryRecordsIds = DB::table('inventory_movements_to_recalculate')->pluck('inventory_id');
+
+            if ($inventoryRecordsIds->count() > 0) {
+                RecalculateInventoryRequestEvent::dispatch($inventoryRecordsIds);
+            }
+
             $recordsUpdated = DB::update('
                 UPDATE inventory
                 INNER JOIN inventory_movements_to_recalculate
                   ON inventory.id = inventory_movements_to_recalculate.inventory_id
                 SET
                     inventory.recount_required      = 0,
+                    inventory.recalculated_at       = now(),
                     inventory.updated_at            = now()
             ');
-
-            $inventoryRecordsIds = DB::table('inventory_movements_to_recalculate')->pluck('inventory_id');
-
-            if ($inventoryRecordsIds->count() > 0) {
-                RecalculateInventoryRequestEvent::dispatch($inventoryRecordsIds);
-            }
 
             Log::info('Job processing', [
                 'job' => self::class,

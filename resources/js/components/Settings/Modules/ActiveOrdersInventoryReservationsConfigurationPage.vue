@@ -29,10 +29,10 @@
 </template>
 
 <script>
-import api from "../../mixins/api";
-import helpers from "../../mixins/helpers";
+import api from "../../../mixins/api.vue";
+import helpers from "../../../mixins/helpers";
 import { ValidationObserver, ValidationProvider } from 'vee-validate';
-import Loading from '../../mixins/loading-overlay';
+import Loading from '../../../mixins/loading-overlay';
 
 export default {
     components: {

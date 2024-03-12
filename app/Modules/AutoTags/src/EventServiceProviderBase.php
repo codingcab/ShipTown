@@ -9,7 +9,7 @@ use App\Events\Order\OrderUpdatedEvent;
 use App\Modules\BaseModuleServiceProvider;
 
 /**
- * Class EventServiceProviderBase.
+ * Class InventoryQuantityReservedServiceProvider.
  */
 class EventServiceProviderBase extends BaseModuleServiceProvider
 {

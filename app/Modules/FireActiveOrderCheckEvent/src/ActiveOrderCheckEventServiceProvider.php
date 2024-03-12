@@ -5,7 +5,7 @@ namespace App\Modules\FireActiveOrderCheckEvent\src;
 use App\Modules\BaseModuleServiceProvider;
 
 /**
- * Class EventServiceProviderBase.
+ * Class InventoryQuantityReservedServiceProvider.
  */
 class ActiveOrderCheckEventServiceProvider extends BaseModuleServiceProvider
 {

@@ -11,7 +11,7 @@ use App\Events\Warehouse\WarehouseTagAttachedEvent;
 use App\Modules\BaseModuleServiceProvider;
 
 /**
- * Class EventServiceProviderBase.
+ * Class InventoryQuantityReservedServiceProvider.
  */
 class InventoryTotalsServiceProvider extends BaseModuleServiceProvider
 {

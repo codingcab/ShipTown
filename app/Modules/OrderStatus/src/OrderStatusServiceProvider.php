@@ -9,7 +9,7 @@ use App\Modules\BaseModuleServiceProvider;
 use App\Modules\OrderStatus\src\Jobs\EnsureCorrectIsActiveAndIsOnHoldJob;
 
 /**
- * Class EventServiceProviderBase.
+ * Class InventoryQuantityReservedServiceProvider.
  */
 class OrderStatusServiceProvider extends BaseModuleServiceProvider
 {

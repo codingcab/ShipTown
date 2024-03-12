@@ -8,7 +8,6 @@ use App\Models\OrderProduct;
 use App\Models\Product;
 use App\Models\Warehouse;
 use App\Modules\InventoryReservations\src\Models\Configuration;
-use App\Modules\InventoryReservations\src\Models\InventoryReservation;
 use Tests\TestCase;
 
 class BasicModulesTest extends TestCase

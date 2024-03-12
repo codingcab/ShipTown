@@ -1,31 +1,26 @@
 <?php
 
-namespace App\Modules\InventoryReservations\src\Listeners;
+namespace App\Modules\ActiveOrdersInventoryReservations\src\Listeners;
 
 use App\Events\OrderProduct\OrderProductCreatedEvent;
 use App\Models\Inventory;
-use App\Modules\InventoryReservations\src\Models\Configuration;
-use App\Modules\InventoryReservations\src\Models\InventoryReservation;
+use App\Models\InventoryReservation;
+use App\Modules\ActiveOrdersInventoryReservations\src\Models\Configuration;
 use App\Modules\InventoryReservations\src\Services\ReservationsService;
 
 class OrderProductCreatedEventListener
 {
-    /**
-     * Handle the event.
-     *
-     * @param OrderProductCreatedEvent $event
-     *
-     * @return void
-     */
-    public function handle(OrderProductCreatedEvent $event)
+    public function handle(OrderProductCreatedEvent $event): void
     {
         if ($event->orderProduct->product_id === null) {
             return;
         }
 
+        /** @var Configuration $config */
         $config = Configuration::first();
 
-        $inventory = Inventory::where('product_id', $event->orderProduct->product_id)
+        $inventory = Inventory::query()
+            ->where('product_id', $event->orderProduct->product_id)
             ->where('warehouse_id', $config->warehouse_id)
             ->first(['id', 'warehouse_code']);
 

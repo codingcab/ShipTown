@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Guid\Guid;
 
 /**
- * Class EventServiceProviderBase.
+ * Class InventoryQuantityReservedServiceProvider.
  */
 class WebhooksServiceProviderBase extends BaseModuleServiceProvider
 {

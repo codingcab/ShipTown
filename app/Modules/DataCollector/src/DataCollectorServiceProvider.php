@@ -7,7 +7,7 @@ use App\Modules\BaseModuleServiceProvider;
 use App\Modules\DataCollector\src\Jobs\DispatchCollectionsTasksJob;
 
 /**
- * Class EventServiceProviderBase.
+ * Class InventoryQuantityReservedServiceProvider.
  */
 class DataCollectorServiceProvider extends BaseModuleServiceProvider
 {

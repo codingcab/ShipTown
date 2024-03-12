@@ -1,21 +1,15 @@
 <?php
 
-namespace App\Modules\InventoryReservations\src\Listeners;
+namespace App\Modules\ActiveOrdersInventoryReservations\src\Listeners;
 
 use App\Events\OrderProduct\OrderProductUpdatedEvent;
 use App\Models\Inventory;
-use App\Modules\InventoryReservations\src\Models\InventoryReservation;
+use App\Models\InventoryReservation;
 use App\Modules\InventoryReservations\src\Services\ReservationsService;
 
 class OrderProductUpdatedEventListener
 {
-    /**
-     * Handle the event.
-     *
-     * @param OrderProductUpdatedEvent $event
-     *
-     */
-    public function handle(OrderProductUpdatedEvent $event)
+    public function handle(OrderProductUpdatedEvent $event): void
     {
         if ($event->orderProduct->product_id === null) {
             return;

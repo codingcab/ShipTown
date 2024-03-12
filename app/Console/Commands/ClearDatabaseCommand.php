@@ -54,14 +54,14 @@ class ClearDatabaseCommand extends Command
         App\Modules\InventoryTotals\src\Models\InventoryTotalByWarehouseTag::query()->forceDelete();
         App\Modules\InventoryMovements\src\Models\Configuration::query()->forceDelete();
         App\Modules\InventoryMovementsStatistics\src\Models\InventoryMovementsStatistic::query()->forceDelete();
-        App\Modules\InventoryReservations\src\Models\Configuration::query()->forceDelete();
+        App\Modules\ActiveOrdersInventoryReservations\src\Models\Configuration::query()->forceDelete();
         App\Modules\PrintNode\src\Models\PrintJob::query()->forceDelete();
         App\Modules\PrintNode\src\Models\Client::query()->forceDelete();
         App\Modules\DpdUk\src\Models\Connection::query()->forceDelete();
         App\Modules\Rmsapi\src\Models\RmsapiSaleImport::query()->forceDelete();
         App\Modules\Magento2MSI\src\Models\Magento2msiConnection::query()->forceDelete();
 
-        App\Modules\InventoryReservations\src\Models\InventoryReservation::query()->forceDelete();
+        App\Models\InventoryReservation::query()->forceDelete();
 
         App\Models\NavigationMenu::query()->forceDelete();
         App\Models\ProductAlias::query()->forceDelete();

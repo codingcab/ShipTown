@@ -10,7 +10,7 @@ use App\Events\SyncRequestedEvent;
 use App\Modules\BaseModuleServiceProvider;
 
 /**
- * Class EventServiceProviderBase.
+ * Class InventoryQuantityReservedServiceProvider.
  */
 class StocktakeSuggestionsServiceProvider extends BaseModuleServiceProvider
 {

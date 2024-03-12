@@ -3,7 +3,7 @@
 namespace App\Modules\InventoryReservations\src\Services;
 
 use App\Models\Inventory;
-use App\Modules\InventoryReservations\src\Models\InventoryReservation;
+use App\Models\InventoryReservation;
 
 class ReservationsService
 {

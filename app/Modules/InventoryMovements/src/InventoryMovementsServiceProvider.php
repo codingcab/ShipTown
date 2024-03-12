@@ -9,7 +9,7 @@ use App\Events\InventoryMovement\InventoryMovementCreatedEvent;
 use App\Modules\BaseModuleServiceProvider;
 
 /**
- * Class EventServiceProviderBase.
+ * Class InventoryQuantityReservedServiceProvider.
  */
 class InventoryMovementsServiceProvider extends BaseModuleServiceProvider
 {

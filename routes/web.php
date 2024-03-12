@@ -70,6 +70,8 @@ Route::view('settings/warehouses', 'settings/warehouses')->name('settings.wareho
 Route::middleware(['role:admin'])->group(function () {
     Route::view('settings/modules/magento2msi', 'settings/modules/magento2msi');
     Route::view('settings/modules/stocktake-suggestions', 'settings/modules/stocktake-suggestions');
+    Route::view('settings/modules/active-orders-inventory-reservations', 'settings/modules/active-orders-inventory-reservations');
+
     Route::view('admin/settings', 'settings')->name('settings');
     Route::view('admin/activity-log', 'activity-log')->name('activity-log');
     Route::view('admin/settings/general', 'settings/general')->name('settings.general');
@@ -89,5 +91,4 @@ Route::middleware(['role:admin'])->group(function () {
     Route::get('admin/settings/modules/webhooks/subscriptions', [SubscriptionController::class, 'index'])->name('webhooks::subscriptions');
     Route::view('admin/modules/slack/config', 'modules/slack/config')->name('modules.slack.config');
     Route::view('admin/settings/modules/magento-api', 'settings/magento-api')->name('settings.modules.magento-api');
-    Route::view('admin/settings/modules/inventory-reservations', 'settings/inventory-reservations')->name('settings.modules.inventory-reservations');
 });
