@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\InventoryDashboard;
 
-use App\Modules\InventoryReservations\src\EventServiceProviderBase as InventoryReservationsEventServiceProviderBase;
 use App\User;
 use Tests\TestCase;
 
@@ -27,8 +26,6 @@ class IndexTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        InventoryReservationsEventServiceProviderBase::enableModule();
 
         $this->user = User::factory()->create();
     }
