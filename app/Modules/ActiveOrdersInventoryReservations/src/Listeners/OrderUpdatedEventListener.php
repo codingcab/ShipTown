@@ -7,7 +7,7 @@ use App\Models\Inventory;
 use App\Models\InventoryReservation;
 use App\Models\OrderProduct;
 use App\Modules\ActiveOrdersInventoryReservations\src\Models\Configuration;
-use App\Modules\InventoryReservations\src\Services\ReservationsService;
+use App\Modules\ActiveOrdersInventoryReservations\src\Services\ReservationsService;
 
 class OrderUpdatedEventListener
 {

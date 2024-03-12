@@ -5,7 +5,7 @@ namespace App\Modules\ActiveOrdersInventoryReservations\src\Listeners;
 use App\Events\OrderProduct\OrderProductUpdatedEvent;
 use App\Models\Inventory;
 use App\Models\InventoryReservation;
-use App\Modules\InventoryReservations\src\Services\ReservationsService;
+use App\Modules\ActiveOrdersInventoryReservations\src\Services\ReservationsService;
 
 class OrderProductUpdatedEventListener
 {

@@ -6,18 +6,10 @@ use App\Events\EveryDayEvent;
 use App\Modules\Maintenance\src\Jobs\Products\EnsureAllInventoryRecordsExistsJob;
 use App\Modules\Maintenance\src\Jobs\Products\EnsureAllProductPriceRecordsExistsJob;
 use App\Modules\Maintenance\src\Jobs\Products\FixQuantityAvailableJob;
-use App\Modules\Maintenance\src\Jobs\Products\RecalculateProductQuantityJob;
 
 class RunDailyMaintenanceJobsListener
 {
-    /**
-     * Handle the event.
-     *
-     * @param EveryDayEvent $event
-     *
-     * @return void
-     */
-    public function handle(EveryDayEvent $event)
+    public function handle(EveryDayEvent $event): void
     {
         EnsureAllInventoryRecordsExistsJob::dispatchAfterResponse();
         EnsureAllProductPriceRecordsExistsJob::dispatchAfterResponse();
