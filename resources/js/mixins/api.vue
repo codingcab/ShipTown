@@ -396,8 +396,13 @@ export default {
                 return axios.put(`/api/modules/magento2msi/connections/${id}`, params)
             },
 
-            apiGetInventoryReservationsConfig: function () { return axios.get('/api/modules/inventory-reservations/configuration') },
-            apiUpdateInventoryReservationsConfig: function (id, params) { return axios.put('/api/modules/inventory-reservations/configuration/' + id, params) },
+            apiGetActiveOrdersInventoryReservationsConfig() {
+                return axios.get('/api/modules/active-orders-inventory-reservations/configuration')
+            },
+
+            apiPostActiveOrdersInventoryReservationsConfig: function (id, params) {
+                return axios.put('/api/modules/active-orders-inventory-reservations/configuration/' + id, params)
+            },
         }
     }
 </script>

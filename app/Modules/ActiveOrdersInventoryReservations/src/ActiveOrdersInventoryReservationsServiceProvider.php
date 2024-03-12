@@ -43,6 +43,13 @@ class ActiveOrdersInventoryReservationsServiceProvider extends BaseModuleService
         ],
     ];
 
+    public function boot(): void
+    {
+        parent::boot();
+
+        Configuration::observe(Observers\ConfigurationObserver::class);
+    }
+
     public static function enableModule(): bool
     {
         if (Configuration::query()->doesntExist()) {

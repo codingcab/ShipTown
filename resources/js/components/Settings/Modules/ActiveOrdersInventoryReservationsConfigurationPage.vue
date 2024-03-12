@@ -66,7 +66,7 @@ export default {
         },
 
         loadConfig() {
-            this.apiGetInventoryReservationsConfig()
+            this.apiGetActiveOrdersInventoryReservationsConfig()
                 .then(({ data }) => {
                     this.configuration = data.data;
                 })
@@ -80,13 +80,9 @@ export default {
             let data = {
                 warehouse_id: this.configuration.warehouse_id
             };
-            this.apiUpdateInventoryReservationsConfig(this.configuration.id, data)
+            this.apiPostActiveOrdersInventoryReservationsConfig(this.configuration.id, data)
                 .catch((error) => {
-                    if (error.response) {
-                        if (error.response.status === 422) {
-                            this.$refs.form.setErrors(error.response.data.errors);
-                        }
-                    }
+                    this.displayApiCallError(error);
                 })
                 .finally(() => {
                     this.hideLoading();
