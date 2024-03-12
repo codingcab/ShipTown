@@ -50,6 +50,8 @@ use Spatie\QueryBuilder\QueryBuilder;
  *
  * @property-read Collection|Activity[] $activities
  * @property-read int|null $activities_count
+ * @property bool|null $recount_required
+ *
  * @mixin Eloquent
  */
 class Inventory extends BaseModel
@@ -100,6 +102,7 @@ class Inventory extends BaseModel
     ];
 
     protected $casts = [
+        'recount_required'  => 'boolean',
         'quantity'           => 'float',
         'quantity_reserved'  => 'float',
         'quantity_available' => 'float',
@@ -162,10 +165,13 @@ class Inventory extends BaseModel
 
     public static function find(int $product_id, int $warehouse_id): self
     {
-        return static::query()
+        /** @var Inventory $inventory */
+        $inventory = static::query()
             ->where('product_id', $product_id)
             ->where('warehouse_id', $warehouse_id)
             ->first();
+
+        return $inventory;
     }
 
     public function scopeSkuOrAlias($query, string $value)

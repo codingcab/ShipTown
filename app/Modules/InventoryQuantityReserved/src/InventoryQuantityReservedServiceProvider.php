@@ -3,6 +3,7 @@
 namespace App\Modules\InventoryQuantityReserved\src;
 
 use App\Events\Inventory\RecalculateInventoryRequestEvent;
+use App\Events\InventoryReservation\InventoryReservationCreatedEvent;
 use App\Modules\BaseModuleServiceProvider;
 
 class InventoryQuantityReservedServiceProvider extends BaseModuleServiceProvider
@@ -16,10 +17,21 @@ class InventoryQuantityReservedServiceProvider extends BaseModuleServiceProvider
     public static bool $autoEnable = true;
 
     protected $listen = [
+        InventoryReservationCreatedEvent::class => [
+            Listeners\InventoryReservationCreatedEventListener::class,
+        ],
+
         RecalculateInventoryRequestEvent::class => [
             Listeners\RecalculateInventoryRequestEventListener::class,
         ],
     ];
+
+    public function boot(): void
+    {
+        parent::boot();
+
+        $this->loadMigrationsFrom(__DIR__ . '/Database/Migrations');
+    }
 
     public static function disabling(): bool
     {

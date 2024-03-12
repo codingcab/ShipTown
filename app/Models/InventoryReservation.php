@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class InventoryReservation extends Model
+/**
+ * @property integer $inventory_id
+ */
+
+class InventoryReservation extends BaseModel
 {
     use HasFactory;
 
@@ -19,6 +23,6 @@ class InventoryReservation extends Model
     ];
 
     protected $casts = [
-        'quantity_reserved' => 'real'
+        'quantity_reserved' => 'float'
     ];
 }

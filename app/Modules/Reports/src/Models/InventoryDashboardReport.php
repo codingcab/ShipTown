@@ -3,7 +3,6 @@
 namespace App\Modules\Reports\src\Models;
 
 use App\Models\Inventory;
-use App\Modules\InventoryReservations\src\Models\Configuration;
 use App\Traits\LogsActivityTrait;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
@@ -39,8 +38,6 @@ class InventoryDashboardReport extends Report
                 'END)'),
         ];
 
-        $inventoryReservationsWarehouseId = data_get(Configuration::first(), 'warehouse_id', 0);
-
         $this->baseQuery = Inventory::query()
             ->rightJoin('inventory as inventory_source', function (JoinClause $join) {
                 $join->on('inventory_source.product_id', '=', 'inventory.product_id');
@@ -51,8 +48,6 @@ class InventoryDashboardReport extends Report
             ->where('inventory_source.warehouse_code', '=', '99')
             ->where('inventory_source.quantity_available', '>', 0)
             ->whereNotIn('inventory.warehouse_code', ['99', '100'])
-            ->where('inventory.warehouse_id', '!=', $inventoryReservationsWarehouseId)
-
             ->groupBy('inventory.warehouse_code', 'inventory.warehouse_id');
 
         $this->setPerPage(100);
