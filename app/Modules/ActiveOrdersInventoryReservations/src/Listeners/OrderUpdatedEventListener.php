@@ -11,7 +11,7 @@ use App\Modules\ActiveOrdersInventoryReservations\src\Services\ReservationsServi
 
 class OrderUpdatedEventListener
 {
-    public function handle(OrderUpdatedEvent $event)
+    public function handle(OrderUpdatedEvent $event): bool
     {
         if ($event->order->isAttributeNotChanged('is_active')) {
             return true;
