@@ -26,7 +26,7 @@ class BasicModuleTest extends TestCase
     }
 
     /** @test */
-    public function testBasicFunctionality()
+    public function testIfReservesInventoryWhenOrderProductsAddedToActiveOrder()
     {
         // prepare database
         $warehouse = Warehouse::factory()->create();
@@ -42,7 +42,7 @@ class BasicModuleTest extends TestCase
         ])->first();
 
         // doing something
-        $order = Order::factory()->create();
+        $order = Order::factory()->create(['is_active' => true]);
 
         $orderProduct1 = OrderProduct::factory()->create([
             'order_id' => $order->getKey(),
@@ -53,10 +53,6 @@ class BasicModuleTest extends TestCase
             'order_id' => $order->getKey(),
             'product_id' => $product->getKey(),
         ]);
-
-        $orderProduct2->quantity_shipped = 1;
-        $orderProduct2->save();
-
 
         // assert something
         $this->assertDatabaseHas('inventory_reservations', [
@@ -73,11 +69,6 @@ class BasicModuleTest extends TestCase
             'product_sku' => $orderProduct2->sku_ordered,
             'quantity_reserved' => $orderProduct2->quantity_to_ship,
             'comment' => 'Order #' . $order->order_number, // Order #1
-        ]);
-
-        $this->assertDatabaseHas('inventory', [
-            'id' => $inventory->id,
-            'quantity_reserved' => $orderProduct1->quantity_to_ship + $orderProduct2->quantity_to_ship,
         ]);
     }
 

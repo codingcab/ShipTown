@@ -7,7 +7,7 @@ use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\Product;
 use App\Models\Warehouse;
-use App\Modules\InventoryReservations\src\Models\Configuration;
+use App\Modules\ActiveOrdersInventoryReservations\src\Models\Configuration;
 use Tests\TestCase;
 
 /** @test */

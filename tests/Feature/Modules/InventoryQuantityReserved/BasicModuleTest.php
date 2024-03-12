@@ -7,6 +7,7 @@ use App\Events\EveryFiveMinutesEvent;
 use App\Events\EveryHourEvent;
 use App\Events\EveryMinuteEvent;
 use App\Events\EveryTenMinutesEvent;
+use App\Modules\InventoryQuantityReserved\src\InventoryQuantityReservedServiceProvider;
 use Tests\TestCase;
 
 class BasicModuleTest extends TestCase
@@ -15,7 +16,7 @@ class BasicModuleTest extends TestCase
     {
         parent::setUp();
 
-        ModuleServiceProvider::enableModule();
+        InventoryQuantityReservedServiceProvider::enableModule();
     }
 
     /** @test */
