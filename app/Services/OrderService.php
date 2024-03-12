@@ -28,16 +28,16 @@ class OrderService
 
     /**
      * @param Order $order
-     * @param $sourceLocationId
+     * @param $warehouse_code
      *
      * @return bool
      */
-    public static function canFulfill(Order $order, $sourceLocationId = null): bool
+    public static function canFulfill(Order $order, $warehouse_code = null): bool
     {
         $orderProducts = $order->orderProducts()->get();
 
         foreach ($orderProducts as $orderProduct) {
-            if (self::canNotFulfillOrderProduct($orderProduct, $sourceLocationId)) {
+            if (self::canNotFulfillOrderProduct($orderProduct, $warehouse_code)) {
                 return false;
             }
         }
@@ -168,16 +168,16 @@ class OrderService
 
     /**
      * @param OrderProduct $orderProduct
-     * @param null $sourceLocationId
+     * @param null $warehouse_code
      * @return bool
      */
-    public static function canFulfillOrderProduct(OrderProduct $orderProduct, $sourceLocationId = null): bool
+    public static function canFulfillOrderProduct(OrderProduct $orderProduct, $warehouse_code = null): bool
     {
         if ($orderProduct->product_id) {
             return self::canFulfillProduct(
                 $orderProduct->product_id,
                 $orderProduct->quantity_to_ship,
-                $sourceLocationId
+                $warehouse_code
             );
         }
 
@@ -186,48 +186,31 @@ class OrderService
 
     /**
      * @param OrderProduct $orderProduct
-     * @param null $sourceLocationId
+     * @param null $warehouse_code
      * @return bool
      */
-    public static function canNotFulfillOrderProduct(OrderProduct $orderProduct, $sourceLocationId = null): bool
+    public static function canNotFulfillOrderProduct(OrderProduct $orderProduct, $warehouse_code = null): bool
     {
-        return !self::canFulfillOrderProduct($orderProduct, $sourceLocationId);
+        return !self::canFulfillOrderProduct($orderProduct, $warehouse_code);
     }
 
-    /**
-     * @param int $product_id
-     * @param float $quantity
-     * @param $sourceLocationId
-     * @return bool
-     */
-    public static function canFulfillProduct(int $product_id, float $quantity, $sourceLocationId): bool
+    public static function canFulfillProduct(int $product_id, float $quantity_requested, ?string $warehouse_code = null): bool
     {
-        if ($quantity <= 0) {
+        if ($quantity_requested <= 0) {
             return true;
         }
 
-        /** @var Configuration $baseModel */
-        $baseModel = Configuration::first();
-
-        $inventoryReservationsWarehouseId = $baseModel->warehouse_id;
-        $query = Inventory::query()
+        $totalQuantityAvailable = Inventory::query()
             ->where('product_id', $product_id)
-            ->where('warehouse_id', '!=', $inventoryReservationsWarehouseId);
+            ->when($warehouse_code, function ($query, $warehouse_code) {
+                $query->where('warehouse_code', $warehouse_code);
+            })
+            ->sum('quantity_available');
 
-        if ($sourceLocationId) {
-            $query->where('warehouse_code', $sourceLocationId);
-        }
-
-        $quantity_available = $query->sum(DB::raw('(quantity - quantity_reserved)'));
-
-        if (!$quantity_available) {
+        if ($totalQuantityAvailable === null) {
             return false;
         }
 
-        if ((float)$quantity_available < $quantity) {
-            return false;
-        }
-
-        return true;
+        return (float)$totalQuantityAvailable >= $quantity_requested;
     }
 }

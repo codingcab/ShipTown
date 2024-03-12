@@ -11,23 +11,21 @@ use Illuminate\Support\Facades\Log;
  */
 class CanFulfillFromLocationCondition extends BaseOrderConditionAbstract
 {
-    /**
-     * @param string|null $expected_value
-     * @return bool
-     */
     public function isValid(?string $expected_value = ''): bool
     {
-        if ($expected_value === '0') {
-            $expected_value = null;
+        $warehouse_code = $expected_value;
+
+        if ($warehouse_code === '0') {
+            $warehouse_code = null;
         }
 
-        $result = OrderService::canFulfill($this->order, $expected_value);
+        $result = OrderService::canFulfill($this->order, $warehouse_code);
 
         Log::debug('Automation condition', [
             'order_number' => $this->order->order_number,
             'result' => $result,
             'class' => class_basename(self::class),
-            'location_id' => $expected_value,
+            'location_id' => $warehouse_code,
         ]);
 
         return $result;

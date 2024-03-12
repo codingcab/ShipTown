@@ -7,6 +7,7 @@ use App\Events\OrderProduct\OrderProductCreatedEvent;
 use App\Events\OrderProduct\OrderProductDeletedEvent;
 use App\Events\OrderProduct\OrderProductUpdatedEvent;
 use App\Models\Warehouse;
+use App\Modules\ActiveOrdersInventoryReservations\src\Events\ConfigurationUpdatedEvent;
 use App\Modules\ActiveOrdersInventoryReservations\src\Models\Configuration;
 use App\Modules\BaseModuleServiceProvider;
 
@@ -35,6 +36,10 @@ class ActiveOrdersInventoryReservationsServiceProvider extends BaseModuleService
 
         OrderProductDeletedEvent::class => [
             Listeners\OrderProductDeletedEventListener::class,
+        ],
+
+        ConfigurationUpdatedEvent::class => [
+            Listeners\ConfigurationUpdatedEventListener::class
         ],
     ];
 
