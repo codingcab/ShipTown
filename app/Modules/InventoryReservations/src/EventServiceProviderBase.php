@@ -2,13 +2,7 @@
 
 namespace App\Modules\InventoryReservations\src;
 
-use App\Events\Inventory\RecalculateInventoryRequestEvent;
-use App\Events\Order\OrderUpdatedEvent;
-use App\Events\OrderProduct\OrderProductCreatedEvent;
-use App\Events\OrderProduct\OrderProductUpdatedEvent;
-use App\Models\Warehouse;
 use App\Modules\BaseModuleServiceProvider;
-use App\Modules\InventoryReservations\src\Models\Configuration;
 
 class EventServiceProviderBase extends BaseModuleServiceProvider
 {
