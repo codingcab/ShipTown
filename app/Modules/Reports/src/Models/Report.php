@@ -103,6 +103,7 @@ class Report extends Model
             'data' => $resource,
         ];
 
+
         $data['field_links'] = collect($data['fields'])->map(function ($field) {
 
             $sortIsDesc = request()->has('sort') && str_starts_with(request()->sort, '-');
@@ -115,7 +116,9 @@ class Report extends Model
                 'url' => $url,
                 'is_current' => $isCurrent,
                 'is_desc' => $sortIsDesc,
-                'display_name' => str_replace('_', ' ', ucwords($field, '_'))
+                'display_name' => str_replace('_', ' ', ucwords($field, '_')),
+                'type' => $this->getFieldType($field),
+                'operators' => $this->getFieldTypeOperators($field),
             ];
         });
 
@@ -492,5 +495,34 @@ class Report extends Model
             });
 
         return $allowedFilters;
+    }
+
+    private function getFieldType($field): string
+    {
+        if (!isset($this->casts[$field])) {
+            return 'no_cast';
+        }
+
+        if (in_array($this->casts[$field], ['float', 'integer'])) {
+            return 'numeric';
+        }
+
+        return $this->casts[$field];
+    }
+
+    private function getFieldTypeOperators($field): array
+    {
+        $type = $this->getFieldType($field);
+
+        // We have to use the shorthand for between, because the longhand is not supported by vue v-model
+        if ($type === 'numeric') {
+            return ['equals', 'contains', 'btwn'];
+        }
+
+        if ($type === 'datetime' || $type === 'date') {
+            return ['equals', 'btwn'];
+        }
+
+        return ['equals', 'contains'];
     }
 }

@@ -199,6 +199,7 @@ Vue.component('user-courier-integration-select', require('./components/Settings/
 Vue.component('user-table', require('./components/UsersPage.vue').default);
 Vue.component('warehouses-page', require('./components/Settings/WarehousesPage.vue').default);
 Vue.component('webhooks-subscription-page', require('../../app/Modules/Webhooks/resources/js/WebhooksSubscriptionsPage.vue').default);
+Vue.component('report-top-nav', require('./components/Reports/ReportTopNav.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

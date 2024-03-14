@@ -3,15 +3,22 @@
 @section('title',__('Inventory Report'))
 
 @section('content')
-    <div class="container dashboard-widgets">
+<div class="container dashboard-widgets">
     <div class="row">
         <div class="col">
-            <div class="widget-tools-container">
-                <a class="btn btn-primary btn-sm mt-2 fa-arrow-alt-circle-down"  href="{{ request()->fullUrlWithQuery(['filename' =>  __($report_name).'.csv']) }}">{{ __('Download All') }}</a>
-            </div>
+{{--            <div class="widget-tools-container">--}}
+{{--                <a class="btn btn-primary btn-sm mt-2 fa-arrow-alt-circle-down"  href="{{ request()->fullUrlWithQuery(['filename' =>  __($report_name).'.csv']) }}">{{ __('Download All') }}</a>--}}
+{{--            </div>--}}
             <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title text-center">{{ __($report_name) }}</h4>
+                <div class="card-body px-2 py-1">
+                    <report-top-nav
+                        report-name="{{ __($report_name) }}"
+                        fields-string="{{ json_encode($field_links) }}"
+                        download-url="{{ request()->fullUrlWithQuery(['filename' =>  __($report_name).'.csv']) }}"
+                        download-button-text="{{ __('Download All') }}"
+                    ></report-top-nav>
+
+{{--                    <h4 class="card-title text-center">{{ __($report_name) }}</h4>--}}
 {{--                    <div class="row text-right d-block flex-nowrap">--}}
 {{--                        <div class="col text-right">--}}
 {{--                            <div class="">@widget('DateSelectorWidget', ['url_param_name' => 'filter[date_between]'])</div>--}}
