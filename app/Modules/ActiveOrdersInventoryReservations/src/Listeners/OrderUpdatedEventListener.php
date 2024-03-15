@@ -52,7 +52,10 @@ class OrderUpdatedEventListener
 
     public function deleteInventoryReservationsForOrderProducts(OrderUpdatedEvent $event): void
     {
-        $uuidPrefix = 'module_active_order_inventory_reservations;order_id_' . $event->order->getKey();
+        $uuidPrefix = implode(';', [
+            ReservationsService::UUID_PREFIX,
+            'order_id_' . $event->order->getKey(),
+        ]);
 
         InventoryReservation::query()
             ->where('custom_uuid', 'like', $uuidPrefix . ';%')

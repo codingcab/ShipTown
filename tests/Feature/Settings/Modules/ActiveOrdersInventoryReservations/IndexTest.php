@@ -3,7 +3,6 @@
 namespace Tests\Feature\Settings\Modules\ActiveOrdersInventoryReservations;
 
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
@@ -14,7 +13,7 @@ class IndexTest extends TestCase
     /**
      * @var string
      */
-    protected string $uri = '';
+    protected string $uri = 'settings/modules/active-orders-inventory-reservations';
 
     protected mixed $user;
 

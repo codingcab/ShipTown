@@ -8,6 +8,8 @@ use App\Models\OrderProduct;
 
 class ReservationsService
 {
+    const UUID_PREFIX = 'module_active_orders_inventory_reservations';
+
     public static function recalculateTotalQuantityReserved(array $inventory_ids): void
     {
         foreach ($inventory_ids as $inventory_id) {
@@ -21,10 +23,10 @@ class ReservationsService
 
     public static function getUuid(OrderProduct $orderProduct): string
     {
-        return implode('', [
-            "module_active_order_inventory_reservations;",
-            "order_id_", $orderProduct->order_id,
-            ";order_product_id_", $orderProduct->getKey()
+        return implode(';', [
+            self::UUID_PREFIX,
+            "order_id:". $orderProduct->order_id,
+            "order_product_id:". $orderProduct->getKey()
         ]);
     }
 }
