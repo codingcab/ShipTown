@@ -8,7 +8,6 @@ use App\Events\EveryHourEvent;
 use App\Events\EveryMinuteEvent;
 use App\Events\EveryTenMinutesEvent;
 use App\Models\Inventory;
-use App\Models\InventoryReservation;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\OrderStatus;

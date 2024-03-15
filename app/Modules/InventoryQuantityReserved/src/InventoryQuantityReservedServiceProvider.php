@@ -4,6 +4,8 @@ namespace App\Modules\InventoryQuantityReserved\src;
 
 use App\Events\Inventory\RecalculateInventoryRequestEvent;
 use App\Events\InventoryReservation\InventoryReservationCreatedEvent;
+use App\Events\InventoryReservation\InventoryReservationDeletedEvent;
+use App\Events\InventoryReservation\InventoryReservationUpdatedEvent;
 use App\Modules\BaseModuleServiceProvider;
 
 class InventoryQuantityReservedServiceProvider extends BaseModuleServiceProvider
@@ -19,6 +21,14 @@ class InventoryQuantityReservedServiceProvider extends BaseModuleServiceProvider
     protected $listen = [
         InventoryReservationCreatedEvent::class => [
             Listeners\InventoryReservationCreatedEventListener::class,
+        ],
+
+        InventoryReservationDeletedEvent::class => [
+            Listeners\InventoryReservationDeletedEventListener::class,
+        ],
+
+        InventoryReservationUpdatedEvent::class => [
+            Listeners\InventoryReservationUpdatedEventListener::class,
         ],
 
         RecalculateInventoryRequestEvent::class => [

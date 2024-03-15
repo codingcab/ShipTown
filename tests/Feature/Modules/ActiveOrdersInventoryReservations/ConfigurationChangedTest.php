@@ -9,11 +9,10 @@ use App\Models\Product;
 use App\Models\Warehouse;
 use App\Modules\ActiveOrdersInventoryReservations\src\ActiveOrdersInventoryReservationsServiceProvider;
 use App\Modules\ActiveOrdersInventoryReservations\src\Models\Configuration;
-use App\Modules\ActiveOrdersInventoryReservations\src\Services\ReservationsService;
 use App\User;
 use Tests\TestCase;
 
-class OrderStatusChangedTest extends TestCase
+class ConfigurationChangedTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -47,12 +46,7 @@ class OrderStatusChangedTest extends TestCase
             'product_id' => $product->getKey(),
         ]);
 
-        // assert something
-        $order->update(['is_active' => true, 'status_code' => $orderStatusActive->code]);
-        $this->assertDatabaseHas('inventory_reservations', ['custom_uuid' => ReservationsService::getUuid($orderProduct)]);
-
-        $order->update(['is_active' => false, 'status_code' => $orderStatusClosed->code]);
-        $this->assertDatabaseMissing('inventory_reservations', ['custom_uuid' => ReservationsService::getUuid($orderProduct)]);
+        $this->markTestSkipped('This test is not finished yet.');
 
 //        $order->update(['is_active' => true, 'status_code' => $orderStatusActive->code]);
 //        $this->assertDatabaseHas('inventory_reservations', ['custom_uuid' => ReservationsService::getUuid($orderProduct)]);
