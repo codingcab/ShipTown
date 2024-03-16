@@ -3,6 +3,8 @@
 namespace App\Modules\Rmsapi\src\Jobs;
 
 use App\Abstracts\UniqueJob;
+use App\Models\Inventory;
+use App\Models\InventoryReservation;
 use App\Models\ProductAlias;
 use App\Modules\Rmsapi\src\Models\RmsapiProductImport;
 use Illuminate\Support\Arr;
@@ -121,9 +123,27 @@ class ProcessImportedProductRecordsJob extends UniqueJob
     private function importInventory(RmsapiProductImport $importedProduct): void
     {
         $importedProduct->inventory->update([
-            'quantity_reserved' => data_get($importedProduct->raw_import, 'quantity_committed', 0),
             'reorder_point'     => data_get($importedProduct->raw_import, 'reorder_point', 0),
             'restock_level'     => data_get($importedProduct->raw_import, 'restock_level', 0),
+        ]);
+
+        $uuid = implode(';', [
+            'rmsapi_imported_product',
+            'inventory_id' . $importedProduct->inventory->id,
+        ]);
+
+        if ($importedProduct->inventory->quantity_reserved = 0) {
+            InventoryReservation::query()->where('custom_uuid', $uuid)->delete();
+            return;
+        }
+
+        InventoryReservation::query()->updateOrCreate([
+            'custom_uuid' => $uuid,
+        ], [
+            'inventory_id' => $importedProduct->inventory->id,
+            'warehouse_code' => $importedProduct->inventory->warehouse_code,
+            'product_sku' => 'RMS Quantity Committed',
+            'quantity_reserved' => data_get($importedProduct->raw_import, 'quantity_committed', 0),
         ]);
     }
 
