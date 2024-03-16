@@ -37,7 +37,7 @@ abstract class DuskTestCase extends BaseTestCase
     protected function driver(): RemoteWebDriver
     {
         $options = (new ChromeOptions)->addArguments(collect([
-            $this->shouldStartMaximized() ? '--start-maximized' : '--window-size=300,600',
+            $this->shouldStartMaximized() ? '--start-maximized' : '--window-size=300,650',
         ])->unless($this->hasHeadlessDisabled(), function (Collection $items) {
             return $items->merge([
                 '--disable-gpu',
