@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\User;
+use Illuminate\Support\Collection;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -18,34 +19,63 @@ abstract class DuskTestCase extends BaseTestCase
     protected int $shortDelay = 300;
     protected int $longDelay = 0;
 
+    /**
+     * Prepare for Dusk test execution.
+     *
+     * @beforeClass
+     */
     public static function prepare(): void
     {
-        static::startChromeDriver();
+        if (! static::runningInSail()) {
+            static::startChromeDriver();
+        }
     }
 
+    /**
+     * Create the RemoteWebDriver instance.
+     */
     protected function driver(): RemoteWebDriver
     {
-        $arguments = collect([
-            '--disable-gpu',
-            env('DUSK_HEADLESS', true) ? '--headless' : null,
-            '--window-size=300,600',
-        ])->filter()->toArray();
-
-        $options = (new ChromeOptions())->addArguments($arguments);
+        $options = (new ChromeOptions)->addArguments(collect([
+            $this->shouldStartMaximized() ? '--start-maximized' : '--window-size=300,600',
+        ])->unless($this->hasHeadlessDisabled(), function (Collection $items) {
+            return $items->merge([
+                '--disable-gpu',
+                '--headless=new',
+            ]);
+        })->all());
 
         return RemoteWebDriver::create(
-            'http://127.0.0.1:9515',
+            $_ENV['DUSK_DRIVER_URL'] ?? 'http://localhost:9515',
             DesiredCapabilities::chrome()->setCapability(
-                ChromeOptions::CAPABILITY,
-                $options
+                ChromeOptions::CAPABILITY, $options
             )
         );
     }
 
     /**
+     * Determine whether the Dusk command has disabled headless mode.
+     */
+    protected function hasHeadlessDisabled(): bool
+    {
+        return isset($_SERVER['DUSK_HEADLESS_DISABLED']) ||
+               isset($_ENV['DUSK_HEADLESS_DISABLED']);
+    }
+
+    /**
+     * Determine if the browser window should start maximized.
+     */
+    protected function shouldStartMaximized(): bool
+    {
+        return isset($_SERVER['DUSK_START_MAXIMIZED']) ||
+               isset($_ENV['DUSK_START_MAXIMIZED']);
+    }
+
+
+    /**
      * @throws Throwable
      */
-    public function basicUserAccessTest(string $uri, bool $allowed)
+    public function basicUserAccessTest(string $uri, bool $allowed): void
     {
         $this->browse(function (Browser $browser) use ($uri, $allowed) {
             /** @var User $user */
@@ -72,7 +102,7 @@ abstract class DuskTestCase extends BaseTestCase
     /**
      * @throws Throwable
      */
-    public function basicAdminAccessTest(string $uri, bool $allowed)
+    public function basicAdminAccessTest(string $uri, bool $allowed): void
     {
         $this->browse(function (Browser $browser) use ($uri, $allowed) {
             /** @var User $admin */
@@ -99,7 +129,7 @@ abstract class DuskTestCase extends BaseTestCase
     /**
      * @throws Throwable
      */
-    public function basicGuestAccessTest(string $uri, bool $allowed = false)
+    public function basicGuestAccessTest(string $uri, bool $allowed = false): void
     {
         User::factory()->create();
 
