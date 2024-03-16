@@ -6,6 +6,7 @@ use App\Events\Order\OrderUpdatedEvent;
 use App\Models\Inventory;
 use App\Models\InventoryReservation;
 use App\Models\OrderProduct;
+use App\Modules\ActiveOrdersInventoryReservations\src\ActiveOrdersInventoryReservationsServiceProvider;
 use App\Modules\ActiveOrdersInventoryReservations\src\Models\Configuration;
 use App\Modules\ActiveOrdersInventoryReservations\src\Services\ReservationsService;
 
@@ -29,7 +30,12 @@ class OrderUpdatedEventListener
     public function createInventoryReservationsForOrderProducts(OrderUpdatedEvent $event): void
     {
         /** @var Configuration $config */
-        $config = Configuration::first();
+        $config = Configuration::query()->firstOrCreate();
+
+        if ($config->warehouse_id === null) {
+            ActiveOrdersInventoryReservationsServiceProvider::disableModule();
+            return;
+        }
 
         $inventoryReservations = $event->order
             ->orderProducts()

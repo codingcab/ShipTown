@@ -49,7 +49,7 @@ class ModulesService
      *
      * @return void
      */
-    public static function updateModulesTable()
+    public static function updateModulesTable(): void
     {
         Module::query()->whereNotIn('service_provider_class', self::$modules)->forceDelete();
 

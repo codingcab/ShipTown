@@ -6,6 +6,7 @@ use App\Models\Inventory;
 use App\Models\InventoryReservation;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Modules\ActiveOrdersInventoryReservations\src\ActiveOrdersInventoryReservationsServiceProvider;
 use App\Modules\ActiveOrdersInventoryReservations\src\Events\ConfigurationUpdatedEvent;
 use App\Modules\ActiveOrdersInventoryReservations\src\Models\Configuration;
 use App\Modules\ActiveOrdersInventoryReservations\src\Services\ReservationsService;
@@ -14,6 +15,14 @@ class ConfigurationUpdatedEventListener
 {
     public function handle(ConfigurationUpdatedEvent $event): void
     {
+        /** @var Configuration $config */
+        $config = Configuration::query()->firstOrCreate();
+
+        if ($config->warehouse_id === null) {
+            ActiveOrdersInventoryReservationsServiceProvider::disableModule();
+            return;
+        }
+
         InventoryReservation::query()
             ->where('custom_uuid', 'like', ReservationsService::UUID_PREFIX . '%')
             ->get()
@@ -21,13 +30,10 @@ class ConfigurationUpdatedEventListener
 
         OrderProduct::query()->whereIn('order_id', Order::query()->where('is_active', true)->pluck('id'))
             ->get()
-            ->each(function (OrderProduct $orderProduct) {
+            ->each(function (OrderProduct $orderProduct) use ($config) {
                 if ($orderProduct->product_id === null) {
                     return true;
                 }
-
-                /** @var Configuration $config */
-                $config = Configuration::first();
 
                 $inventory = Inventory::find($orderProduct->product_id, $config->warehouse_id);
 

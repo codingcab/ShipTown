@@ -25,7 +25,7 @@ class ActiveOrdersInventoryReservationsPageTest extends DuskTestCase
             $browser->loginAs($user);
             $browser->visit($this->uri);
             $browser->assertPathIs($this->uri);
-            // $browser->assertSee('');
+            $browser->assertSee('Reserves stock for open orders');
             $browser->assertSourceMissing('Server Error');
         });
     }

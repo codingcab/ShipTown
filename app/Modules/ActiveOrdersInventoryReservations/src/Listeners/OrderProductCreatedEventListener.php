@@ -5,6 +5,7 @@ namespace App\Modules\ActiveOrdersInventoryReservations\src\Listeners;
 use App\Events\OrderProduct\OrderProductCreatedEvent;
 use App\Models\Inventory;
 use App\Models\InventoryReservation;
+use App\Modules\ActiveOrdersInventoryReservations\src\ActiveOrdersInventoryReservationsServiceProvider;
 use App\Modules\ActiveOrdersInventoryReservations\src\Models\Configuration;
 use App\Modules\ActiveOrdersInventoryReservations\src\Services\ReservationsService;
 
@@ -17,7 +18,12 @@ class OrderProductCreatedEventListener
         }
 
         /** @var Configuration $config */
-        $config = Configuration::first();
+        $config = Configuration::query()->firstOrCreate();
+
+        if ($config->warehouse_id === null) {
+            ActiveOrdersInventoryReservationsServiceProvider::disableModule();
+            return;
+        }
 
         $inventory = Inventory::find($event->orderProduct->product_id, $config->warehouse_id);
 
