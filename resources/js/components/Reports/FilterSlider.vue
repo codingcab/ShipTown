@@ -1,7 +1,7 @@
 <template>
     <div class="filter-container" @mousedown="startDrag" @mouseup="stopDrag" @mouseleave="stopDrag" ref="filterContainer">
         <button class="btn btn-sm btn-outline-secondary" v-for="filter in filters" :key="filter.id" @click="handleClick(filter, $event)">
-            {{ filter.displayName }} <span v-html="filterExtendedOverview(filter)"></span>
+            <font-awesome-icon icon="trash"></font-awesome-icon> {{ filter.displayName }} <span v-html="filterExtendedOverview(filter)"></span>
         </button>
     </div>
 </template>
@@ -12,6 +12,7 @@ export default {
     props: {
         filters: Array,
     },
+
     data() {
         return {
             startX: 0,
@@ -20,6 +21,7 @@ export default {
             preventClick: false,
         };
     },
+
     methods: {
         startDrag(e) {
             this.isDragging = true;
@@ -73,7 +75,6 @@ export default {
         },
     }
 }
-
 </script>
 
 <style scoped>

@@ -99,10 +99,9 @@ class Report extends Model
 
         $data = [
             'report_name' => $this->report_name ?? $this->table,
-            'fields' => $resource->count() > 0 ? array_keys((array)json_decode($resource[0]->toJson())) : [],
+            'fields' =>  explode(',', $this->defaultSelect),
             'data' => $resource,
         ];
-
 
         $data['field_links'] = collect($data['fields'])->map(function ($field) {
 
@@ -499,30 +498,18 @@ class Report extends Model
 
     private function getFieldType($field): string
     {
-        if (!isset($this->casts[$field])) {
-            return 'no_cast';
-        }
-
-        if (in_array($this->casts[$field], ['float', 'integer'])) {
-            return 'numeric';
-        }
-
-        return $this->casts[$field];
+        return match ($this->casts[$field] ?? null) {
+            'float', 'integer' => 'numeric',
+            default => $this->casts[$field] ?? 'no_cast',
+        };
     }
 
     private function getFieldTypeOperators($field): array
     {
-        $type = $this->getFieldType($field);
-
-        // We have to use the shorthand for between, because the longhand is not supported by vue v-model
-        if ($type === 'numeric') {
-            return ['equals', 'contains', 'btwn'];
-        }
-
-        if ($type === 'datetime' || $type === 'date') {
-            return ['equals', 'btwn'];
-        }
-
-        return ['equals', 'contains'];
+        return match ($this->getFieldType($field)) {
+            'numeric', 'date' => ['equals', 'btwn'],
+            'datetime' => ['btwn'],
+            default => ['contains', 'equals'],
+        };
     }
 }

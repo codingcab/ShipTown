@@ -1,7 +1,29 @@
 <template>
-
 <div>
-    <Slider class="my-2" :filters="filters" @remove-filter="(filter) => removeFilter(filter)"></Slider>
+    <div class="d-flex flex-column-reverse flex-sm-row">
+        <div class="d-none d-lg-block flex-item">
+        </div>
+        <div class="flex-item">
+            <h4 class="card-title text-center text-sm-left text-lg-center mt-3 mt-sm-0">{{ reportName }}</h4>
+        </div>
+        <div class="d-flex flex-item">
+            <div class="ml-auto">
+                <a class="btn btn-primary btn-sm" :href="downloadUrl">{{ downloadButtonText }}</a>
+            </div>
+            <div>
+                <button @click="showFilters = !showFilters" class="d-block btn btn-sm btn-primary ml-1">
+                    <template v-if="!showFilters">
+                        Filters <span v-show="this.filters.length">({{ this.filters.length }})</span>
+                    </template>
+                    <template v-else>
+                        Hide Filters
+                    </template>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <filter-slider v-show="showFilters" class="my-2" :filters="filters" @remove-filter="(filter) => removeFilter(filter)"></filter-slider>
 
     <table class="table-hover w-100 text-left small table-responsive text-nowrap">
         <thead>
@@ -85,14 +107,18 @@
 
 <script>
 
-    import Slider from "./FilterSlider.vue";
+    import FilterSlider from "./FilterSlider.vue";
+    import BarcodeInputField from "../SharedComponents/BarcodeInputField";
 
     export default {
-        components: { Slider },
+        components: { FilterSlider, BarcodeInputField },
 
         props: {
             recordString: String,
-            fieldsString: String
+            fieldsString: String,
+            reportName: String,
+            downloadUrl: String,
+            downloadButtonText: String,
         },
 
         data() {
@@ -101,6 +127,8 @@
                 fields: JSON.parse(this.fieldsString),
                 filters: [],
                 filterAdding: null,
+                findText: '',
+                showFilters: true,
             }
         },
 
@@ -122,10 +150,12 @@
                 }
 
                 if (field.type === 'datetime') {
+                    // todo - extract to a helper function if not already done
                     return record[field.name].replace(/(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}).*/, '$3/$2/$1 $4:$5');
                 }
 
                 if (field.type === 'date') {
+                    // todo - extract to a helper function if not already done
                     return record[field.name].replace(/(\d{4})-(\d{2})-(\d{2}).*/, '$3/$2/$1');
                 }
 
@@ -146,8 +176,20 @@
                 let selectedField = fieldName ? this.fields.find(f => f.name === fieldName) : this.fields[0];
                 let existingFilter = this.filters.find(f => f.name === selectedField.name);
                 let selectedOperator = existingFilter ? existingFilter.selectedOperator : selectedField.operators[0];
+
                 let value = existingFilter ? existingFilter.value : '';
                 let valueBetween = existingFilter ? existingFilter.valueBetween : '';
+
+                if(selectedField.type === 'date' && value === '') {
+                    let today = new Date();
+                    value = today.toISOString().split('T')[0];
+                }
+
+                if(selectedField.type === 'datetime' && value === '') {
+                    let today = new Date();
+                    value = today.toISOString().split('T')[0] + 'T00:00';
+                    valueBetween = today.toISOString().split('T')[0] + 'T23:59';
+                }
 
                 this.filterAdding = {
                     fields: this.fields,
@@ -258,6 +300,13 @@
                 const params = [nonFilterParams, sortParam, filterParams].filter(p => p).join('&');
                 return `${baseUrl}?${params}`;
             }
-        }
+        },
     }
 </script>
+
+<style scoped>
+    .flex-item {
+        flex-basis: 0;
+        flex-grow: 1;
+    }
+</style>
