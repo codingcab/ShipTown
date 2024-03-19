@@ -106,7 +106,6 @@
 </template>
 
 <script>
-
     import FilterSlider from "./FilterSlider.vue";
     import BarcodeInputField from "../SharedComponents/BarcodeInputField";
 
