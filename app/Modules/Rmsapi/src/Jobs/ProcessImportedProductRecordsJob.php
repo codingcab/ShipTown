@@ -142,7 +142,7 @@ class ProcessImportedProductRecordsJob extends UniqueJob
         ], [
             'inventory_id' => $importedProduct->inventory->id,
             'warehouse_code' => $importedProduct->inventory->warehouse_code,
-            'product_sku' => 'RMS Quantity Committed',
+            'product_sku' => $importedProduct->sku,
             'quantity_reserved' => data_get($importedProduct->raw_import, 'quantity_committed', 0),
             'comment' => 'Microsoft RMS - Imported Quantity Committed',
         ]);
