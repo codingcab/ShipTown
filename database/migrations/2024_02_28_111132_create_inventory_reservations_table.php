@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('product_sku', 50);
             $table->string('warehouse_code', 5);
             $table->decimal('quantity_reserved', 20, 2);
-            $table->string('comment');
+            $table->string('comment')->default('');
             $table->string('custom_uuid')->unique()->nullable();
             $table->timestamps();
 
