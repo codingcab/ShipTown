@@ -39,7 +39,7 @@ class ConfigurationUpdatedEventListener
 
                 InventoryReservation::create([
                     'inventory_id' => $inventory->id,
-                    'product_sku' => $orderProduct->sku_ordered,
+                    'product_sku' => $orderProduct->product->sku,
                     'warehouse_code' => $inventory->warehouse_code,
                     'quantity_reserved' => $orderProduct->quantity_to_ship,
                     'comment' => 'Order #' . $orderProduct->order->order_number,
