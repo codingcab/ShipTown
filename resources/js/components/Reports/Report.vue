@@ -1,5 +1,24 @@
 <template>
 <div>
+    <template v-if="getUrlParameter('hide_nav_bar', false) === false">
+        <div class="row mb-3 pl-1 pr-1">
+            <div class="flex-fill">
+                <barcode-input-field placeholder="Search activity" ref="barcode" @refreshRequest="reloadProducts" @barcodeScanned="findText"/>
+            </div>
+            <button disabled type="button" class="btn btn-primary ml-2" data-toggle="modal" data-target="#filterConfigurationModal"><font-awesome-icon icon="cog" class="fa-lg"></font-awesome-icon></button>
+        </div>
+    </template>
+
+
+    <div class="row pl-0 p-0">
+        <div class="col-12 col-md-6 col-lg-6 text-nowrap text-left align-bottom pb-0 m-0 font-weight-bold text-uppercase small text-secondary">
+            REPORTS > ATIVITY LOG
+        </div>
+        <div class="col-12 col-md-6 col-lg-6 text-nowrap">
+            <date-selector-widget :dates="{'url_param_name': 'filter[created_at_between]'}"></date-selector-widget>
+        </div>
+    </div>
+
     <div class="d-flex flex-column-reverse flex-sm-row">
         <div class="d-none d-lg-block flex-item">
         </div>
@@ -42,6 +61,21 @@
             </tr>
         </tbody>
     </table>
+
+    <div class="d-flex" v-if="pagination">
+        <div>
+            <p>show</p>
+            <select v-model="pagination.per_page">
+                <option v-for="option in perPageOptions" :value="option">{{ option }}</option>
+            </select>
+        </div>
+        <div>
+
+        </div>
+        <div>
+            <p>{{ pagination.total }} records</p>
+        </div>
+    </div>
 
     <div class="modal fade filter-box-modal" tabindex="-1" role="dialog"  aria-hidden="true">
         <div class="modal-dialog g modal-dialog-centered modal-md">
@@ -107,9 +141,16 @@
 
 <script>
     import FilterSlider from "./FilterSlider.vue";
+    import loadingOverlay from '../../mixins/loading-overlay';
     import BarcodeInputField from "../SharedComponents/BarcodeInputField";
+    import url from "../../mixins/url";
+    import api from "../../mixins/api";
+    import helpers from "../../mixins/helpers";
 
     export default {
+
+        mixins: [loadingOverlay, url, api, helpers],
+
         components: { FilterSlider, BarcodeInputField },
 
         props: {
@@ -118,12 +159,14 @@
             reportName: String,
             downloadUrl: String,
             downloadButtonText: String,
+            paginationString: String,
         },
 
         data() {
             return {
                 records: JSON.parse(this.recordString),
                 fields: JSON.parse(this.fieldsString),
+                pagination: JSON.parse(this.paginationString),
                 filters: [],
                 filterAdding: null,
                 findText: '',
@@ -300,6 +343,31 @@
                 return `${baseUrl}?${params}`;
             }
         },
+
+        computed: {
+            perPageOptions(){
+
+                let options = [this.pagination.per_page];
+
+                // generate sensible options based on the total number of records and current per_page value
+                if(this.pagination.total > this.pagination.per_page){
+
+                    options.push(this.pagination.total);
+
+                    let howManyOptions = Math.floor(this.pagination.total / this.pagination.per_page);
+
+                    // add multiples of the current per_page value up to the total number of records with a max of 6 options
+                    for(let i = 2; i < 6; i++){
+                        let option = this.pagination.per_page * i;
+                        if(option < this.pagination.total){
+                            options.push(option);
+                        }
+                    }
+                }
+
+                return options.filter((value, index, self) => self.indexOf(value) === index).sort((a, b) => a - b);
+            }
+        }
     }
 </script>
 
