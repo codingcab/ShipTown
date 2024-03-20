@@ -1,8 +1,9 @@
 <template>
     <div class="filter-container" @mousedown="startDrag" @mouseup="stopDrag" @mouseleave="stopDrag" ref="filterContainer">
-        <button class="btn btn-sm btn-outline-secondary" v-for="filter in filters" :key="filter.id" @click="handleClick(filter, $event)">
-            <font-awesome-icon icon="trash"></font-awesome-icon> {{ filter.displayName }} <span v-html="filterExtendedOverview(filter)"></span>
-        </button>
+        <p class="text-primary small" v-for="filter in filters" :key="filter.id">
+            {{ filter.displayName }} <span v-html="filterExtendedOverview(filter)"></span><!--
+            --><button @click="handleClick(filter, $event)" class="btn btn-link p-0 ml-1 mb-1">x</button>
+        </p>
     </div>
 </template>
 
@@ -81,20 +82,15 @@ export default {
 
 .filter-container {
     display: flex;
+    flex-direction: row-reverse;
     flex-wrap: nowrap;
     overflow-x: auto;
     cursor: grab;
 
-    button {
+    p {
         flex: 0 0 auto;
-        margin-right: 2px;
-    }
-
-    button:hover, button:focus, button:active {
-        color: #6c757d;
-        border-color: #6c757d;
-        background-color: transparent;
-        cursor: grabbing;
+        margin-left: 10px;
+        -webkit-user-select: none;
     }
 }
 

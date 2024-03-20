@@ -1,13 +1,5 @@
-<script>
-export default {
-name: "IcconArrowRight"
-}
-</script>
-
 <template>
-  $END$
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M10 17V7l5 5z" />
+    </svg>
 </template>
-
-<style scoped>
-
-</style>

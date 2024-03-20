@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container dashboard-widgets">
-    <div class="card">
+    <div class="card mb-5">
         <div class="card-body px-2 py-2">
             <report
                 report-name="{{ __($report_name) }}"

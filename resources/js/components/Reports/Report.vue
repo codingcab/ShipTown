@@ -9,49 +9,57 @@
         </div>
     </template>
 
-
-    <div class="row pl-0 p-0">
-        <div class="col-12 col-md-6 col-lg-6 text-nowrap text-left align-bottom pb-0 m-0 font-weight-bold text-uppercase small text-secondary">
-            REPORTS > ATIVITY LOG
+    <div class="d-lg-flex">
+        <div class="text-nowrap font-weight-bold small text-secondary">
+            REPORTS > {{ reportName.toUpperCase() }}
         </div>
-        <div class="col-12 col-md-6 col-lg-6 text-nowrap">
-            <date-selector-widget :dates="{'url_param_name': 'filter[created_at_between]'}"></date-selector-widget>
-        </div>
-    </div>
-
-    <div class="d-flex flex-column-reverse flex-sm-row">
-        <div class="d-none d-lg-block flex-item">
-        </div>
-        <div class="flex-item">
-            <h4 class="card-title text-center text-sm-left text-lg-center mt-3 mt-sm-0">{{ reportName }}</h4>
-        </div>
-        <div class="d-flex flex-item">
-            <div class="ml-auto">
-                <a class="btn btn-primary btn-sm" :href="downloadUrl">{{ downloadButtonText }}</a>
-            </div>
-            <div>
-                <button @click="showFilters = !showFilters" class="d-block btn btn-sm btn-primary ml-1">
-                    <template v-if="!showFilters">
-                        Filters <span v-show="this.filters.length">({{ this.filters.length }})</span>
-                    </template>
-                    <template v-else>
-                        Hide Filters
-                    </template>
-                </button>
-            </div>
+        <div class="flex-grow-1">
+            <filter-slider v-show="showFilters" :filters="filters" @remove-filter="(filter) => removeFilter(filter)"></filter-slider>
         </div>
     </div>
 
-    <filter-slider v-show="showFilters" class="my-2" :filters="filters" @remove-filter="(filter) => removeFilter(filter)"></filter-slider>
+<!--    <div class="d-flex flex-column-reverse flex-sm-row">-->
+<!--        <div class="d-none d-lg-block flex-item">-->
+<!--        </div>-->
+<!--        <div class="flex-item">-->
+<!--        </div>-->
+<!--        <div class="d-flex flex-item">-->
+<!--            <div class="ml-auto">-->
+<!--                <a class="btn btn-primary btn-sm" :href="downloadUrl">{{ downloadButtonText }}</a>-->
+<!--            </div>-->
+<!--            <div>-->
+<!--                <button @click="showFilters = !showFilters" class="d-block btn btn-sm btn-primary ml-1">-->
+<!--                    <template v-if="!showFilters">-->
+<!--                        Filters <span v-show="this.filters.length">({{ this.filters.length }})</span>-->
+<!--                    </template>-->
+<!--                    <template v-else>-->
+<!--                        Hide Filters-->
+<!--                    </template>-->
+<!--                </button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 
     <table class="table-hover w-100 text-left small table-responsive text-nowrap">
         <thead>
         <tr>
             <th class="small pr-3" v-for="field in fields">
-                <a @click.prevent="showFilterBox(field)" class="text-dark pb-1" href="javascript:" :style="[field.is_current ? {'text-decoration': 'underline'} : {}]">
-                    <span class="small" v-if="field.is_current">{{ field.is_desc ? '▼' : '▲' }}</span>
-                    {{ field.display_name }}
-                </a>
+                <div class="dropdown">
+                    <button class="btn btn-link dropdown-toggle" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="small" v-if="field.is_current">{{ field.is_desc ? '▼' : '▲' }}</span> {{ field.display_name }}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <button class="dropdown-item" type="button" @click="applySort('asc', field)">
+                            <icon-sort-asc/>&nbsp; Sort Ascending
+                        </button>
+                        <button class="dropdown-item" type="button" @click="applySort('desc', field)">
+                            <icon-sort-desc/>&nbsp; Sort Descending
+                        </button>
+                        <button class="dropdown-item" type="button" @click="showFilterBox(field)">
+                            <icon-filter/>&nbsp; Filter by value
+                        </button>
+                    </div>
+                </div>
             </th>
         </tr>
         </thead>
@@ -62,64 +70,65 @@
         </tbody>
     </table>
 
-    <div class="d-flex" v-if="pagination">
-        <div>
-            <p>show</p>
-            <select v-model="pagination.per_page">
-                <option v-for="option in perPageOptions" :value="option">{{ option }}</option>
-            </select>
+    <hr>
+    <div class="row mx-2 small" v-if="pagination">
+        <div class="col-5 col-sm-3">
+            <p>
+                <select v-model="pagination.per_page" @change="changePagination('perPage')">
+                    <option v-for="option in perPageOptions" :value="option">{{ option }}</option>
+                </select>
+                records
+            </p>
         </div>
-        <div>
-
+        <div class="col-7 col-sm-6">
+            <p class="text-right text-sm-center">
+                <button class="no-style-button" @click="changePagination('decrementPage')">
+                    <icon-arrow-left/>
+                </button>
+                page
+                <input type="text" v-on:input="customChangePagination" v-model.number="pagination.current_page" style="max-width: 40px; height: 20px"/>
+                of {{ pagination.last_page }}
+                <button class="no-style-button" @click="changePagination('incrementPage')">
+                    <icon-arrow-right/>
+                </button>
+            </p>
         </div>
-        <div>
-            <p>{{ pagination.total }} records</p>
+        <div class="col-12 col-sm-3">
+            <p class="float-right mr-1 mr-sm-0">{{ pagination.total }} records</p>
         </div>
     </div>
 
     <div class="modal fade filter-box-modal" tabindex="-1" role="dialog"  aria-hidden="true">
-        <div class="modal-dialog g modal-dialog-centered modal-md">
-            <div class="modal-content p-2" v-if="filterAdding">
-                <div class="p-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" v-model="filterAdding.sortAscending" id="addingSortAsc" @click="toggleAddingSort('asc')">
-                        <label class="form-check-label" for="addingSortAsc">
-                            Sort ascending
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" v-model="filterAdding.sortDescending" id="addingSortDesc" @click="toggleAddingSort('desc')">
-                        <label class="form-check-label" for="addingSortDesc">
-                            Sort descending
-                        </label>
-                    </div>
-                </div>
-                <p class="small px-2">If you would just like to apply a sort, leave the inputs below empty and click 'add'</p>
+        <div
+            v-if="filterAdding"
+            class="modal-dialog g modal-dialog-centered"
+            :class="[['datetime', 'date'].includes(filterAdding.selectedField.type) ? 'modal-sm' : 'modal-md']"
+        >
+            <div class="modal-content p-2">
                 <div class="d-flex flex-column p-2" style="gap: 5px; background-color: #efefef">
-                    <div>
-                        <select v-model="filterAdding.selectedField" @change="filterFieldChanged()" class="form-control form-control-sm">
-                            <option v-for="field in fields" :value="field">{{ field.display_name }}</option>
-                        </select>
-                    </div>
-                    <div>
+                    <div v-show="filterAdding.operators.length > 1">
                         <select v-model="filterAdding.selectedOperator" class="form-control form-control-sm">
                             <option v-for="operator in filterAdding.operators" :key="operator" :value="operator">
                                 {{ operator === 'btwn' ? 'between' : operator }}
                             </option>
                         </select>
                     </div>
-                    <div class="d-flex">
+                    <div
+                        class="d-flex"
+                        :class="['date', 'datetime'].includes(filterAdding.selectedField.type) ? 'flex-column' : 'flex-row'"
+                        style="grid-gap: 5px;"
+                    >
                         <template v-if="filterAdding.selectedField.type === 'numeric'">
                             <input ref="inputAddValue" v-model="filterAdding.value" type="number" class="form-control form-control-sm">
                             <input v-if="filterAdding.selectedOperator === 'btwn'" v-model="filterAdding.valueBetween" type="number" class="form-control form-control-sm" style="margin-left: 5px;">
                         </template>
                         <template v-else-if="filterAdding.selectedField.type === 'datetime'">
                             <input ref="inputAddValue" v-model="filterAdding.value" type="datetime-local" />
-                            <input v-if="filterAdding.selectedOperator === 'btwn'" v-model="filterAdding.valueBetween" type="datetime-local" style="margin-left: 5px;" />
+                            <input v-if="filterAdding.selectedOperator === 'btwn'" v-model="filterAdding.valueBetween" type="datetime-local"/>
                         </template>
                         <template v-else-if="filterAdding.selectedField.type === 'date'">
                             <input ref="inputAddValue" v-model="filterAdding.value" type="date"/>
-                            <input v-if="filterAdding.selectedOperator === 'btwn'" v-model="filterAdding.valueBetween" type="date"  style="margin-left: 5px;" />
+                            <input v-if="filterAdding.selectedOperator === 'btwn'" v-model="filterAdding.valueBetween" type="date"/>
                         </template>
                         <template v-else>
                             <input ref="inputAddValue" v-model="filterAdding.value" type="text" class="form-control form-control-sm">
@@ -146,12 +155,17 @@
     import url from "../../mixins/url";
     import api from "../../mixins/api";
     import helpers from "../../mixins/helpers";
+    import IconSortAsc from "../UI/Icons/IconSortAsc.vue";
+    import IconSortDesc from "../UI/Icons/IconSortDesc.vue";
+    import IconFilter from "../UI/Icons/IconFilter.vue";
+    import IconArrowRight from "../UI/Icons/IconArrowRight.vue";
+    import IconArrowLeft from "../UI/Icons/IconArrowLeft.vue";
 
     export default {
 
         mixins: [loadingOverlay, url, api, helpers],
 
-        components: { FilterSlider, BarcodeInputField },
+        components: {IconArrowRight, IconArrowLeft, IconSortAsc, IconSortDesc, IconFilter, FilterSlider, BarcodeInputField },
 
         props: {
             recordString: String,
@@ -209,11 +223,6 @@
                 this.setFilterAdding(field.name);
             },
 
-            filterFieldChanged() {
-                this.filterAdding.operators = this.filterAdding.selectedField.operators;
-                this.filterAdding.selectedOperator = this.filterAdding.selectedField.operators[0];
-            },
-
             setFilterAdding(fieldName = null) {
                 let selectedField = fieldName ? this.fields.find(f => f.name === fieldName) : this.fields[0];
                 let existingFilter = this.filters.find(f => f.name === selectedField.name);
@@ -240,14 +249,7 @@
                     selectedOperator: selectedOperator,
                     value: value,
                     valueBetween: valueBetween,
-                    sortAscending: selectedField.is_current && !selectedField.is_desc,
-                    sortDescending: selectedField.is_current && selectedField.is_desc,
                 }
-            },
-
-            toggleAddingSort(direction) {
-                this.filterAdding.sortDescending = direction !== 'asc';
-                this.filterAdding.sortAscending = direction === 'asc';
             },
 
             buildFiltersFromUrl() {
@@ -288,22 +290,7 @@
             },
 
             addFilter() {
-                const { value, selectedOperator, valueBetween, sortAscending, sortDescending, selectedField } = this.filterAdding;
-
-                this.fields.forEach(f => {
-                    f.is_current = false;
-                    f.is_desc = false;
-                    if (f.name === selectedField.name) {
-                        f.is_current = sortAscending || sortDescending;
-                        f.is_desc = sortDescending;
-                    }
-                });
-
-                // If any of the fields are empty we should just navigate to the new url without adding the filter, so that a sort can be added without a filter
-                if (value.trim() === '' || (selectedOperator === 'btwn' && valueBetween.trim() === '')) {
-                    location.href = this.buildUrl();
-                    return;
-                }
+                const { value, selectedOperator, valueBetween, selectedField } = this.filterAdding;
 
                 this.filters = this.filters.filter(f => f.name !== selectedField.name);
 
@@ -315,6 +302,9 @@
                     valueBetween
                 });
 
+                // reset pagination
+                this.pagination.current_page = 1;
+
                 location.href = this.buildUrl();
             },
 
@@ -325,10 +315,8 @@
 
             buildUrl() {
                 let baseUrl = window.location.pathname;
-                const urlParams = new URLSearchParams(window.location.search);
 
-                const nonFilterParams = [...urlParams.entries()].filter(([key]) => !key.startsWith('filter') && !key.startsWith('sort'))
-                    .map(([key, value]) => `${key}=${value}`).join('&');
+                const paginationParams = `per_page=${this.pagination.per_page}&page=${this.pagination.current_page}`;
 
                 const sortField = this.fields.find(f => f.is_current);
                 const sortParam = sortField ? `sort=${sortField.is_desc ? '-' : ''}${sortField.name}` : '';
@@ -339,41 +327,90 @@
                     return `filter[${filter.name}${operator === 'equals' ? '' : `_${operator}`}]=${value}`;
                 }).join('&');
 
-                const params = [nonFilterParams, sortParam, filterParams].filter(p => p).join('&');
+                const params = [paginationParams, sortParam, filterParams].filter(p => p).join('&');
                 return `${baseUrl}?${params}`;
+            },
+
+            applySort(direction, field) {
+                this.fields.forEach(f => {
+                    f.is_current = false;
+                    f.is_desc = false;
+                    if (f.name === field.name) {
+                        f.is_current = true;
+                        f.is_desc = direction === 'desc';
+                    }
+                });
+
+                location.href = this.buildUrl();
+            },
+
+            customChangePagination: _.debounce(function() {
+                if(this.pagination.current_page < 1) {
+                    this.pagination.current_page = 1;
+                }else if(this.pagination.current_page > this.pagination.last_page) {
+                    this.pagination.current_page = this.pagination.last_page;
+                }
+                this.changePagination();
+            }, 800),
+
+            changePagination(changeType = null) {
+                if (changeType === 'perPage') {
+                    this.pagination.current_page = 1;
+                    location.href = this.buildUrl();
+                } else if (changeType === 'incrementPage' && this.pagination.current_page < this.pagination.last_page) {
+                    this.pagination.current_page++;
+                    location.href = this.buildUrl();
+                } else if (changeType === 'decrementPage' && this.pagination.current_page > 1) {
+                    this.pagination.current_page--;
+                    location.href = this.buildUrl();
+                }
+
+                location.href = this.buildUrl();
             }
         },
 
         computed: {
+
+            // todo - could probably make this static with some general assumptions about total records, 10, 25, 50, 100 etc
             perPageOptions(){
+                let options = [this.pagination.per_page, this.pagination.total]; // Start with current per_page and total
 
-                let options = [this.pagination.per_page];
-
-                // generate sensible options based on the total number of records and current per_page value
-                if(this.pagination.total > this.pagination.per_page){
-
-                    options.push(this.pagination.total);
-
-                    let howManyOptions = Math.floor(this.pagination.total / this.pagination.per_page);
-
-                    // add multiples of the current per_page value up to the total number of records with a max of 6 options
-                    for(let i = 2; i < 6; i++){
-                        let option = this.pagination.per_page * i;
-                        if(option < this.pagination.total){
-                            options.push(option);
-                        }
-                    }
+                // Add half of per_page if it's more than 1
+                if (this.pagination.per_page > 1) {
+                    options.push(Math.floor(this.pagination.per_page / 2));
                 }
 
-                return options.filter((value, index, self) => self.indexOf(value) === index).sort((a, b) => a - b);
+                // Generate multiples of per_page up to total, with a limit of 6 options including the ones already added
+                for (let multiplier = 2; options.length < 6; multiplier *= 2) {
+                    let nextOption = this.pagination.per_page * multiplier;
+                    if (nextOption >= this.pagination.total) break; // Stop if the next option exceeds the total
+                    options.push(nextOption);
+                }
+
+                // Remove duplicates, sort numerically, and return
+                return [...new Set(options)].sort((a, b) => a - b);
             }
         }
     }
 </script>
 
 <style scoped>
-    .flex-item {
-        flex-basis: 0;
-        flex-grow: 1;
+
+.dropdown > .btn.dropdown-toggle {
+    font-size: 12px;
+    padding: 0;
+    &:focus, &:active {
+        outline: none;
+        box-shadow: none;
+        border-color: transparent;
     }
+}
+
+.no-style-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
 </style>
