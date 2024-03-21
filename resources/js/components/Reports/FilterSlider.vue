@@ -89,7 +89,7 @@ export default {
 
     p {
         flex: 0 0 auto;
-        margin-left: 10px;
+        margin: 0 0 0 10px;
         -webkit-user-select: none;
     }
 }
