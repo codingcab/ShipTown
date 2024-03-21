@@ -396,7 +396,7 @@
                         icon: false,
                         buttons: [
                             {
-                                text: 'Ship',
+                                text: 'OK',
                                 action: (toast) => {
 
                                     const maxQuantityAllowed = orderProduct['quantity_to_ship'];
