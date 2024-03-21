@@ -70,7 +70,7 @@ export default {
 
         filterExtendedOverview(filter) {
             if(filter.selectedOperator === 'btwn') {
-                return `btwn ${filter.value} <b>&</b> ${filter.valueBetween}`;
+                return `between ${filter.value} <b>&</b> ${filter.valueBetween}`;
             }
             return `${filter.selectedOperator} ${filter.value}`;
         },

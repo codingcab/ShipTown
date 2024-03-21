@@ -201,6 +201,7 @@ Vue.component('warehouses-page', require('./components/Settings/WarehousesPage.v
 Vue.component('webhooks-subscription-page', require('../../app/Modules/Webhooks/resources/js/WebhooksSubscriptionsPage.vue').default);
 Vue.component('report', require('./components/Reports/Report.vue').default);
 Vue.component('filter-slider', require('./components/Reports/FilterSlider.vue').default);
+Vue.component('card', require('./components/UI/Card.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
