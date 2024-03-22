@@ -137,10 +137,6 @@ class Report extends Model
         ]);
     }
 
-    /**
-     * @param AllowedFilter $filter
-     * @return $this
-     */
     public function addFilter(AllowedFilter $filter): Report
     {
         $this->allowedFilters[] = $filter;
