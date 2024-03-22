@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\DB;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class Report extends Model
@@ -169,7 +168,13 @@ class Report extends Model
 
         collect($this->fields)
             ->each(function ($full_field_name, $alias) use (&$allowedFilters) {
+                // add value equals filter (filter[alias]=value)
                 $allowedFilters[] = $this->filterEquals($alias, $full_field_name);
+
+                // add value in filter (filter[alias_in]=value1,value2)
+                $allowedFilters[] = AllowedFilter::callback($alias . '_in', function ($query, $value) use ($full_field_name, $alias) {
+                    $query->whereIn($this->fields[$alias], $value);
+                });
 
                 if ($this->isOfType($alias, ['string', null])) {
                     $allowedFilters[] = AllowedFilter::partial($alias . '_contains', $full_field_name);
@@ -453,22 +458,6 @@ class Report extends Model
 
                 $allowedFilters[] = AllowedFilter::callback($filterName, function ($query, $value) use ($type, $alias) {
                     $query->whereNotIn($this->fields[$alias], explode(',', $value));
-                });
-            });
-
-        return $allowedFilters;
-    }
-
-    private function addInFilters(): array
-    {
-        $allowedFilters = [];
-
-        collect($this->fields)
-            ->each(function ($type, $alias) use (&$allowedFilters) {
-                $filterName = $alias . '_in';
-
-                $allowedFilters[] = AllowedFilter::callback($filterName, function ($query, $value) use ($type, $alias) {
-                    $query->whereIn($this->fields[$alias], explode(',', $value));
                 });
             });
 
