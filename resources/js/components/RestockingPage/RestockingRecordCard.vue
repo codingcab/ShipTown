@@ -3,10 +3,10 @@
         <div class="col ml-0 pl-0">
             <div class="card ml-0 pl-0">
                 <div class="row card-body pt-2 pl-2">
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
                         <product-info-card :product="record['product']"/>
                     </div>
-                    <div class="col mt-1 mb-1 small">
+                    <div class="col-lg mt-1 mb-1 small">
                         <div :class="{'bg-warning': record['warehouse_quantity'] <= 0 }" @click="expanded = !expanded">warehouse quantity: <b>{{ record['warehouse_quantity'] }}</b></div>
                         <div @click="expanded = !expanded">reorder point: <b>{{ record['reorder_point'] }}</b></div>
                         <div @click="expanded = !expanded">restock level: <b>{{ record['restock_level'] }}</b></div>
@@ -20,7 +20,10 @@
                         </div>
                         <div @click="expanded = !expanded">last counted at: <b>{{ formatDateTime(record['last_counted_at'],'D MMM HH:MM') }}</b></div>
                         <div @click="expanded = !expanded">sale price: <b>{{ pricing['sale_price'] }} ({{ formatDateTime(pricing['sale_price_start_date'], 'D MMM Y') }} - {{ formatDateTime(pricing['sale_price_end_date'], 'D MMM Y') }})</b></div>
-
+                    </div>
+                    <div class="col-lg text-lg-center">
+                        <p class="small text-secondary mb-0">Warehouse</p>
+                        <h4>{{ record['warehouse_code'] }}</h4>
                     </div>
                     <div class="col-lg-4">
                         <div class="row-col text-right" @click="expanded = !expanded">
@@ -134,11 +137,6 @@
                                 <hr />
                             </div>
                         </div>
-                    </div>
-
-
-                    <div class="row text-center align-content-center offset-lg-6 col-lg-6" v-if="expanded">
-                        <hr>
                     </div>
                 </div>
             </div>
