@@ -176,6 +176,11 @@ class Report extends Model
                     $query->whereIn($this->fields[$alias], $value);
                 });
 
+                // add value not in filter (filter[alias_not_in]=value1,value2)
+                $allowedFilters[] = AllowedFilter::callback($alias . '_not_in', function ($query, $value) use ($full_field_name, $alias) {
+                    $query->whereNotIn($this->fields[$alias], $value);
+                });
+
                 if ($this->isOfType($alias, ['string', null])) {
                     $allowedFilters[] = AllowedFilter::partial($alias . '_contains', $full_field_name);
                 }
@@ -183,8 +188,6 @@ class Report extends Model
 
         $filters = $filters->merge($allowedFilters);
 
-        $filters = $filters->merge($this->addInFilters());
-        $filters = $filters->merge($this->addNotInFilters());
         $filters = $filters->merge($this->addBetweenStringFilters());
         $filters = $filters->merge($this->addBetweenFloatFilters());
         $filters = $filters->merge($this->addBetweenDatesFilters());
@@ -442,22 +445,6 @@ class Report extends Model
                     }
 
                     $query->whereBetween($fieldQuery, [$value[0], $value[1]]);
-                });
-            });
-
-        return $allowedFilters;
-    }
-
-    private function addNotInFilters(): array
-    {
-        $allowedFilters = [];
-
-        collect($this->fields)
-            ->each(function ($type, $alias) use (&$allowedFilters) {
-                $filterName = $alias . '_not_in';
-
-                $allowedFilters[] = AllowedFilter::callback($filterName, function ($query, $value) use ($type, $alias) {
-                    $query->whereNotIn($this->fields[$alias], explode(',', $value));
                 });
             });
 
