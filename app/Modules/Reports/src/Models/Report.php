@@ -27,13 +27,10 @@ class Report extends Model
     public string $view = 'report-default';
 
     public string $defaultSelect = '';
+
     public ?string $defaultSort = null;
 
-    public array $toSelect = [];
-
     public array $fields = [];
-
-    public array $initial_data = [];
 
     public mixed $baseQuery;
 
@@ -57,13 +54,19 @@ class Report extends Model
         return $this->view();
     }
 
-    public function toArray()
+    public function toArray(): Paginator|array
     {
         return $this->queryBuilder()
-            ->simplePaginate(request()->get('per_page', $this->perPage))
+            ->simplePaginate(request()->input('per_page', $this->perPage))
             ->appends(request()->query());
     }
 
+    /**
+     * @throws InvalidSelectException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
+     */
     public function queryBuilder(): QueryBuilder
     {
         $this->fieldAliases = [];
@@ -91,8 +94,8 @@ class Report extends Model
         try {
             $queryBuilder = $this->queryBuilder()
                 ->limit(request('per_page', $this->perPage));
-        } catch (InvalidFilterQuery | InvalidSelectException $ex) {
-            return response($ex->getMessage(), $ex->getStatusCode());
+        } catch (Exception $e) {
+            return response($e->getMessage(), $e->getStatusCode());
         }
 
         $resource = ReportResource::collection($queryBuilder->get());
@@ -104,7 +107,6 @@ class Report extends Model
         ];
 
         $data['field_links'] = collect($data['fields'])->map(function ($field) {
-
             $sortIsDesc = request()->has('sort') && str_starts_with(request()->sort, '-');
             $currentSortName = str_replace('-', '', request()->sort);
             $isCurrent = $currentSortName === $field;
@@ -163,8 +165,19 @@ class Report extends Model
     {
         $filters = collect($this->allowedFilters);
 
-        $filters = $filters->merge($this->addExactFilters());
-        $filters = $filters->merge($this->addContainsFilters());
+        $allowedFilters = [];
+
+        collect($this->fields)
+            ->each(function ($full_field_name, $alias) use (&$allowedFilters) {
+                $allowedFilters[] = $this->filterEquals($alias, $full_field_name);
+
+                if ($this->isOfType($alias, ['string', null])) {
+                    $allowedFilters[] = AllowedFilter::partial($alias . '_contains', $full_field_name);
+                }
+            });
+
+        $filters = $filters->merge($allowedFilters);
+
         $filters = $filters->merge($this->addInFilters());
         $filters = $filters->merge($this->addNotInFilters());
         $filters = $filters->merge($this->addBetweenStringFilters());
@@ -212,46 +225,11 @@ class Report extends Model
         return $queryBuilder;
     }
 
-    /**
-     * @return array
-     */
-    private function addExactFilters(): array
+    public function isOfType($fieldName, $expectedTypes): bool
     {
+        $fieldType = data_get($this->casts, $fieldName);
 
-        $allowedFilters = [];
-
-        // add exact filters
-        collect($this->fields)
-            ->each(function ($full_field_name, $alias) use (&$allowedFilters) {
-                $allowedFilters[] = AllowedFilter::callback($alias, function ($query, $value) use ($full_field_name) {
-                    return $query->where($full_field_name, '=', $value);
-                });
-            });
-
-        return $allowedFilters;
-    }
-
-
-    /**
-     * @return array
-     */
-    private function addContainsFilters(): array
-    {
-        $allowedFilters = [];
-
-        collect($this->fields)
-            ->filter(function ($value, $key) {
-                $type = data_get($this->casts, $key);
-
-                return in_array($type, ['string', null]);
-            })
-            ->each(function ($record, $alias) use (&$allowedFilters) {
-                $filterName = $alias . '_contains';
-
-                $allowedFilters[] = AllowedFilter::partial($filterName, $record);
-            });
-
-        return $allowedFilters;
+        return in_array($fieldType, $expectedTypes);
     }
 
     /**
@@ -351,6 +329,13 @@ class Report extends Model
             });
 
         return $allowedFilters;
+    }
+
+    public function filterEquals($alias, $full_field_name): AllowedFilter
+    {
+        return AllowedFilter::callback($alias, function ($query, $value) use ($full_field_name) {
+            return $query->where($full_field_name, '=', $value);
+        });
     }
 
     /**
