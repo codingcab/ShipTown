@@ -175,37 +175,37 @@ class Report extends Model
         $allowedFilters = [];
 
         collect($this->fields)
-            ->each(function ($full_field_name, $alias) use (&$allowedFilters) {
-                if ($full_field_name instanceof Expression) {
-                    $fieldQuery = DB::raw('(' . $full_field_name . ')');
+            ->each(function ($fieldExpression, $fieldAlias) use (&$allowedFilters) {
+                if ($fieldExpression instanceof Expression) {
+                    $finalFieldExpression = DB::raw('(' . $fieldExpression . ')');
                 } else {
-                    $fieldQuery = $this->fields[$alias];
+                    $finalFieldExpression = $this->fields[$fieldAlias];
                 }
 
-                $allowedFilters[] = $this->filterEquals($alias, $full_field_name);
+                $allowedFilters[] = $this->filterEquals($fieldAlias, $fieldExpression);
 
-                $allowedFilters[] = AllowedFilter::callback($alias . '_in', function ($query, $value) use ($fieldQuery, $alias) {
-                    $query->whereIn($fieldQuery, $value);
+                $allowedFilters[] = AllowedFilter::callback($fieldAlias . '_in', function ($query, $value) use ($finalFieldExpression, $fieldAlias) {
+                    $query->whereIn($finalFieldExpression, $value);
                 });
 
-                $allowedFilters[] = AllowedFilter::callback($alias . '_not_in', function ($query, $value) use ($fieldQuery, $alias) {
-                    $query->whereNotIn($fieldQuery, $value);
+                $allowedFilters[] = AllowedFilter::callback($fieldAlias . '_not_in', function ($query, $value) use ($finalFieldExpression, $fieldAlias) {
+                    $query->whereNotIn($finalFieldExpression, $value);
                 });
 
-                $allowedFilters[] = AllowedFilter::callback($alias . '_greater_than', function ($query, $value) use ($fieldQuery, $alias) {
-                    $query->where($fieldQuery, '>', $value);
+                $allowedFilters[] = AllowedFilter::callback($fieldAlias . '_greater_than', function ($query, $value) use ($finalFieldExpression, $fieldAlias) {
+                    $query->where($finalFieldExpression, '>', $value);
                 });
 
-                $allowedFilters[] = AllowedFilter::callback($alias . '_lower_than', function ($query, $value) use ($fieldQuery, $alias) {
-                    $query->where($fieldQuery, '<', $value);
+                $allowedFilters[] = AllowedFilter::callback($fieldAlias . '_lower_than', function ($query, $value) use ($finalFieldExpression, $fieldAlias) {
+                    $query->where($finalFieldExpression, '<', $value);
                 });
 
-                if ($this->isOfType($alias, ['string', null])) {
-                    $allowedFilters[] = AllowedFilter::partial($alias . '_contains', $fieldQuery);
+                if ($this->isOfType($fieldAlias, ['string', null])) {
+                    $allowedFilters[] = AllowedFilter::partial($fieldAlias . '_contains', $finalFieldExpression);
                 }
 
-                $allowedFilters[] = $this->betweenFilter($alias, $full_field_name);
-                $allowedFilters[] = $this->addNullFilters($alias, $full_field_name);
+                $allowedFilters[] = $this->betweenFilter($fieldAlias, $fieldExpression);
+                $allowedFilters[] = $this->addNullFilters($fieldAlias, $fieldExpression);
             });
 
         return $filters->merge($allowedFilters)->toArray();
@@ -246,7 +246,7 @@ class Report extends Model
         return $queryBuilder;
     }
 
-    public function isOfType($fieldName, $expectedTypes): bool
+    public function isOfType($fieldName, array $expectedTypes): bool
     {
         $fieldType = data_get($this->casts, $fieldName, 'string');
 

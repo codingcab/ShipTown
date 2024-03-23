@@ -79,20 +79,20 @@ class IndexTest extends TestCase
             'filter[integer_field_is_null]=false',
 
             'filter[date_field]=1',
-            'filter[date_field_in]=1,2',
-            'filter[date_field_not_in]=1,2',
-            'filter[date_field_between]=2,3',
-            'filter[date_field_greater_than]=1',
-            'filter[date_field_lower_than]=3',
+            'filter[date_field_in]=2005-05-20,2015-10-09',
+            'filter[date_field_not_in]=2005-05-20,2024-02-22',
+            'filter[date_field_between]=2005-05-20,2024-02-22',
+            'filter[date_field_greater_than]=2005-05-20',
+            'filter[date_field_lower_than]=2024-02-22',
             'filter[date_field_is_null]=false',
 
-            'filter[date_time_field]=1',
-            'filter[date_time_field_in]=1,2',
-            'filter[date_time_field_not_in]=1,2',
-            'filter[date_time_field_between]=2,3',
-            'filter[date_time_field_greater_than]=1',
-            'filter[date_time_field_lower_than]=3',
-            'filter[date_time_field_is_null]=false',
+            'filter[datetime_field]=2005-05-20 12:13:14',
+            'filter[datetime_field_in]=2005-05-20 12:13:14,2024-02-22 09:30:00',
+            'filter[datetime_field_not_in]=2005-05-20 12:13:14,2015-10-09 07:23:23',
+            'filter[datetime_field_between]=2005-05-20 12:13:14,2024-02-22 09:30:00',
+            'filter[datetime_field_greater_than]=2005-05-20 12:13:14',
+            'filter[datetime_field_lower_than]=2024-02-22 09:30:00',
+            'filter[datetime_field_is_null]=false',
         ]);
 
         $response = $this->get($this->uri . '?' . $params);
