@@ -201,34 +201,42 @@ class Report extends Model
                     $finalFieldExpression = $this->fields[$fieldAlias];
                 }
 
+                // equal
                 $allowedFilters[] = AllowedFilter::callback($fieldAlias, function ($query, $value) use ($finalFieldExpression, $fieldAlias) {
                     $query->where($finalFieldExpression, '=', $value);
                 });
 
+                // not equal
                 $allowedFilters[] = AllowedFilter::callback($fieldAlias . '_not_equal', function ($query, $value) use ($finalFieldExpression, $fieldAlias) {
                     $query->where($finalFieldExpression, '!=', $value);
                 });
 
+                // in
                 $allowedFilters[] = AllowedFilter::callback($fieldAlias . '_in', function ($query, $value) use ($finalFieldExpression, $fieldAlias) {
                     $query->whereIn($finalFieldExpression, $value);
                 });
 
+                // not in
                 $allowedFilters[] = AllowedFilter::callback($fieldAlias . '_not_in', function ($query, $value) use ($finalFieldExpression, $fieldAlias) {
                     $query->whereNotIn($finalFieldExpression, $value);
                 });
 
+                // greater than
                 $allowedFilters[] = AllowedFilter::callback($fieldAlias . '_greater_than', function ($query, $value) use ($finalFieldExpression, $fieldAlias) {
                     $query->where($finalFieldExpression, '>', $value);
                 });
 
+                // lower than
                 $allowedFilters[] = AllowedFilter::callback($fieldAlias . '_lower_than', function ($query, $value) use ($finalFieldExpression, $fieldAlias) {
                     $query->where($finalFieldExpression, '<', $value);
                 });
 
+                // is null
                 $allowedFilters[] = AllowedFilter::callback($fieldAlias . '_is_null', function ($query) use ($finalFieldExpression, $fieldAlias) {
                     $query->whereNull($finalFieldExpression);
                 });
 
+                // contains
                 if ($this->isOfType($fieldAlias, ['string'])) {
                     $allowedFilters[] = AllowedFilter::callback($fieldAlias . '_contains', function ($query, $value) use ($finalFieldExpression, $fieldAlias) {
                         $query->where($finalFieldExpression, 'like', '%' .$value. '%');
