@@ -23,7 +23,8 @@ class Report extends Model
 {
     use HasTagsTrait;
 
-    public $table = 'report';
+    public $table = 'temporary_report_table';
+
     public string $report_name = 'Report';
     public string $view = 'report-default';
 
@@ -33,7 +34,7 @@ class Report extends Model
 
     public array $fields = [];
 
-    public mixed $baseQuery;
+    public mixed $baseQuery = null;
 
     private array $allowedFilters = [];
     public array $allowedIncludes = [];
@@ -76,7 +77,7 @@ class Report extends Model
             $this->fieldAliases[] = $alias;
         }
 
-        $queryBuilder = QueryBuilder::for($this->baseQuery);
+        $queryBuilder = QueryBuilder::for($this->baseQuery ?? $this);
 
         $queryBuilder = $this->addSelectFields($queryBuilder);
 

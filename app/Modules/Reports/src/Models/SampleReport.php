@@ -2,7 +2,6 @@
 
 namespace App\Modules\Reports\src\Models;
 
-use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
 
 class SampleReport extends Report
@@ -13,20 +12,20 @@ class SampleReport extends Report
 
         $this->report_name = 'Sample Report';
 
-        $this->baseQuery = DB::query();
-
         $this->fields = [
-            'string_field'      => 'Blue Black Red',
-            'float_field'       => '12.34',
-            'datetime_field'    => '2005-05-20 12:13:14',
-            'date_field'        => '2005-05-20',
+            'string_field'      => 'string_field',
+            'float_field'       => 'float_field',
+            'integer_field'     => 'integer_field',
+            'date_field'        => 'date_field',
+            'datetime_field'    => 'datetime_field',
         ];
 
         $this->casts = [
             'string_field'      => 'string',
             'float_field'       => 'float',
-            'datetime_field'    => 'datetime',
+            'integer'           => 'integer',
             'date_field'        => 'date',
+            'datetime_field'    => 'datetime',
         ];
 
         $this->addFilter(

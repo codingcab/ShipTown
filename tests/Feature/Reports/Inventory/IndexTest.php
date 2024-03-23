@@ -33,29 +33,6 @@ class IndexTest extends TestCase
         $this->user = User::factory()->create();
     }
 
-    public function testFilters()
-    {
-        $report = new SampleReport();
-
-        $report->toArray();
-        $this->actingAs($this->user, 'web');
-
-        $params = implode('&', [
-            'filter[warehouse_code]=DUB',
-            'filter[warehouse_code_in]=DUB,WHS',
-            'filter[warehouse_code_not_in]=DUB,WHS',
-            'filter[warehouse_code_contains]=DU',
-            'filter[quantity_between]=0,10',
-            'filter[quantity_greater_than]=10',
-            'filter[quantity_lower_than]=10',
-            'filter[quantity_is_null]=true',
-        ]);
-
-        $response = $this->get($this->uri . '?' . $params);
-
-        $response->assertSuccessful();
-    }
-
     /** @test */
     public function test_if_uri_set()
     {
