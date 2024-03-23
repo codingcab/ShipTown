@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class Report extends Model
@@ -92,9 +93,10 @@ class Report extends Model
     private function view(): mixed
     {
         try {
-            $queryBuilder = $this->queryBuilder()->limit(request('per_page', $this->perPage));
-        } catch (Exception $e) {
-            return response($e->getMessage(), $e->getStatusCode());
+            $queryBuilder = $this->queryBuilder()
+                ->limit(request('per_page', $this->perPage));
+        } catch (InvalidFilterQuery | InvalidSelectException $ex) {
+            return response($ex->getMessage(), $ex->getStatusCode());
         }
 
         $resource = ReportResource::collection($queryBuilder->get());
@@ -173,34 +175,33 @@ class Report extends Model
 
         collect($this->fields)
             ->each(function ($full_field_name, $alias) use (&$allowedFilters) {
-                // add value equals filter (filter[alias]=value)
                 $allowedFilters[] = $this->filterEquals($alias, $full_field_name);
 
-                // add value in filter (filter[alias_in]=value1,value2)
                 $allowedFilters[] = AllowedFilter::callback($alias . '_in', function ($query, $value) use ($full_field_name, $alias) {
                     $query->whereIn($this->fields[$alias], $value);
                 });
 
-                // add value not in filter (filter[alias_not_in]=value1,value2)
                 $allowedFilters[] = AllowedFilter::callback($alias . '_not_in', function ($query, $value) use ($full_field_name, $alias) {
                     $query->whereNotIn($this->fields[$alias], $value);
+                });
+
+                $allowedFilters[] = AllowedFilter::callback($alias . '_greater_than', function ($query, $value) use ($full_field_name, $alias) {
+                    $query->where($this->fields[$alias], '>', $value);
+                });
+
+                $allowedFilters[] = AllowedFilter::callback($alias . '_lower_than', function ($query, $value) use ($full_field_name, $alias) {
+                    $query->where($this->fields[$alias], '<', $value);
                 });
 
                 if ($this->isOfType($alias, ['string', null])) {
                     $allowedFilters[] = AllowedFilter::partial($alias . '_contains', $full_field_name);
                 }
+
+                $allowedFilters[] = $this->betweenFilter($alias, $full_field_name);
+                $allowedFilters[] = $this->addNullFilters($alias, $full_field_name);
             });
 
-        $filters = $filters->merge($allowedFilters);
-
-        $filters = $filters->merge($this->addBetweenStringFilters());
-        $filters = $filters->merge($this->addBetweenFloatFilters());
-        $filters = $filters->merge($this->addBetweenDatesFilters());
-        $filters = $filters->merge($this->addGreaterThan());
-        $filters = $filters->merge($this->addLowerThan());
-        $filters = $filters->merge($this->addNullFilters());
-
-        return $filters->toArray();
+        return $filters->merge($allowedFilters)->toArray();
     }
 
     /**
@@ -240,176 +241,23 @@ class Report extends Model
 
     public function isOfType($fieldName, $expectedTypes): bool
     {
-        $fieldType = data_get($this->casts, $fieldName);
+        $fieldType = data_get($this->casts, $fieldName, 'string');
 
         return in_array($fieldType, $expectedTypes);
     }
 
-    /**
-     * @return array
-     */
-    private function addBetweenFloatFilters(): array
-    {
-        $allowedFilters = [];
-
-        collect($this->fields)
-            ->filter(function ($fieldQuery, $fieldName) {
-                $type = data_get($this->casts, $fieldName, 'string');
-                return $type === 'float';
-            })
-            ->each(function ($fieldType, $fieldAlias) use (&$allowedFilters) {
-                $filterName = $fieldAlias . '_between';
-                $fieldQuery = $this->fields[$fieldAlias];
-
-                $allowedFilters[] = AllowedFilter::callback($filterName, function ($query, $value) use ($fieldType, $fieldAlias, $fieldQuery) {
-                    // we add this to make sure query returns no records if array of two values is not specified
-                    if ((!is_array($value)) or (count($value) != 2)) {
-                        $query->whereRaw('1=2');
-                        return;
-                    }
-
-                    if ($fieldQuery instanceof Expression) {
-                        $query->whereBetween(DB::raw('(' . $fieldQuery . ')'), [floatval($value[0]), floatval($value[1])]);
-
-                        return;
-                    }
-
-                    $query->whereBetween($fieldQuery, [floatval($value[0]), floatval($value[1])]);
-                });
-            });
-
-        return $allowedFilters;
-    }
-
-    /**
-     * @return array
-     * @throws Exception
-     */
-    private function addBetweenDatesFilters(): array
-    {
-        $allowedFilters = [];
-
-        collect($this->fields)
-            ->filter(function ($fieldQuery, $fieldName) {
-                $type = data_get($this->casts, $fieldName, 'string');
-                return in_array($type, ['datetime', 'date']);
-            })
-            ->each(function ($fieldType, $fieldAlias) use (&$allowedFilters) {
-                $filterName = $fieldAlias . '_between';
-                $fieldQuery = data_get($this->fields, $fieldAlias);
-
-                $allowedFilters[] = AllowedFilter::callback($filterName, function ($query, $value) use ($fieldType, $fieldAlias, $filterName, $fieldQuery) {
-                    // we add this to make sure query returns no records if array of two values is not specified
-                    if ((!is_array($value)) or (count($value) != 2)) {
-                        throw new Exception($filterName . ': Invalid filter value, expected array of two values');
-                    }
-
-                    if ($fieldQuery instanceof Expression) {
-                        $query->whereBetween(
-                            DB::raw('(' . $fieldQuery . ')'),
-                            [Carbon::parse($value[0]), Carbon::parse($value[1])]
-                        );
-
-                        return;
-                    }
-
-                    $query->whereBetween($fieldQuery, [Carbon::parse($value[0]), Carbon::parse($value[1])]);
-                });
-            });
-
-        return $allowedFilters;
-    }
-
-    /**
-     * @return array
-     * @throws Exception
-     */
-    private function addGreaterThan(): array
-    {
-        $allowedFilters = [];
-
-        collect($this->fields)
-            ->filter(function ($fieldQuery, $fieldName) {
-                $type = data_get($this->casts, $fieldName, 'string');
-                return in_array($type, ['string', 'datetime', 'float']);
-            })
-            ->each(function ($record, $alias) use (&$allowedFilters) {
-                $filterName = $alias . '_greater_than';
-
-                $allowedFilters[] = AllowedFilter::callback($filterName, function ($query, $value) use ($alias, $filterName) {
-                    $query->where($this->fields[$alias], '>', $value);
-                });
-            });
-
-        return $allowedFilters;
-    }
-
-    public function filterEquals($alias, $full_field_name): AllowedFilter
+    public function filterEquals(string $alias, string $full_field_name): AllowedFilter
     {
         return AllowedFilter::callback($alias, function ($query, $value) use ($full_field_name) {
             return $query->where($full_field_name, '=', $value);
         });
     }
 
-    /**
-     * @return array
-     * @throws Exception
-     */
-    private function addGreaterThanFloat(): array
+    private function addNullFilters(string $fieldAlias, string $fieldName): AllowedFilter
     {
-        $allowedFilters = [];
-
-        collect($this->casts)
-            ->filter(function ($type) {
-                return $type === 'float';
-            })
-            ->each(function ($record, $alias) use (&$allowedFilters) {
-                $filterName = $alias . '_greater_than';
-
-                $allowedFilters[] = AllowedFilter::callback($filterName, function ($query, $value) use ($alias, $filterName) {
-                    $query->where($this->fields[$alias], '>', floatval($value));
-                });
-            });
-
-        return $allowedFilters;
-    }
-
-    /**
-     * @return array
-     */
-    private function addLowerThan(): array
-    {
-        $allowedFilters = [];
-
-        collect($this->casts)
-            ->filter(function ($type) {
-                return in_array($type, ['string', 'datetime', 'float']);
-            })
-            ->each(function ($type, $alias) use (&$allowedFilters) {
-                $filterName = $alias . '_lower_than';
-
-                $allowedFilters[] = AllowedFilter::callback($filterName, function ($query, $value) use ($type, $alias) {
-                    if ($type === 'float') {
-                        $query->where($this->fields[$alias], '<', floatval($value));
-                        return;
-                    }
-
-                    $query->where($this->fields[$alias], '<', $value);
-                });
-            });
-
-        return $allowedFilters;
-    }
-
-    private function addNullFilters(): array
-    {
-        $allowedFilters = [];
-
-        $allowedFilters[] = AllowedFilter::callback('null', function ($query, $value) {
-            $query->whereNull($this->fields[$value]);
+        return AllowedFilter::callback('null', function ($query) use ($fieldName) {
+            $query->whereNull($fieldName);
         });
-
-        return $allowedFilters;
     }
 
     /**
@@ -422,36 +270,32 @@ class Report extends Model
         return $this->queryBuilder()->simplePaginate(request()->get('per_page', 10));
     }
 
-    private function addBetweenStringFilters(): array
+    private function betweenFilter(string $fieldAlias, string $fieldName): AllowedFilter
     {
-        $allowedFilters = [];
+        return AllowedFilter::callback($fieldAlias . '_between', function ($query, $value) use ($fieldAlias, $fieldName) {
+            // we add this to make sure query returns no records if array of two values is not specified
+            if ((!is_array($value)) or (count($value) != 2)) {
+                $query->whereRaw('1=2');
+                return;
+            }
 
-        collect($this->fields)
-            ->filter(function ($fieldQuery, $fieldName) {
-                $type = data_get($this->casts, $fieldName, 'string');
-                return $type === 'string';
-            })
-            ->each(function ($fieldType, $fieldAlias) use (&$allowedFilters) {
-                $filterName = $fieldAlias . '_between';
+            if ($fieldName instanceof Expression) {
+                $fieldQuery = DB::raw('(' . $fieldName . ')');
+            } else {
                 $fieldQuery = $this->fields[$fieldAlias];
+            }
 
-                $allowedFilters[] = AllowedFilter::callback($filterName, function ($query, $value) use ($fieldType, $fieldAlias, $fieldQuery) {
-                    // we add this to make sure query returns no records if array of two values is not specified
-                    if ((!is_array($value)) or (count($value) != 2)) {
-                        $query->whereRaw('1=2');
-                        return;
-                    }
+            if ($this->isOfType($fieldName, ['string'])) {
+                $query->whereBetween($fieldQuery, [$value[0], $value[1]]);
+            }
 
-                    if ($fieldQuery instanceof Expression) {
-                        $query->whereBetween(DB::raw('(' . $fieldQuery . ')'), [floatval($value[0]), floatval($value[1])]);
+            if ($this->isOfType($fieldName, ['float'])) {
+                $query->whereBetween($fieldQuery, [floatval($value[0]), floatval($value[1])]);
+            }
 
-                        return;
-                    }
-
-                    $query->whereBetween($fieldQuery, [$value[0], $value[1]]);
-                });
-            });
-
-        return $allowedFilters;
+            if ($this->isOfType($fieldName, ['datetime', 'date'])) {
+                $query->whereBetween($fieldQuery, [Carbon::parse($value[0]), Carbon::parse($value[1])]);
+            }
+        });
     }
 }

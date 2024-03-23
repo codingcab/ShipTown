@@ -40,6 +40,7 @@ class IndexTest extends TestCase
             'filter[warehouse_code_in]=DUB,WHS',
             'filter[warehouse_code_not_in]=DUB,WHS',
             'filter[warehouse_code_contains]=DU',
+            'filter[quantity_between]=0,1',
         ]);
 
         $response = $this->get($this->uri . '?' . $params);
