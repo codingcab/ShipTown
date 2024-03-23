@@ -253,9 +253,9 @@ class Report extends Model
         });
     }
 
-    private function addNullFilters(string $fieldAlias, string $fieldName): AllowedFilter
+    private function addNullFilters(string $alias, string $fieldName): AllowedFilter
     {
-        return AllowedFilter::callback('null', function ($query) use ($fieldName) {
+        return AllowedFilter::callback($alias . '_is_null', function ($query) use ($fieldName) {
             $query->whereNull($fieldName);
         });
     }
