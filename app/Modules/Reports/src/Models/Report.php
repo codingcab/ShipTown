@@ -42,12 +42,7 @@ class Report extends Model
     public array $allowedIncludes = [];
     private array $fieldAliases = [];
 
-    public function response($request): mixed
-    {
-        return $this->toView($request);
-    }
-
-    public function toView($request = null): mixed
+    public function response($request = null): mixed
     {
         $request = $request ?? request();
 
@@ -57,6 +52,7 @@ class Report extends Model
             if ($fileExtension === 'csv') {
                 return $this->csvDownload();
             }
+
             if ($fileExtension === 'json') {
                 return $this->respondJson();
             }
@@ -64,7 +60,7 @@ class Report extends Model
             return response('Invalid file extension. Only CSV, JSON files are allowed.', 400);
         }
 
-        return $this->view();
+        return $this->toView();
     }
 
     /**
@@ -95,11 +91,10 @@ class Report extends Model
             ->allowedIncludes($this->allowedIncludes);
     }
 
-    private function view(): mixed
+    private function toView(): mixed
     {
         try {
-            $queryBuilder = $this->queryBuilder()
-                ->limit(request('per_page', $this->perPage));
+            $queryBuilder = $this->queryBuilder()->limit(request('per_page', $this->perPage));
         } catch (InvalidFilterQuery | InvalidSelectException $ex) {
             return response($ex->getMessage(), $ex->getStatusCode());
         }
@@ -198,7 +193,9 @@ class Report extends Model
                     $finalFieldExpression = $this->fields[$fieldAlias];
                 }
 
-                $allowedFilters[] = $this->filterEquals($fieldAlias, $fieldExpression);
+                $allowedFilters[] = AllowedFilter::callback($fieldAlias, function ($query, $value) use ($finalFieldExpression, $fieldAlias) {
+                    $query->where($finalFieldExpression, '=', $value);
+                });
 
                 $allowedFilters[] = AllowedFilter::callback($fieldAlias . '_not_equal', function ($query, $value) use ($finalFieldExpression, $fieldAlias) {
                     $query->where($finalFieldExpression, '!=', $value);
@@ -220,12 +217,17 @@ class Report extends Model
                     $query->where($finalFieldExpression, '<', $value);
                 });
 
-                if ($this->isOfType($fieldAlias, ['string', null])) {
-                    $allowedFilters[] = AllowedFilter::partial($fieldAlias . '_contains', $finalFieldExpression);
+                $allowedFilters[] = AllowedFilter::callback($fieldAlias . '_is_null', function ($query) use ($finalFieldExpression, $fieldAlias) {
+                    $query->whereNull($finalFieldExpression);
+                });
+
+                if ($this->isOfType($fieldAlias, ['string'])) {
+                    $allowedFilters[] = AllowedFilter::callback($fieldAlias . '_contains', function ($query, $value) use ($finalFieldExpression, $fieldAlias) {
+                        $query->where($finalFieldExpression, 'like', '%' .$value. '%');
+                    });
                 }
 
                 $allowedFilters[] = $this->betweenFilter($fieldAlias, $fieldExpression);
-                $allowedFilters[] = $this->addNullFilters($fieldAlias, $fieldExpression);
             });
 
         return $filters->merge($allowedFilters)->toArray();
@@ -251,8 +253,11 @@ class Report extends Model
                 $fieldValue = data_get($this->fields, $selectFieldName);
 
                 if ($fieldValue === null) {
-                    throw new InvalidSelectException('Requested select field(s) `' . $selectFieldName . '` are not allowed.
-                    Allowed select(s) are ' . collect(array_keys($this->fields))->implode(','));
+                    throw new InvalidSelectException(implode(' ', [
+                        'Requested select field(s) `' . $selectFieldName . '` are not allowed.',
+                        'Allowed select(s) are',
+                        implode(', ', array_keys($this->fields))
+                    ]));
                 }
 
                 if ($fieldValue instanceof Expression) {
@@ -271,20 +276,6 @@ class Report extends Model
         $fieldType = data_get($this->casts, $fieldName, 'string');
 
         return in_array($fieldType, $expectedTypes);
-    }
-
-    public function filterEquals(string $alias, string $full_field_name): AllowedFilter
-    {
-        return AllowedFilter::callback($alias, function ($query, $value) use ($full_field_name) {
-            return $query->where($full_field_name, '=', $value);
-        });
-    }
-
-    private function addNullFilters(string $alias, string $fieldName): AllowedFilter
-    {
-        return AllowedFilter::callback($alias . '_is_null', function ($query) use ($fieldName) {
-            $query->whereNull($fieldName);
-        });
     }
 
     /**
