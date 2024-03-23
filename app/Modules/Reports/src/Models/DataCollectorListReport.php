@@ -39,15 +39,15 @@ class DataCollectorListReport extends Report
         ];
 
         $this->casts = [
-            'id'                    => 'integer',
-            'warehouse_id'          => 'warehouse_id',
-            'type'                  => 'string',
-            'name'                  => 'string',
-            'created_at'            => 'datetime',
-            'updated_at'            => 'datetime',
-            'deleted_at'            => 'datetime',
-            'warehouse_code'        => 'string',
-            'warehouse_name'        => 'string',
+            'id'                     => 'integer',
+            'warehouse_id'           => 'warehouse_id',
+            'type'                   => 'string',
+            'name'                   => 'string',
+            'created_at'             => 'datetime',
+            'updated_at'             => 'datetime',
+            'deleted_at'             => 'datetime',
+            'warehouse_code'         => 'string',
+            'warehouse_name'         => 'string',
             'currently_running_task' => 'string',
         ];
 
