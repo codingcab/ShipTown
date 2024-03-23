@@ -175,26 +175,32 @@ class Report extends Model
 
         collect($this->fields)
             ->each(function ($full_field_name, $alias) use (&$allowedFilters) {
+                if ($full_field_name instanceof Expression) {
+                    $fieldQuery = DB::raw('(' . $full_field_name . ')');
+                } else {
+                    $fieldQuery = $this->fields[$alias];
+                }
+
                 $allowedFilters[] = $this->filterEquals($alias, $full_field_name);
 
-                $allowedFilters[] = AllowedFilter::callback($alias . '_in', function ($query, $value) use ($full_field_name, $alias) {
-                    $query->whereIn($this->fields[$alias], $value);
+                $allowedFilters[] = AllowedFilter::callback($alias . '_in', function ($query, $value) use ($fieldQuery, $alias) {
+                    $query->whereIn($fieldQuery, $value);
                 });
 
-                $allowedFilters[] = AllowedFilter::callback($alias . '_not_in', function ($query, $value) use ($full_field_name, $alias) {
-                    $query->whereNotIn($this->fields[$alias], $value);
+                $allowedFilters[] = AllowedFilter::callback($alias . '_not_in', function ($query, $value) use ($fieldQuery, $alias) {
+                    $query->whereNotIn($fieldQuery, $value);
                 });
 
-                $allowedFilters[] = AllowedFilter::callback($alias . '_greater_than', function ($query, $value) use ($full_field_name, $alias) {
-                    $query->where($this->fields[$alias], '>', $value);
+                $allowedFilters[] = AllowedFilter::callback($alias . '_greater_than', function ($query, $value) use ($fieldQuery, $alias) {
+                    $query->where($fieldQuery, '>', $value);
                 });
 
-                $allowedFilters[] = AllowedFilter::callback($alias . '_lower_than', function ($query, $value) use ($full_field_name, $alias) {
-                    $query->where($this->fields[$alias], '<', $value);
+                $allowedFilters[] = AllowedFilter::callback($alias . '_lower_than', function ($query, $value) use ($fieldQuery, $alias) {
+                    $query->where($fieldQuery, '<', $value);
                 });
 
                 if ($this->isOfType($alias, ['string', null])) {
-                    $allowedFilters[] = AllowedFilter::partial($alias . '_contains', $full_field_name);
+                    $allowedFilters[] = AllowedFilter::partial($alias . '_contains', $fieldQuery);
                 }
 
                 $allowedFilters[] = $this->betweenFilter($alias, $full_field_name);
