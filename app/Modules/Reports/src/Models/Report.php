@@ -260,8 +260,7 @@ class Report extends Model
             $fieldsToSelect = array_keys($this->fields);
         }
 
-        collect($fieldsToSelect)
-            ->filter()
+        collect($fieldsToSelect)->filter()
             ->each(function ($fieldAlias) use ($queryBuilder) {
                 $fieldValue = data_get($this->fields, $fieldAlias);
 
@@ -274,7 +273,7 @@ class Report extends Model
 
                 if ($fieldValue instanceof Expression) {
                     $queryBuilder->addSelect(DB::raw('(' . $fieldValue . ') as ' . $fieldAlias));
-                    return;
+                    return true;
                 }
 
                 $queryBuilder->addSelect($fieldValue . ' as ' . $fieldAlias);
@@ -317,17 +316,20 @@ class Report extends Model
                 $fieldQuery = $this->fields[$fieldAlias];
             }
 
-            if ($this->isOfType($fieldName, ['string'])) {
-                $query->whereBetween($fieldQuery, [$value[0], $value[1]]);
-            }
+            $value1 = $value[0];
+            $value2 = $value[1];
 
             if ($this->isOfType($fieldName, ['float'])) {
-                $query->whereBetween($fieldQuery, [floatval($value[0]), floatval($value[1])]);
+                $value1 = floatval($value1);
+                $value2 = floatval($value2);
             }
 
             if ($this->isOfType($fieldName, ['datetime', 'date'])) {
-                $query->whereBetween($fieldQuery, [Carbon::parse($value[0]), Carbon::parse($value[1])]);
+                $value1 = Carbon::parse($value1);
+                $value2 = Carbon::parse($value2);
             }
+
+            $query->whereBetween($fieldQuery, [$value1, $value2]);
         });
     }
 }
