@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Expression;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -91,8 +92,7 @@ class Report extends Model
     private function view(): mixed
     {
         try {
-            $queryBuilder = $this->queryBuilder()
-                ->limit(request('per_page', $this->perPage));
+            $queryBuilder = $this->queryBuilder()->limit(request('per_page', $this->perPage));
         } catch (Exception $e) {
             return response($e->getMessage(), $e->getStatusCode());
         }
@@ -123,7 +123,12 @@ class Report extends Model
         return view($this->view, $data);
     }
 
-    public function csvDownload()
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws InvalidSelectException
+     * @throws NotFoundExceptionInterface
+     */
+    public function csvDownload(): Response
     {
         $csv = CsvBuilder::fromQueryBuilder(
             $this->queryBuilder(),
@@ -400,19 +405,18 @@ class Report extends Model
     {
         $allowedFilters = [];
 
-//        collect($this->fields)
-//            ->each(function ($record, $alias) use (&$allowedFilters) {
-//                $filterName = 'null';
-
-//                InvalidFilterValue::make($filterName);
-                $allowedFilters[] = AllowedFilter::callback('null', function ($query, $value) {
-                    $query->whereNull($this->fields[$value]);
-                });
-//            });
+        $allowedFilters[] = AllowedFilter::callback('null', function ($query, $value) {
+            $query->whereNull($this->fields[$value]);
+        });
 
         return $allowedFilters;
     }
 
+    /**
+     * @throws NotFoundExceptionInterface
+     * @throws InvalidSelectException
+     * @throws ContainerExceptionInterface
+     */
     public function simplePaginatedCollection(): Paginator
     {
         return $this->queryBuilder()->simplePaginate(request()->get('per_page', 10));
