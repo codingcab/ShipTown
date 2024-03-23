@@ -5,7 +5,6 @@ namespace Tests\Feature\Reports\Inventory;
 use App\Models\Product;
 use App\Models\Warehouse;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
@@ -13,8 +12,6 @@ use Tests\TestCase;
  */
 class IndexTest extends TestCase
 {
-    use RefreshDatabase;
-
     /**
      * @var string
      */
@@ -32,6 +29,22 @@ class IndexTest extends TestCase
     {
         parent::setUp();
         $this->user = User::factory()->create();
+    }
+
+    public function testFilters()
+    {
+        $this->actingAs($this->user, 'web');
+
+        $params = implode('&', [
+            'filter[warehouse_code]=DUB',
+            'filter[warehouse_code_in]=DUB,WHS',
+            'filter[warehouse_code_not_in]=DUB,WHS',
+            'filter[warehouse_code_contains]=DU',
+        ]);
+
+        $response = $this->get($this->uri . '?' . $params);
+
+        $response->assertSuccessful();
     }
 
     /** @test */
