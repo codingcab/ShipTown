@@ -30,7 +30,7 @@ class Report extends Model
     public string $report_name = 'Report';
     public string $view = 'report-default';
 
-    public string $defaultSelect = '';
+    public ?string $defaultSelect = null;
 
     public ?string $defaultSort = null;
 
@@ -71,11 +71,7 @@ class Report extends Model
      */
     public function queryBuilder(): QueryBuilder
     {
-        $this->fieldAliases = [];
-
-        foreach ($this->fields as $alias => $field) {
-            $this->fieldAliases[] = $alias;
-        }
+        $this->fieldAliases = array_keys($this->fields);
 
         $queryBuilder = QueryBuilder::for($this->baseQuery ?? $this);
 
@@ -91,7 +87,12 @@ class Report extends Model
             ->allowedIncludes($this->allowedIncludes);
     }
 
-    public function respondArray()
+    /**
+     * @throws NotFoundExceptionInterface
+     * @throws InvalidSelectException
+     * @throws ContainerExceptionInterface
+     */
+    public function respondArray(): Paginator
     {
         return $this->queryBuilder()
             ->simplePaginate(request()->get('per_page', $this->perPage))
@@ -249,13 +250,18 @@ class Report extends Model
      */
     private function addSelectFields(QueryBuilder $queryBuilder): QueryBuilder
     {
-        $requestedSelect = collect(explode(',', request()->get('select', $this->defaultSelect)))->filter();
+        $select = request()->get('select');
 
-        if ($requestedSelect->isEmpty()) {
-            $requestedSelect = collect(array_keys($this->fields));
+        if ($select) {
+            $fieldsToSelect = explode(',', $select);
+        } elseif ($this->defaultSelect) {
+            $fieldsToSelect = explode(',', $this->defaultSelect);
+        } else {
+            $fieldsToSelect = array_keys($this->fields);
         }
 
-        $requestedSelect
+        collect($fieldsToSelect)
+            ->filter()
             ->each(function ($selectFieldName) use ($queryBuilder) {
                 $fieldValue = data_get($this->fields, $selectFieldName);
 
@@ -292,7 +298,9 @@ class Report extends Model
      */
     public function simplePaginatedCollection(): Paginator
     {
-        return $this->queryBuilder()->simplePaginate(request()->get('per_page', 10));
+        $per_page = request()->get('per_page', 10);
+
+        return $this->queryBuilder()->simplePaginate($per_page);
     }
 
     private function betweenFilter(string $fieldAlias, string $fieldName): AllowedFilter

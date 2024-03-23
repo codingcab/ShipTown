@@ -53,6 +53,17 @@ class IndexTest extends TestCase
         ');
     }
 
+    public function testSelect()
+    {
+        $response = $this->get($this->uri . '?select=string_field_alias&filename=report.json');
+
+        ray($response->content());
+
+        $response->assertSuccessful();
+
+        $response->assertJsonCount(3, 'data');
+    }
+
     public function testNotInFilters()
     {
         $params = implode('&', [
