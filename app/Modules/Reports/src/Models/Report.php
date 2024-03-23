@@ -91,6 +91,13 @@ class Report extends Model
             ->allowedIncludes($this->allowedIncludes);
     }
 
+    public function respondArray()
+    {
+        return $this->queryBuilder()
+            ->simplePaginate(request()->get('per_page', $this->perPage))
+            ->appends(request()->query());
+    }
+
     private function toView(): mixed
     {
         try {

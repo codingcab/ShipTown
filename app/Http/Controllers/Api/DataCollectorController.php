@@ -19,7 +19,7 @@ class DataCollectorController extends Controller
     {
         $report = new DataCollectorListReport();
 
-        return JsonResource::collection($report->toArray());
+        return JsonResource::collection($report->respondArray());
     }
 
     public function store(ApiDataCollectorStoreRequest $request): DataCollectionResource
