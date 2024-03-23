@@ -11,6 +11,8 @@ use Exception;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Expression;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Psr\Container\ContainerExceptionInterface;
@@ -50,17 +52,19 @@ class Report extends Model
         $request = $request ?? request();
 
         if ($request->has('filename')) {
-            return $this->csvDownload();
+            $fileExtension = pathinfo($request->input('filename'), PATHINFO_EXTENSION);
+
+            if ($fileExtension === 'csv') {
+                return $this->csvDownload();
+            }
+            if ($fileExtension === 'json') {
+                return $this->respondJson();
+            }
+
+            return response('Invalid file extension. Only CSV, JSON files are allowed.', 400);
         }
 
         return $this->view();
-    }
-
-    public function toArray(): Paginator|array
-    {
-        return $this->queryBuilder()
-            ->simplePaginate(request()->input('per_page', $this->perPage))
-            ->appends(request()->query());
     }
 
     /**
@@ -146,6 +150,18 @@ class Report extends Model
         ]);
     }
 
+    /**
+     * @throws InvalidSelectException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function respondJson(): AnonymousResourceCollection
+    {
+        $csv = $this->queryBuilder()->get();
+
+        return JsonResource::collection($csv);
+    }
+
     public function addFilter(AllowedFilter $filter): Report
     {
         $this->allowedFilters[] = $filter;
@@ -183,6 +199,10 @@ class Report extends Model
                 }
 
                 $allowedFilters[] = $this->filterEquals($fieldAlias, $fieldExpression);
+
+                $allowedFilters[] = AllowedFilter::callback($fieldAlias . '_not_equal', function ($query, $value) use ($finalFieldExpression, $fieldAlias) {
+                    $query->where($finalFieldExpression, '!=', $value);
+                });
 
                 $allowedFilters[] = AllowedFilter::callback($fieldAlias . '_in', function ($query, $value) use ($finalFieldExpression, $fieldAlias) {
                     $query->whereIn($finalFieldExpression, $value);
