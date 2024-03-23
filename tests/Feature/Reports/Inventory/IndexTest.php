@@ -4,8 +4,6 @@ namespace Tests\Feature\Reports\Inventory;
 
 use App\Models\Product;
 use App\Models\Warehouse;
-use App\Modules\Reports\src\Models\Report;
-use App\Modules\Reports\src\Models\SampleReport;
 use App\User;
 use Tests\TestCase;
 
