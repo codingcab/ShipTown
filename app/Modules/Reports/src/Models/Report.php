@@ -250,10 +250,10 @@ class Report extends Model
      */
     private function addSelectFields(QueryBuilder $queryBuilder): QueryBuilder
     {
-        $select = request()->get('select');
+        $requestedSelects = request()->get('select');
 
-        if ($select) {
-            $fieldsToSelect = explode(',', $select);
+        if ($requestedSelects) {
+            $fieldsToSelect = explode(',', $requestedSelects);
         } elseif ($this->defaultSelect) {
             $fieldsToSelect = explode(',', $this->defaultSelect);
         } else {
@@ -262,23 +262,22 @@ class Report extends Model
 
         collect($fieldsToSelect)
             ->filter()
-            ->each(function ($selectFieldName) use ($queryBuilder) {
-                $fieldValue = data_get($this->fields, $selectFieldName);
+            ->each(function ($fieldAlias) use ($queryBuilder) {
+                $fieldValue = data_get($this->fields, $fieldAlias);
 
                 if ($fieldValue === null) {
                     throw new InvalidSelectException(implode(' ', [
-                        'Requested select field(s) `' . $selectFieldName . '` are not allowed.',
-                        'Allowed select(s) are',
-                        implode(', ', array_keys($this->fields))
+                        'Requested select field `' . $fieldAlias . '` is not allowed.',
+                        'Allowed select(s) are', implode(', ', array_keys($this->fields))
                     ]));
                 }
 
                 if ($fieldValue instanceof Expression) {
-                    $queryBuilder->addSelect(DB::raw('(' . $fieldValue . ') as ' . $selectFieldName));
+                    $queryBuilder->addSelect(DB::raw('(' . $fieldValue . ') as ' . $fieldAlias));
                     return;
                 }
 
-                $queryBuilder->addSelect($fieldValue . ' as ' . $selectFieldName);
+                $queryBuilder->addSelect($fieldValue . ' as ' . $fieldAlias);
             });
 
         return $queryBuilder;
