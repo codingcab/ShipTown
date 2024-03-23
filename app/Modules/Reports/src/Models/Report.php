@@ -130,6 +130,8 @@ class Report extends Model
             ];
         });
 
+        dd($data);
+
         return view($this->view, $data);
     }
 
