@@ -24,10 +24,7 @@ class IndexTest extends TestCase
 
         $this->user = User::factory()->create();
         $this->actingAs($this->user, 'web');
-    }
 
-    public function testEqualFilters()
-    {
         DB::statement('
             CREATE TEMPORARY TABLE IF NOT EXISTS temporary_report_table AS
             SELECT
@@ -36,8 +33,25 @@ class IndexTest extends TestCase
                 1 as integer_field,
                 "2005-05-20 12:13:14" as datetime_field,
                 "2005-05-20" as date_field
-        ');
 
+            UNION ALL SELECT
+                "Black" as string_field,
+                23.45 as float_field,
+                3 as integer_field,
+                "2015-10-09 07:23:23" as datetime_field,
+                "2015-10-09" as date_field
+
+            UNION ALL SELECT
+                "Red" as string_field,
+                34.56 as float_field,
+                3 as integer_field,
+                "2024-02-22 09:30:00" as datetime_field,
+                "2024-02-22" as date_field
+        ');
+    }
+
+    public function testEqualFilters()
+    {
         $params = implode('&', [
             'filename=report.json',
             'filter[string_field]=blue',
@@ -66,23 +80,13 @@ class IndexTest extends TestCase
 
     public function testNotEqualFilters()
     {
-        DB::statement('
-            CREATE TEMPORARY TABLE IF NOT EXISTS temporary_report_table AS
-            SELECT
-                "Blue" as string_field,
-                12.34 as float_field,
-                1 as integer_field,
-                "2005-05-20 12:13:14" as datetime_field,
-                "2005-05-20" as date_field
-        ');
-
         $params = implode('&', [
             'filename=report.json',
-            'filter[string_field_not_equal]=black',
-            'filter[float_field_not_equal]=23.12',
-            'filter[integer_field_not_equal]=2',
-            'filter[date_field_not_equal]=2001-01-01',
-            'filter[datetime_field_not_equal]=2001-01-01 12:00:00',
+            'filter[string_field_not_equal]=blue',
+            'filter[float_field_not_equal]=12.34',
+            'filter[integer_field_not_equal]=1',
+            'filter[date_field_not_equal]=2005-05-20',
+            'filter[datetime_field_not_equal]=2005-05-20 12:13:14',
         ]);
 
         $response = $this->get($this->uri . '?' . $params);
@@ -91,43 +95,11 @@ class IndexTest extends TestCase
 
         $response->assertSuccessful();
 
-        $response->assertJsonCount(1, 'data');
-
-        $response->assertJsonFragment([
-            'string_field' => 'Blue',
-            'float_field' => 12.34,
-            'integer_field' => 1,
-            'date_field' => '2005-05-20T00:00:00.000000Z',
-            'datetime_field' => '2005-05-20T12:13:14.000000Z',
-        ]);
+        $response->assertJsonCount(2, 'data');
     }
 
     public function testAllFilters()
     {
-        DB::statement('
-            CREATE TEMPORARY TABLE IF NOT EXISTS temporary_report_table AS
-            SELECT
-                "Blue" as string_field,
-                12.34 as float_field,
-                1 as integer_field,
-                "2005-05-20 12:13:14" as datetime_field,
-                "2005-05-20" as date_field
-
-            UNION ALL SELECT
-                "Black" as string_field,
-                23.45 as float_field,
-                3 as integer_field,
-                "2015-10-09 07:23:23" as datetime_field,
-                "2015-10-09" as date_field
-
-            UNION ALL SELECT
-                "Red" as string_field,
-                34.56 as float_field,
-                3 as integer_field,
-                "2024-02-22 09:30:00" as datetime_field,
-                "2024-02-22" as date_field
-        ');
-
         $params = implode('&', [
             'filter[string_field]=blue',
             'filter[string_field_in]=BLUE,BLACK',
