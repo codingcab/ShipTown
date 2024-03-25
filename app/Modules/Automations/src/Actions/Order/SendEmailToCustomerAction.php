@@ -36,6 +36,7 @@ class SendEmailToCustomerAction extends BaseOrderActionAbstract
         $email = new OrderMail($template, [
             'order' => $order->toArray(),
             'shipments' => $order->orderShipments->toArray(),
+            'shipping_address' => $order->shippingAddress->toArray(),
         ]);
 
         Mail::to($this->order->shippingAddress->email)
