@@ -57,7 +57,7 @@ class GetProductIdsJob extends UniqueJob
                     'sku' => $item['sku'],
                     'exists_in_magento' => true,
                     'magento_product_id' => $item['id'],
-                    'magento_type_id' => $item['type_id'],
+                    'magento_product_type' => $item['type_id'],
                     'sync_required' => null,
                     'created_at' => now(),
                     'updated_at' => now(),
@@ -66,7 +66,7 @@ class GetProductIdsJob extends UniqueJob
 
         Magento2msiProduct::query()->upsert($map->toArray(), ['connection_id', 'sku'], [
             'magento_product_id',
-            'magento_type_id',
+            'magento_product_type',
             'exists_in_magento',
             'sync_required',
             'updated_at'
@@ -77,7 +77,7 @@ class GetProductIdsJob extends UniqueJob
             ->whereNull('exists_in_magento')
             ->update([
                 'exists_in_magento' => false,
-                'magento_product_id' => null,
+                'magento_product_type' => null,
                 'sync_required' => null,
             ]);
 
