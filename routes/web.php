@@ -13,6 +13,7 @@
 
 use App\Http\Controllers\Admin\Settings\Modules\Webhooks\SubscriptionController;
 use App\Http\Controllers\Auth;
+use App\Http\Controllers\FulfillmentDashboardController;
 use App\Http\Controllers\MailTemplatePreviewController;
 use App\Http\Controllers\Order;
 use App\Http\Controllers\Csv;
@@ -32,7 +33,7 @@ Route::resource('verify', Auth\TwoFactorController::class)->only(['index', 'stor
 Route::view('quick-connect/magento', 'quick-connect.magento')->name('quick-connect.magento');
 
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
-Route::get('fulfillment-dashboard', [DashboardController::class, 'index'])->name('fulfillment-dashboard');
+Route::get('fulfillment-dashboard', [FulfillmentDashboardController::class, 'index'])->name('fulfillment-dashboard');
 Route::get('inventory-dashboard', [Reports\InventoryDashboardController::class, 'index'])->name('inventory-dashboard');
 Route::get('products-merge', [ProductsMergeController::class, 'index'])->name('products-merge');
 Route::view('fulfillment-statistics', 'fulfillment-statistics')->name('fulfillment-statistics');
