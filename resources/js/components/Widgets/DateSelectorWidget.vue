@@ -11,7 +11,7 @@
                 <a class="dropdown-item" @click.prevent="applyFilter('-7days,now')">Last 7 days</a>
                 <a class="dropdown-item" @click.prevent="applyFilter('this week monday,now')">This week</a>
                 <a class="dropdown-item" @click.prevent="applyFilter('last week monday,this week monday')">Last Week</a>
-                <a class="dropdown-item" @click.prevent="showDateSelectionModal">Custom Date</a>
+                <a class="dropdown-item" @click.prevent="$bvModal.show('modal-date-selector-widget')">Custom Date</a>
             </div>
         </div>
     </div>
@@ -19,7 +19,7 @@
     <ModalDateBetweenSelector
         :starting_date.sync="starting_date"
         :ending_date.sync="ending_date"
-        @close="closeDateSelectionModal"
+        @close="$bvModal.hide('modal-date-selector-widget')"
         @apply="validateFilter"
     />
 </div>
@@ -78,18 +78,6 @@ export default {
             }
             this.applyFilter(this.dateRange)
         },
-
-        showDateSelectionModal() {
-            document.getElementById('modal-date-selector-widget').showModal()
-        },
-
-        closeDateSelectionModal() {
-            document.getElementById('modal-date-selector-widget').close();
-        }
     }
 }
 </script>
-
-<style>
-
-</style>

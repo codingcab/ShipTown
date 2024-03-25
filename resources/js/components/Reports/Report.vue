@@ -1,140 +1,145 @@
 <template>
-<div>
-    <template v-if="getUrlParameter('hide_nav_bar', false) === false">
-        <div class="row mb-3 pl-1 pr-1">
-            <div class="flex-fill">
-                <barcode-input-field placeholder="Search activity" ref="barcode" @refreshRequest="reloadProducts" @barcodeScanned="findText"/>
-            </div>
-            <button v-b-modal="'quick-actions-modal'" type="button" class="btn btn-primary ml-2" data-toggle="modal" data-target="#filterConfigurationModal">
-                <font-awesome-icon icon="cog" class="fa-lg"></font-awesome-icon>
-            </button>
-        </div>
-    </template>
 
-    <div class="d-lg-flex">
-        <div class="text-nowrap font-weight-bold small text-secondaryottom">
-            <div class="mt-1">REPORTS > {{ reportName.toUpperCase() }}</div>
-        </div>
-        <div class="flex-grow-1">
-            <filter-slider v-show="showFilters" :filters="filters" @remove-filter="(filter) => removeFilter(filter)"></filter-slider>
-        </div>
-    </div>
+<container>
+    <top-nav-bar>
+        <search-filter @search="addSearchFilter" />
+    </top-nav-bar>
+
+    <report-head :report-name="reportName" :filters="filters" @remove-filter="(filter) => removeFilter(filter)"></report-head>
 
     <card>
         <template v-if="records.length">
-            <table class="table-hover w-100 text-left small table-responsive text-nowrap">
-                <thead>
-                <tr>
-                    <th class="small pr-3" v-for="field in fields">
-                        <div class="dropdown">
-                            <button class="btn btn-link dropdown-toggle" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="small" v-if="field.is_current">{{ field.is_desc ? '▼' : '▲' }}</span> {{ field.display_name }}
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                <button class="dropdown-item" type="button" @click="applySort('asc', field)">
-                                    <icon-sort-asc/>&nbsp; Sort Ascending
+            <div class="table-responsive py-2" style="transform: rotateX(180deg);">
+                <table class="table-hover w-100 text-left small text-nowrap" style="transform: rotateX(180deg);">
+                    <thead>
+                    <tr>
+                        <th class="small pr-3" v-for="field in fields">
+                            <div class="dropdown">
+                                <button class="btn btn-link dropdown-toggle" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {{ field.display_name }} <span class="small" v-if="field.is_current">{{ field.is_desc ? '▼' : '▲' }}</span>
                                 </button>
-                                <button class="dropdown-item" type="button" @click="applySort('desc', field)">
-                                    <icon-sort-desc/>&nbsp; Sort Descending
-                                </button>
-                                <button class="dropdown-item" type="button" @click="showFilterBox(field)">
-                                    <icon-filter/>&nbsp; Filter by value
-                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                    <button class="dropdown-item" type="button" @click="applySort('asc', field)">
+                                        <icon-sort-asc/>&nbsp; Sort Ascending
+                                    </button>
+                                    <button class="dropdown-item" type="button" @click="applySort('desc', field)">
+                                        <icon-sort-desc/>&nbsp; Sort Descending
+                                    </button>
+                                    <button class="dropdown-item" type="button" @click="showFilterBox(field)">
+                                        <icon-filter/>&nbsp; Filter by value
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr class="table-hover" v-for="record in records">
-                    <td class="pr-3" v-for="field in fields">{{ getCell(record, field) }}</td>
-                </tr>
-                </tbody>
-            </table>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="table-hover" v-for="record in records">
+                        <td class="pr-3" v-for="field in fields">{{ getCell(record, field) }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
             <hr>
             <div class="row mx-2 small" v-if="pagination">
-                <div class="col-5 col-sm-3">
+                <div class="col col-sm-4">
                     <p>
+                        show
                         <select v-model="pagination.per_page" @change="changePagination('perPage')">
                             <option v-for="option in perPageOptions" :value="option">{{ option }}</option>
                         </select>
                         records
                     </p>
                 </div>
-                <div class="col-7 col-sm-6">
-                    <p class="text-right text-sm-center">
-                        <button class="no-style-button" @click="changePagination('decrementPage')">
-                            <icon-arrow-left/>
-                        </button>
-                        page
-                        <input type="text" v-on:input="customChangePagination" v-model.number="pagination.current_page" style="max-width: 40px; height: 20px"/>
-                        of {{ pagination.last_page }}
-                        <button class="no-style-button" @click="changePagination('incrementPage')">
-                            <icon-arrow-right/>
-                        </button>
-                    </p>
+                <div class="col col-sm-4">
+                    <div class="d-flex justify-content-end justify-content-sm-center">
+                        <div>
+                            <button class="no-style-button mr-md-3" @click="changePagination('decrementPage')">
+                                <icon-arrow-left/>
+                            </button>
+                        </div>
+                        <div>
+                            <p class="pb-0" style="margin-top: 0.1rem">Page</p>
+                        </div>
+                        <div>
+                            <input type="text"
+                                   v-on:input="customChangePagination"
+                                   v-model.number="pagination.current_page"
+                                   style="max-width: 30px; height: 19px; margin-top: 0.1rem;"
+                                   class="mx-1 text-center"
+                            />
+                        </div>
+                        <div>
+                            <p class="pb-0" style="margin-top: 0.1rem">of {{ pagination.last_page }}</p>
+                        </div>
+                        <div>
+                            <button class="no-style-button ml-md-3" @click="changePagination('incrementPage')">
+                                <icon-arrow-right/>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-12 col-sm-3">
+                <div class="col-12 col-sm-4">
                     <p class="float-right mr-1 mr-sm-0">{{ pagination.total }} records</p>
                 </div>
             </div>
         </template>
-        <div v-else class="alert alert-info" role="alert">
-            No records found.
+        <div v-else class="text-secondary small text-center">
+            No records found
         </div>
-
-        <b-modal id="filter-box-modal" size="md" no-fade hide-header>
-            <div v-if="filterAdding">
-                <div class="d-flex flex-column p-2" style="gap: 5px; background-color: #efefef">
-                    <div v-show="filterAdding.operators.length > 1">
-                        <select v-model="filterAdding.selectedOperator" class="form-control form-control-sm">
-                            <option v-for="operator in filterAdding.operators" :key="operator" :value="operator">
-                                {{ operator === 'btwn' ? 'between' : operator }}
-                            </option>
-                        </select>
-                    </div>
-                    <form @submit.prevent="addFilter" class="d-flex flex-row" style="grid-gap: 5px;">
-                        <template v-if="filterAdding.selectedField.type === 'numeric'">
-                            <input ref="inputAddValue" v-model="filterAdding.value" type="number" class="form-control form-control-sm">
-                            <input v-if="filterAdding.selectedOperator === 'btwn'" v-model="filterAdding.valueBetween" type="number" class="form-control form-control-sm" style="margin-left: 5px;">
-                        </template>
-                        <template v-else>
-                            <input ref="inputAddValue" v-model="filterAdding.value" type="text" class="form-control form-control-sm">
-                            <input v-if="filterAdding.selectedOperator === 'btwn'" v-model="filterAdding.valueBetween" type="text" class="form-control form-control-sm" style="margin-left: 5px;">
-                        </template>
-                    </form>
-                </div>
-            </div>
-            <template #modal-footer>
-                <button type="button" @click="$bvModal.hide('filter-box-modal');" class="btn btn-default">Cancel</button>
-                <button @click="addFilter" class="btn btn-sm btn-primary px-3">
-                    apply
-                </button>
-            </template>
-        </b-modal>
-
-        <ModalDateBetweenSelector
-            :starting_date.sync="filterAdding.value"
-            :ending_date.sync="filterAdding.valueBetween"
-            @close="closeDateSelectionModal"
-            @apply="addFilter"
-        />
-
-        <b-modal id="quick-actions-modal" no-fade hide-header @hidden="setFocusElementById('barcode-input')">
-            <stocktake-input v-bind:auto-focus-after="100" ></stocktake-input>
-            <br>
-            <a class="btn btn-primary" :href="downloadUrl">{{ downloadButtonText }}</a>
-            <template #modal-footer>
-                <b-button variant="secondary" class="float-right" @click="$bvModal.hide('quick-actions-modal');">
-                    Cancel
-                </b-button>
-                <b-button variant="primary" class="float-right" @click="$bvModal.hide('quick-actions-modal');">
-                    OK
-                </b-button>
-            </template>
-        </b-modal>
     </card>
-</div>
+
+    <b-modal id="filter-box-modal" size="md" no-fade hide-header @shown="focusFilterBoxInput">
+        <div v-if="filterAdding">
+            <div class="d-flex flex-column p-2" style="gap: 5px; background-color: #efefef">
+                <div v-show="filterAdding.operators.length > 1">
+                    <select v-model="filterAdding.selectedOperator" @change="focusFilterBoxInput" class="form-control form-control-sm">
+                        <option v-for="operator in filterAdding.operators" :key="operator" :value="operator">
+                            {{ operator === 'btwn' ? 'between' : operator }}
+                        </option>
+                    </select>
+                </div>
+                <form @submit.prevent="addFilter" @keyup.enter="addFilter" class="d-flex flex-row" style="grid-gap: 5px;">
+                    <template v-if="filterAdding.selectedField.type === 'numeric'">
+                        <input ref="inputAddValue" v-model="filterAdding.value" type="number" class="form-control form-control-sm">
+                        <input v-show="filterAdding.selectedOperator === 'btwn'" v-model="filterAdding.valueBetween" type="number" class="form-control form-control-sm" style="margin-left: 5px;">
+                    </template>
+                    <template v-else>
+                        <input ref="inputAddValue" v-model="filterAdding.value" type="text" class="form-control form-control-sm">
+                        <input v-show="filterAdding.selectedOperator === 'btwn'" v-model="filterAdding.valueBetween" type="text" class="form-control form-control-sm" style="margin-left: 5px;">
+                    </template>
+                </form>
+            </div>
+        </div>
+        <template #modal-footer>
+            <b-button b-button variant="secondary" class="float-right" @click="$bvModal.hide('filter-box-modal')">Cancel</b-button>
+            <b-button variant="primary" class="float-right" @click="addFilter">apply</b-button>
+        </template>
+    </b-modal>
+
+    <ModalDateBetweenSelector
+        :starting_date.sync="filterAdding.value"
+        :ending_date.sync="filterAdding.valueBetween"
+        @close="$bvModal.hide('modal-date-selector-widget')"
+        @apply="addFilter"
+    />
+
+    <b-modal id="quick-actions-modal" no-fade hide-header @hidden="setFocusElementById('barcode-input')">
+        <stocktake-input v-bind:auto-focus-after="100" ></stocktake-input>
+        <hr>
+        <br>
+        <a class="btn btn-primary btn-block" :href="downloadUrl">{{ downloadButtonText }}</a>
+        <template #modal-footer>
+            <b-button variant="secondary" class="float-right" @click="$bvModal.hide('quick-actions-modal');">
+                Cancel
+            </b-button>
+            <b-button variant="primary" class="float-right" @click="$bvModal.hide('quick-actions-modal');">
+                OK
+            </b-button>
+        </template>
+    </b-modal>
+
+</container>
 
 </template>
 
@@ -149,12 +154,14 @@
     import IconArrowRight from "../UI/Icons/IconArrowRight.vue";
     import IconArrowLeft from "../UI/Icons/IconArrowLeft.vue";
     import ModalDateBetweenSelector from "../Widgets/ModalDateBetweenSelector.vue";
+    import SearchFilter from "./SearchFilter.vue";
+    import ReportHead from "./ReportHead.vue";
 
     export default {
 
         mixins: [loadingOverlay, url, api, helpers],
 
-        components: {IconArrowRight, IconArrowLeft, IconSortAsc, IconSortDesc, IconFilter, ModalDateBetweenSelector},
+        components: {IconArrowRight, IconArrowLeft, IconSortAsc, IconSortDesc, IconFilter, ModalDateBetweenSelector, SearchFilter, ReportHead},
 
         props: {
             recordString: String,
@@ -172,7 +179,6 @@
                 pagination: JSON.parse(this.paginationString),
                 filters: [],
                 filterAdding: null,
-                findText: '',
                 showFilters: true,
             }
         },
@@ -183,17 +189,13 @@
 
         mounted() {
             this.buildFiltersFromUrl()
-
-            // when modal is show focus the input
-            this.$root.$on('bv::modal::show', (bvEvent, modalId) => {
-                if (modalId === 'filter-box-modal') {
-                    // todo - not working since changed to b-modal. Fix this
-                    this.$refs.inputAddValue.focus();
-                }
-            })
         },
 
         methods: {
+
+            focusFilterBoxInput() {
+                this.$refs.inputAddValue.focus();
+            },
 
             getCell(record, field) {
                 if (record[field.name] === null) {
@@ -214,10 +216,8 @@
             },
 
             showFilterBox(field){
-
-                // if datetime field, show date selector
                 if(['date', 'datetime'].includes(field.type)) {
-                    document.getElementById('modal-date-selector-widget').showModal();
+                    this.$bvModal.show('modal-date-selector-widget')
                     this.setFilterAdding(field.name);
                     return;
                 }
@@ -293,8 +293,21 @@
                 }
             },
 
-            addFilter() {
+            addSearchFilter(searchInput) {
+                this.filters = this.filters.filter(f => f.name !== 'search');
+                this.filters.push({
+                    name: 'search',
+                    displayName: 'Search',
+                    selectedOperator: 'equals',
+                    value: searchInput,
+                    valueBetween: '',
+                });
 
+                this.pagination.current_page = 1;
+                location.href = this.buildUrl();
+            },
+
+            addFilter() {
                 const { value, selectedOperator, valueBetween, selectedField } = this.filterAdding;
 
                 this.filters = this.filters.filter(f => f.name !== selectedField.name);
@@ -372,14 +385,9 @@
 
                 location.href = this.buildUrl();
             },
-
-            closeDateSelectionModal() {
-                document.getElementById('modal-date-selector-widget').close();
-            }
         },
 
         computed: {
-
             perPageOptions(){
                 return [...new Set([this.pagination.per_page, 10, 25, 50, 100])].sort((a, b) => a - b);
             }
