@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('heartbeats', function (Blueprint $table) {
             // add auto_heal_job_class column
-            $table->string('auto_heal_job_class')->nullable->after('error_message');
+            $table->string('auto_heal_job_class')->nullable()->after('error_message');
         });
     }
 };

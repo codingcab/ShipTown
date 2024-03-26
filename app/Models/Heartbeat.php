@@ -17,6 +17,7 @@ class Heartbeat extends Model
         'code',
         'level',
         'error_message',
+        'auto_heal_job_class',
         'expires_at',
     ];
 

@@ -15,7 +15,16 @@ class HeartbeatsController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
-        $heartbeats = Heartbeat::expired()->limit(2)->get();
+        $expiredHeartbeats = Heartbeat::expired()->get();
+        $heartbeats = $expiredHeartbeats->take(2);
+
+        foreach ($expiredHeartbeats as $expiredHeartbeat) {
+            if (is_null($expiredHeartbeat->auto_heal_job_class)) {
+                continue;
+            }
+            $job = new $expiredHeartbeat->auto_heal_job_class();
+            $job->handle();
+        }
 
         return HeartbeatResources::collection($heartbeats);
     }

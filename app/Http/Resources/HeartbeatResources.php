@@ -17,7 +17,8 @@ class HeartbeatResources extends JsonResource
         return [
             'code'              => $this->code,
             'expired_at'        => $this->expired_at,
-            'error_message'     => $this->error_message
+            'error_message'     => $this->error_message,
+            'auto_heal_job_class' => $this->auto_heal_job_class,
         ];
     }
 }
