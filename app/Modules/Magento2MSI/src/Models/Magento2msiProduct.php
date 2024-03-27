@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Product $product
  * @property InventoryTotalByWarehouseTag $inventoryTotalByWarehouseTag
  * @property string $sku
+ * @property string magento_product_type
  */
 class Magento2msiProduct extends BaseModel
 {
@@ -20,7 +21,7 @@ class Magento2msiProduct extends BaseModel
     protected $fillable = [
         'connection_id',
         'magento_product_id',
-        'magento_type_id',
+        'magento_product_type',
         'inventory_totals_by_warehouse_tag_id',
         'sync_required',
         'custom_uuid',
