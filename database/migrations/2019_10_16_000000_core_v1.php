@@ -128,7 +128,7 @@ return new class extends Migration
 
         Schema::connection(config('activitylog.database_connection'))->create(config('activitylog.table_name'), function (Blueprint $table) {
             $table->id();
-            $table->string('log_name')->index();
+            $table->string('log_name')->nullable()->index();
             $table->text('description');
             $table->foreignId('subject_id')->nullable();
             $table->string('subject_type')->nullable();
