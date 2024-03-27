@@ -37,7 +37,7 @@
         <table v-if="activityLog.length > 0" class="small table-responsive text-nowrap">
             <template v-for="activity in activityLog">
                 <tr>
-                    <td class="pr-2">{{ activity['created_at'] | moment('YYYY MMM D H:mm:ss') }}</td>
+                    <td class="pr-2">{{ formatDateTime(activity['created_at']) }}</td>
                     <td class="pr-2">{{ activity['causer_id'] ? activity['causer']['name'] : 'AutoPilot' }}</td>
                     <td class="pr-2">{{ activity['description'] }}</td>
                     <td class="pr-2">{{ activity['subject_type'] }}</td>

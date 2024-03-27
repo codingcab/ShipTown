@@ -45,7 +45,6 @@
 </template>
 
 <script>
-    import moment from "moment";
     import helpers from "../../mixins/helpers";
 
     export default {
@@ -55,15 +54,5 @@
         props: {
             order: Object,
         },
-
-        methods: {
-            formatDateMMMDD: (value) => {
-                return moment(String(value)).format('MMM DD');
-            },
-        }
     }
 </script>
-
-<style scoped>
-
-</style>

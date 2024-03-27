@@ -131,7 +131,7 @@
                                                         </a>
                                                     </div>
                                                     <div class="small">
-                                                        {{ orderProduct['order']['order_placed_at'] | moment('MMM DD')  }}
+                                                        {{ formatDateTime(orderProduct['order']['order_placed_at']) }}
                                                     </div>
                                                     <div class="small">
                                                         {{ orderProduct['order']['status_code']}}
@@ -186,8 +186,8 @@
                                                 <td>{{ price['warehouse_code'] }}</td>
                                                 <td class="text-right pr-1">{{ price['price'] }}</td>
                                                 <td class="text-right" :class="{ 'bg-warning': price['is_on_sale'] }">{{ price['sale_price'] }}</td>
-                                                <td class="text-right">{{ formatDateTime(price['sale_price_start_date'], 'YYYY MMM D') }}</td>
-                                                <td class="text-right">{{ formatDateTime(price['sale_price_end_date'], 'YYYY MMM D') }}</td>
+                                                <td class="text-right">{{ formatDateTime(price['sale_price_start_date']) }}</td>
+                                                <td class="text-right">{{ formatDateTime(price['sale_price_end_date']) }}</td>
                                             </tr>
                                         </template>
                                         </tbody>
@@ -207,8 +207,8 @@
 
                             <template v-if="currentTab === 'activityLog'">
                               <div class="row small" v-for="activity in activityLog" :key="activity.id">
-                                      <span :title="formatDateTime(activity['created_at'], 'YYYY-MM-DD H:mm:ss')">
-                                          {{ formatDateTime(activity['created_at'], 'MMM DD H:mm')  }}:
+                                      <span :title="formatDateTime(activity['created_at'])">
+                                          {{ formatDateTime(activity['created_at'])  }}:
                                       </span>
                                 <span class="flex-nowrap ml-1">
                                           {{ activity['causer'] === null ? 'AutoPilot' : activity['causer']['name'] }}
