@@ -31,10 +31,10 @@
                     <div role="button" dusk="data_collection_record" class="row" @click="openDataCollection(record['id'])">
                         <div class="col-sm-12 col-lg-6">
                             <div class="text-primary">{{ record['name'] }}</div>
-                            <div class="text-secondary small">{{ formatDateTime(record['created_at'], 'dddd - MMM D HH:mm') }}</div>
+                            <div class="text-secondary small">{{ formatDateTime(record['created_at']) }}</div>
                         </div>
                         <div class="col-cols col-sm-12 col-lg-6 bottom text-right">
-                            <text-card v-if="record['deleted_at'] !== null" :label="formatDateTime(record['deleted_at'], 'dddd - MMM D HH:mm')" text="ARCHIVED" class="float-left text-left"></text-card>
+                            <text-card v-if="record['deleted_at'] !== null" :label="formatDateTime(record['deleted_at'])" text="ARCHIVED" class="float-left text-left"></text-card>
                             <text-card label="warehouse" :text="record['warehouse_code']"></text-card>
                             <number-card label="differences" :number="record['differences_count']"></number-card>
                         </div>
