@@ -53,7 +53,7 @@ class TestOrdersSeeder extends Seeder
             'product_id' => null,
         ]);
 
-        Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => DB::raw('total_order')]);
+        Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => DB::raw('IFNULL(total_order, 0)')]);
     }
 
     protected function create_test_order_for_packing(): void
@@ -75,7 +75,7 @@ class TestOrdersSeeder extends Seeder
                 ]);
             });
 
-        Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => DB::raw('total_order')]);
+        Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => DB::raw('IFNULL(total_order, 0)')]);
     }
 
     protected function create_test_unpaid_order(): void
@@ -135,7 +135,7 @@ class TestOrdersSeeder extends Seeder
                 ]);
             });
 
-        Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => DB::raw('total_order')]);
+        Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => DB::raw('IFNULL(total_order, 0)')]);
     }
 
     private function create_test_paid_order(): void
@@ -157,6 +157,6 @@ class TestOrdersSeeder extends Seeder
                 ]);
             });
 
-        Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => DB::raw('total_order')]);
+        Order::query()->where(['id' => $order->getKey()])->update(['total_paid' => DB::raw('IFNULL(total_order, 0)')]);
     }
 }
