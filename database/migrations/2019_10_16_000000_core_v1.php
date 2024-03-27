@@ -116,7 +116,7 @@ return new class extends Migration
 
         Schema::create('mail_templates', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('code')->nullable()->default('');
+            $table->string('code')->default('');
             $table->string('mailable');
             $table->string('to', 255)->nullable();
             $table->string('reply_to', 100)->nullable();
@@ -128,7 +128,7 @@ return new class extends Migration
 
         Schema::connection(config('activitylog.database_connection'))->create(config('activitylog.table_name'), function (Blueprint $table) {
             $table->id();
-            $table->string('log_name')->nullable()->index();
+            $table->string('log_name')->index();
             $table->text('description');
             $table->foreignId('subject_id')->nullable();
             $table->string('subject_type')->nullable();
@@ -229,7 +229,7 @@ return new class extends Migration
 
         Schema::create('warehouses', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 5)->nullable()->unique();
+            $table->string('code', 5)->unique();
             $table->string('name');
             $table->foreignId('address_id')->nullable();
             $table->softDeletes();
@@ -246,7 +246,7 @@ return new class extends Migration
             $table->foreignId('warehouse_id');
             $table->foreignId('product_id')->index();
             $table->string('location_id')->default('');
-            $table->string('warehouse_code', 5)->nullable()->index();
+            $table->string('warehouse_code', 5)->index();
             $table->string('shelve_location')->default('')->index();
             $table->timestamp('recalculated_at')->nullable()->index();
             $table->boolean('recount_required')->default(false)->index();
@@ -322,7 +322,7 @@ return new class extends Migration
             $table->string('order_number')->unique();
             $table->string('status_code')->default('')->index();
             $table->string('label_template')->default('')->index();
-            $table->boolean('is_active')->nullable()->default(0)->index();
+            $table->boolean('is_active')->default(0)->index();
             $table->boolean('is_on_hold')->default(false)->index();
             $table->boolean('is_editing')->default(0);
 
@@ -516,7 +516,7 @@ return new class extends Migration
 
         Schema::create('shipping_services', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 25)->unique()->nullable();
+            $table->string('code', 25)->unique();
             $table->string('service_provider_class');
             $table->timestamps();
         });
@@ -552,7 +552,7 @@ return new class extends Migration
             $table->foreignId('product_id')->index();
             $table->foreignId('warehouse_id');
             $table->string('location_id')->default('');
-            $table->string('warehouse_code', 5)->nullable()->index();
+            $table->string('warehouse_code', 5)->index();
             $table->decimal('cost', 20, 2)->default(0);
             $table->decimal('price', 20)->default(0);
             $table->decimal('sale_price', 20)->default(0);
@@ -582,34 +582,32 @@ return new class extends Migration
 
         Schema::create('module_auto_status_pickings', function (Blueprint $table) {
             $table->id();
-            $table->boolean('is_enabled')
-                ->nullable()
-                ->default(true);
+            $table->boolean('is_enabled')->default(true);
             $table->timestamps();
         });
 
         Schema::create('modules_dpd_ireland_configuration', function (Blueprint $table) {
             $table->id();
-            $table->boolean('live')->nullable()->default(false);
+            $table->boolean('live')->default(false);
             $table->longText('token');
             $table->longText('user');
             $table->longText('password');
-            $table->string('contact')->nullable()->default('');
-            $table->string('contact_telephone')->nullable()->default('');
-            $table->string('contact_email')->nullable()->default('');
-            $table->string('business_name')->nullable()->default('');
-            $table->string('address_line_1')->nullable()->default('');
-            $table->string('address_line_2')->nullable()->default('');
-            $table->string('address_line_3')->nullable()->default('');
-            $table->string('address_line_4')->nullable()->default('');
-            $table->string('country_code', 10)->nullable()->default('');
+            $table->string('contact')->default('');
+            $table->string('contact_telephone')->default('');
+            $table->string('contact_email')->default('');
+            $table->string('business_name')->default('');
+            $table->string('address_line_1')->default('');
+            $table->string('address_line_2')->default('');
+            $table->string('address_line_3')->default('');
+            $table->string('address_line_4')->default('');
+            $table->string('country_code', 10)->default('');
             $table->timestamps();
         });
 
         Schema::create('modules', function (Blueprint $table) {
             $table->id();
-            $table->string('service_provider_class')->nullable();
-            $table->boolean('enabled')->nullable()->default(false);
+            $table->string('service_provider_class');
+            $table->boolean('enabled')->default(false);
             $table->timestamps();
 
             $table->unique('service_provider_class');
@@ -617,8 +615,8 @@ return new class extends Migration
 
         Schema::create('modules_autostatus_picking_configurations', function (Blueprint $table) {
             $table->id();
-            $table->integer('max_batch_size')->nullable()->default(10);
-            $table->integer('max_order_age')->nullable()->default(5);
+            $table->integer('max_batch_size')->default(10);
+            $table->integer('max_order_age')->default(5);
             $table->timestamps();
         });
 
@@ -648,9 +646,9 @@ return new class extends Migration
 
         Schema::create('modules_automations', function (Blueprint $table) {
             $table->id();
-            $table->smallInteger('priority')->nullable()->default(0);
-            $table->boolean('enabled')->nullable()->default(false);
-            $table->string('name')->nullable();
+            $table->smallInteger('priority')->default(0);
+            $table->boolean('enabled')->default(false);
+            $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();
         });
@@ -659,7 +657,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('automation_id');
             $table->string('condition_class')->nullable();
-            $table->string('condition_value')->nullable()->default('');
+            $table->string('condition_value')->default('');
             $table->timestamps();
 
             $table->unique(
@@ -676,9 +674,9 @@ return new class extends Migration
         Schema::create('modules_automations_actions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('automation_id');
-            $table->smallInteger('priority')->nullable()->default(0);
+            $table->smallInteger('priority')->default(0);
             $table->string('action_class')->nullable();
-            $table->string('action_value')->nullable()->default('');
+            $table->string('action_value')->default('');
             $table->timestamps();
 
             $table->foreign('automation_id')
@@ -919,10 +917,10 @@ return new class extends Migration
 
         Schema::create('inventory_movements', function (Blueprint $table) {
             $table->id();
-            $table->string('warehouse_code', 5)->nullable()->index();
-            $table->dateTime('occurred_at')->nullable()->index();
+            $table->string('warehouse_code', 5)->index();
+            $table->dateTime('occurred_at')->index();
             $table->unsignedInteger('sequence_number')->nullable()->comment('row_number() over (partition by inventory_id order by occurred_at asc, id asc)')->index();
-            $table->string('type', 50)->nullable()->index();
+            $table->string('type', 50)->index();
             $table->string('custom_unique_reference_id')->nullable()->unique();
             $table->foreignId('inventory_id');
             $table->foreignId('product_id');
@@ -1073,7 +1071,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('data_collection_id')->constrained()->onDelete('cascade');
 
-            $table->unsignedBigInteger('inventory_id')->nullable();
+            $table->unsignedBigInteger('inventory_id');
 
             $table->foreignId('product_id');
             $table->unsignedBigInteger('warehouse_id')->nullable();
