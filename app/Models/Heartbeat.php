@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @method static expired()
+ * @property string $auto_heal_job_class
  */
 class Heartbeat extends Model
 {

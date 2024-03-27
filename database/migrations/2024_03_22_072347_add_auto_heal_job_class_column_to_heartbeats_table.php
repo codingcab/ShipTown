@@ -9,7 +9,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('heartbeats', function (Blueprint $table) {
-            // add auto_heal_job_class column
             $table->string('auto_heal_job_class')->nullable()->after('error_message');
         });
     }
