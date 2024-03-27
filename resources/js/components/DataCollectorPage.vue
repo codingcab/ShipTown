@@ -178,7 +178,7 @@
             </template>
 
             <template #modal-footer>
-                <b-button variant="outline-secondary" class="float-right" @click="$bvModal.hide('transferToModal');">Close</b-button>
+                <b-button variant="secondary" class="float-right" @click="$bvModal.hide('transferToModal');">Close</b-button>
             </template>
         </b-modal>
     </div>

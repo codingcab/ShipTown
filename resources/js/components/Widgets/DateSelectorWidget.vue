@@ -34,7 +34,7 @@
         <div class="row">
             <div class="col text-right">
                 <div>
-                    <button type="button" @click="closeDateSelectionModal" class="btn btn-default">Cancel</button>
+                    <button type="button" @click="closeDateSelectionModal" class="btn btn-secondary">Cancel</button>
                     <button type="button" @click="validateFilter" class="btn btn-primary">Apply</button>
                 </div>
             </div>
