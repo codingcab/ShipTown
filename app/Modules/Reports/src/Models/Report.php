@@ -90,17 +90,23 @@ class Report extends Model
     {
         try {
             $queryBuilder = $this->queryBuilder()
-                ->limit(request('per_page', $this->perPage));
+                ->paginate(request('per_page', $this->perPage));
         } catch (InvalidFilterQuery | InvalidSelectException $ex) {
             return response($ex->getMessage(), $ex->getStatusCode());
         }
 
-        $resource = ReportResource::collection($queryBuilder->get());
+        $resource = ReportResource::collection($queryBuilder);
 
         $data = [
             'report_name' => $this->report_name ?? $this->table,
-            'fields' => $resource->count() > 0 ? array_keys((array)json_decode($resource[0]->toJson())) : [],
+            'fields' =>  explode(',', $this->defaultSelect),
             'data' => $resource,
+            'pagination' => [
+                'total' => $queryBuilder->total(),
+                'per_page' => $queryBuilder->perPage(),
+                'current_page' => $queryBuilder->currentPage(),
+                'last_page' => $queryBuilder->lastPage(),
+            ]
         ];
 
         $data['field_links'] = collect($data['fields'])->map(function ($field) {
@@ -115,7 +121,9 @@ class Report extends Model
                 'url' => $url,
                 'is_current' => $isCurrent,
                 'is_desc' => $sortIsDesc,
-                'display_name' => str_replace('_', ' ', ucwords($field, '_'))
+                'display_name' => str_replace('_', ' ', ucwords($field, '_')),
+                'type' => $this->getFieldType($field),
+                'operators' => $this->getFieldTypeOperators($field),
             ];
         });
 
@@ -492,5 +500,22 @@ class Report extends Model
             });
 
         return $allowedFilters;
+    }
+
+    private function getFieldType($field): string
+    {
+        return match ($this->casts[$field] ?? null) {
+            'float', 'integer' => 'numeric',
+            default => $this->casts[$field] ?? 'no_cast',
+        };
+    }
+
+    private function getFieldTypeOperators($field): array
+    {
+        return match ($this->getFieldType($field)) {
+            'numeric', 'date' => ['equals', 'btwn'],
+            'datetime' => ['btwn'],
+            default => ['contains', 'equals'],
+        };
     }
 }
