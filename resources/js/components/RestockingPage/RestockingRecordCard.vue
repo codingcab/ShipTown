@@ -1,6 +1,6 @@
 <template>
     <div class="card ml-0 pl-0 mb-3">
-        <div class="grid-col-12 px-2 py-2 m-0 gap-sixth lg:gap-none">
+        <div class="grid-col-12 px-2 py-2 m-0 gap-none">
             <div class="col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-3">
                 <product-info-card :product="record['product']"/>
             </div>
