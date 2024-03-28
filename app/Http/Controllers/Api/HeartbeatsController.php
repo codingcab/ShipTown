@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\HeartbeatResources;
 use App\Models\Heartbeat;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class HeartbeatsController extends Controller
@@ -15,8 +14,16 @@ class HeartbeatsController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
-        $heartbeats = Heartbeat::expired()->limit(2)->get();
+        $expiredHeartbeats = Heartbeat::expired()->limit(2)->get();
 
-        return HeartbeatResources::collection($heartbeats);
+        if ($expiredHeartbeats->isNotEmpty()) {
+            Heartbeat::expired()
+                ->whereNotNull('auto_heal_job_class')
+                ->each(function (Heartbeat $heartbeat) {
+                    (new $heartbeat->auto_heal_job_class)->dispatch($heartbeat);
+                });
+        }
+
+        return HeartbeatResources::collection($expiredHeartbeats);
     }
 }

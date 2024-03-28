@@ -17,38 +17,30 @@ class TwoFactorController extends Controller
 
     public function index(TwoFactorControllerIndexRequest $request): mixed
     {
-        if ($request->cookie('device_guid') !== null) {
-            return redirect()->home();
-        }
-
-        if (Configuration::first('disable_2fa')->disable_2fa) {
+        if ($this->isDeviceRemembered($request) || $this->isTwoFactorDisabled()) {
             return redirect('/');
         }
 
         $user = $request->user();
 
         if ($user->two_factor_expires_at && $user->two_factor_expires_at->isPast()) {
-            Auth::logoutCurrentDevice();
-            $user->resetTwoFactorCode();
-            return redirect()->route('login')->withErrors(['two_factor_code' => 'Invalid code']);
+            return $this->resetTwoFactorCodeAndRedirectToLogin($user);
         }
 
         if ($request->has('two_factor_code')) {
             if ($user->two_factor_code === $request->input('two_factor_code')) {
                 $user->resetTwoFactorCode();
-                return redirect()->home()->withCookie(cookie('device_guid', Guid::uuid4(), $this->lifetimeInMinutes));
+                return redirect('/')->withCookie(cookie('device_guid', Guid::uuid4(), $this->lifetimeInMinutes));
             }
-
-            if ($user->two_factor_code !== $request->input('two_factor_code')) {
-                Auth::logoutCurrentDevice();
-                $user->resetTwoFactorCode();
-                return redirect()->route('login')->withErrors(['two_factor_code' => 'Invalid code']);
-            }
+            return $this->resetTwoFactorCodeAndRedirectToLogin($user);
         }
 
         if ($user->two_factor_code === null) {
             $user->generateTwoFactorCode();
-            $user->notify(new TwoFactorCode());
+
+            dispatch(function () use ($user) {
+                $user->notify(new TwoFactorCode());
+            })->afterResponse();
         }
 
         return view('auth.twoFactor');
@@ -59,13 +51,28 @@ class TwoFactorController extends Controller
         $user = $request->user();
 
         if ($request->input('two_factor_code') !== $user->two_factor_code) {
-            Auth::logoutCurrentDevice();
-            $user->resetTwoFactorCode();
-            return redirect()->route('login')->withErrors(['two_factor_code' => 'Invalid code']);
+            return $this->resetTwoFactorCodeAndRedirectToLogin($user);
         }
 
         $user->resetTwoFactorCode();
 
-        return redirect()->home()->withCookie(cookie('device_guid', Guid::uuid4(), $this->lifetimeInMinutes));
+        return redirect('/')->withCookie(cookie('device_guid', Guid::uuid4(), $this->lifetimeInMinutes));
+    }
+
+    private function isDeviceRemembered($request): bool
+    {
+        return $request->cookie('device_guid') !== null;
+    }
+
+    private function isTwoFactorDisabled(): bool
+    {
+        return Configuration::first('disable_2fa')->disable_2fa;
+    }
+
+    private function resetTwoFactorCodeAndRedirectToLogin($user): RedirectResponse
+    {
+        Auth::logoutCurrentDevice();
+        $user->resetTwoFactorCode();
+        return redirect()->route('login')->withErrors(['two_factor_code' => 'Invalid code']);
     }
 }

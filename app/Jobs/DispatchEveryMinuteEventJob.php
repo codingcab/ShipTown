@@ -17,6 +17,7 @@ class DispatchEveryMinuteEventJob extends UniqueJob
         ], [
             'error_message' => 'Every Minute heartbeat missed',
             'expires_at' => now()->addHour(),
+            'auto_heal_job_class' => self::class,
         ]);
     }
 }
