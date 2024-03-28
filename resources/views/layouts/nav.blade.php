@@ -20,6 +20,7 @@
                                 <a class="dropdown-item text-white lightHover mt-1" id="restocking_link" href="{{ route('reports.restocking' , ['sort' => '-quantity_required', 'cache_name' => 'restocking_page']) }}">{{ __('Restocking') }}</a>
                                 <a class="dropdown-item text-white lightHover mt-1" id="data_collector_link" href="{{ route('data-collector') }}">{{ __('Data Collector') }}</a>
                                 <a class="dropdown-item text-white lightHover mt-1 mb-1" id="inventory_movements_link" href="{{ route('reports.inventory-movements') }}">{{ __('Inventory Movements') }}</a>
+                                <a class="dropdown-item text-white lightHover mt-1 mb-1" id="shelf_label_printing_link" href="{{ route('tools.shelf-label-printing') }}">{{ __('Shelf Label Printing') }}</a>
                             </div>
                         </div>
                     @endif

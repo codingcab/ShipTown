@@ -43,6 +43,9 @@ Route::view('stocktaking', 'stocktaking')->name('stocktaking');
 Route::view('setting-profile', 'setting-profile')->name('setting-profile');
 Route::view('data-collector', 'data-collector-list')->name('data-collector');
 Route::get('data-collector/{data_collection_id}', [DataCollectorController::class, 'index'])->name('data-collector-show');
+
+Route::view('tools/shelf-label-printing', 'tools/shelf-label-printing')->name('tools.shelf-label-printing');
+
 Route::get('shipping-labels/{shipping_label}', [ShippingLabelController::class, 'show'])->name('shipping-labels');
 Route::view('autopilot/packlist', 'autopilot/packlist')->name('autopilot.packlist');
 Route::resource('order/packsheet', Order\PacksheetController::class)->only(['show']);
