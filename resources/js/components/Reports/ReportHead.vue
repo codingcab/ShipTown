@@ -11,7 +11,7 @@
                         --><button @click="handleClick(filter, $event)" class="btn btn-link p-0 ml-1 mb-1">x</button>
                     </p>
                 </div>
-                <button @click="showFilters = !showFilters" class="btn btn-sm btn-primary float-right d-lg-none mb-2">
+                <button @click="showFilters = !showFilters" class="btn btn-link float-right d-lg-none mb-2">
                     {{ showFilters ? 'hide' : 'show' }} filters <span v-show="!showFilters">({{ filters.length }})</span>
                 </button>
             </div>
@@ -65,6 +65,12 @@ export default {
         margin: 0 0 0 10px;
         -webkit-user-select: none;
     }
+}
+
+.btn-link {
+    outline: none;
+    box-shadow: none;
+    border-color: transparent;
 }
 
 </style>

@@ -113,7 +113,7 @@
         </div>
         <template #modal-footer>
             <b-button b-button variant="secondary" class="float-right" @click="$bvModal.hide('filter-box-modal')">Cancel</b-button>
-            <b-button variant="primary" class="float-right" @click="addFilter">apply</b-button>
+            <b-button variant="primary" class="float-right" @click="addFilter">Apply</b-button>
         </template>
     </b-modal>
 
