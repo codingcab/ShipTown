@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="d-flex">
-            <div class="text-nowrap font-weight-bold small text-secondary">
-                <div class="mt-1">REPORTS > {{ reportName.toUpperCase() }}</div>
+            <div class="font-weight-bold text-uppercase small text-secondary">
+                REPORTS > {{ reportName.toUpperCase() }}
             </div>
             <div class="flex-grow-1">
                 <div class="filter-container d-none d-lg-flex" ref="filterContainer">
@@ -11,9 +11,9 @@
                         --><button @click="handleClick(filter, $event)" class="btn btn-link p-0 ml-1 mb-1">x</button>
                     </p>
                 </div>
-                <button @click="showFilters = !showFilters" class="btn btn-link float-right d-lg-none mb-2">
-                    {{ showFilters ? 'hide' : 'show' }} filters <span v-show="!showFilters">({{ filters.length }})</span>
-                </button>
+                <a href="#" @click.prevent="showFilters = !showFilters" class="float-right d-lg-none small">
+                    {{ showFilters ? 'HIDE' : 'FILTERS' }} <span v-show="!showFilters">({{ filters.length }})</span>
+                </a>
             </div>
         </div>
 
