@@ -15,7 +15,7 @@ class RecalculateStatisticsTableJob extends UniqueJob
         $lastSoldAt = $soldSince ?: now()->subDays(60);
 
         Inventory::query()
-            ->where('last_sold_at', '>', $lastSoldAt)
+            ->where('last_sold_at', '>=', $lastSoldAt)
             ->chunkById(25, function (Collection $inventories) {
                 $this->recalculateInventoryStatistics($inventories->pluck('id'));
                 Log::info('Job processing', [

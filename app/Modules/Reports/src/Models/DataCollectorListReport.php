@@ -18,11 +18,11 @@ class DataCollectorListReport extends Report
             ->leftJoin('warehouses', 'warehouses.id', '=', 'data_collections.warehouse_id');
 
         $differences_count_subquery = DB::raw('(
-                SELECT count(*)
-                FROM data_collection_records as dcr
-                WHERE dcr.data_collection_id = data_collections.id
-                AND IFNULL(dcr.quantity_requested, 0) != (dcr.total_transferred_in + dcr.total_transferred_out)
-            )');
+            SELECT count(*)
+            FROM data_collection_records as dcr
+            WHERE dcr.data_collection_id = data_collections.id
+            AND IFNULL(dcr.quantity_requested, 0) != (dcr.total_transferred_in + dcr.total_transferred_out)
+        )');
 
         $this->fields = [
             'id'                    => 'data_collections.id',
@@ -39,15 +39,15 @@ class DataCollectorListReport extends Report
         ];
 
         $this->casts = [
-            'id'                    => 'integer',
-            'warehouse_id'          => 'warehouse_id',
-            'type'                  => 'string',
-            'name'                  => 'string',
-            'created_at'            => 'datetime',
-            'updated_at'            => 'datetime',
-            'deleted_at'            => 'datetime',
-            'warehouse_code'        => 'string',
-            'warehouse_name'        => 'string',
+            'id'                     => 'integer',
+            'warehouse_id'           => 'integer',
+            'type'                   => 'string',
+            'name'                   => 'string',
+            'created_at'             => 'datetime',
+            'updated_at'             => 'datetime',
+            'deleted_at'             => 'datetime',
+            'warehouse_code'         => 'string',
+            'warehouse_name'         => 'string',
             'currently_running_task' => 'string',
         ];
 

@@ -5,7 +5,6 @@ namespace Tests\Feature\Reports\Inventory;
 use App\Models\Product;
 use App\Models\Warehouse;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
@@ -13,8 +12,6 @@ use Tests\TestCase;
  */
 class IndexTest extends TestCase
 {
-    use RefreshDatabase;
-
     /**
      * @var string
      */
