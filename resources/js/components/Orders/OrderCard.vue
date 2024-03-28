@@ -348,20 +348,20 @@
 
                                                 <tr>
                                                     <td class="pt-2"> placed at:</td>
-                                                    <td class="text-right"><b> {{ formatDateTime(order['order_placed_at']) }} </b>
+                                                    <td class="text-right"><b> {{ formatDateTime(order['order_placed_at'], 'MMM DD H:mm') }} </b>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td> picked at:</td>
-                                                    <td class="text-right"><b> {{ formatDateTime(order['picked_at']) }} </b></td>
+                                                    <td class="text-right"><b> {{ formatDateTime(order['picked_at'], 'MMM DD H:mm') }} </b></td>
                                                 </tr>
                                                 <tr>
                                                     <td> packed at:</td>
-                                                    <td class="text-right"><b> {{ formatDateTime(order['packed_at']) }} </b></td>
+                                                    <td class="text-right"><b> {{ formatDateTime(order['packed_at'], 'MMM DD H:mm') }} </b></td>
                                                 </tr>
                                                 <tr>
                                                     <td> closed at:</td>
-                                                    <td class="text-right"><b> {{ formatDateTime(order['order_closed_at']) }} </b></td>
+                                                    <td class="text-right"><b> {{ formatDateTime(order['order_closed_at'], 'MMM DD H:mm') }} </b></td>
                                                 </tr>
                                                 <tr>
                                                     <td>&nbsp;</td>
@@ -394,8 +394,8 @@
 
                                 <template v-if="currentTab === 'orderActivities'">
                                     <div class="row small" v-for="activity in order_activities" :key="activity.id">
-                                        <span :title="formatDateTime(activity['created_at'])">
-                                            {{ formatDateTime(activity['created_at']) }}:
+                                        <span :title="formatDateTime(activity['created_at'], 'YYYY-MM-DD H:mm:ss')">
+                                            {{ formatDateTime(activity['created_at'], 'MMM DD H:mm') }}:
                                         </span>
                                         <span class="flex-nowrap ml-1">
                                             {{ activity['causer'] === null ? 'AutoPilot' : activity['causer']['name'] }}
