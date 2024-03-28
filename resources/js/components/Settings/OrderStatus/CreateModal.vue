@@ -79,7 +79,7 @@
                     </ValidationObserver>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" @click="closeModal" class="btn btn-default">Cancel</button>
+                    <button type="button" @click="closeModal" class="btn btn-secondary">Cancel</button>
                     <button type="button" @click="submit" class="btn btn-primary">Save</button>
                 </div>
             </div>

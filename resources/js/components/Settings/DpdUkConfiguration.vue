@@ -53,7 +53,7 @@
         <b-modal ref="createFormModal" id="dpd-create-form-modal" title="New DPD UK connection" @ok="handleModalOk">
             <dpd-configuration-form ref="createForm" @saved="handleSaved" />
             <template #modal-footer="{ ok, cancel }">
-                <b-button @click="cancel()">
+                <b-button varaint="secondary" @click="cancel()">
                     Cancel
                 </b-button>
                 <b-button variant="primary" @click="ok()">

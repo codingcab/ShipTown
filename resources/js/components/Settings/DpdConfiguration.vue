@@ -59,7 +59,7 @@
         <b-modal ref="createFormModal" id="dpd-create-form-modal" title="Create DPD Configuration" @ok="handleModalOk">
             <dpd-configuration-form ref="createForm" @saved="handleSaved" />
             <template #modal-footer="{ ok, cancel }">
-                <b-button @click="cancel()">
+                <b-button variant="secondary" @click="cancel()">
                     Cancel
                 </b-button>
                 <b-button variant="primary" @click="ok()">
@@ -72,7 +72,7 @@
         <b-modal ref="updateFormModal" id="dpd-update-form-modal" title="Update DPD Configuration" @ok="handleModalOk">
             <dpd-configuration-form ref="updateForm" @saved="handleSaved" :configuration="configuration"/>
             <template #modal-footer="{ ok, cancel }">
-                <b-button @click="cancel()">
+                <b-button variant="secondary" @click="cancel()">
                     Cancel
                 </b-button>
                 <b-button variant="primary" @click="ok()">

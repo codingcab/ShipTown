@@ -22,7 +22,7 @@
 <!--        </div>-->
 
         <template #modal-footer>
-            <b-button v-show="!isLoading" variant="outline-secondary" class="float-right" @click="$bvModal.hide('product-info-modal')">
+            <b-button v-show="!isLoading" variant="secondary" class="float-right" @click="$bvModal.hide('product-info-modal')">
                 Close
             </b-button>
         </template>

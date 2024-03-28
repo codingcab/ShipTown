@@ -196,7 +196,7 @@
                 <div class="modal-footer" style="justify-content:space-between">
                     <button type="button" @click="runAutomation" class="btn btn-outline-danger float-left">Run</button>
                     <div>
-                        <button type="button" @click="closeModal" class="btn btn-default">Cancel</button>
+                        <button type="button" @click="closeModal" class="btn btn-secondary">Cancel</button>
                         <button type="button" @click="submit" class="btn btn-primary">Save</button>
                     </div>
                 </div>

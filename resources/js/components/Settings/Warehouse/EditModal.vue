@@ -52,7 +52,7 @@
                 <div class="modal-footer" style="justify-content:space-between">
                     <button type="button" @click.prevent="confirmDelete(warehouse)" class="btn btn-outline-danger float-left">Delete</button>
                     <div>
-                        <button type="button" @click="closeModal" class="btn btn-outline-primary">Cancel</button>
+                        <button type="button" @click="closeModal" class="btn btn-secondary">Cancel</button>
                         <button type="button" @click="submit" class="btn btn-primary">Save</button>
                     </div>
                 </div>

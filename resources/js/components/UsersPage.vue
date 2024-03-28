@@ -53,7 +53,7 @@
             >
             </create-modal>
             <template #modal-footer="{ ok, cancel }">
-                <b-button @click="cancel()">
+                <b-button variant="secondary" @click="cancel()">
                     Cancel
                 </b-button>
                 <b-button variant="primary" @click="ok()">
@@ -72,7 +72,7 @@
             >
             </edit-modal>
             <template #modal-footer="{ ok, cancel }">
-                <b-button @click="cancel()">
+                <b-button variant="secondary" @click="cancel()">
                     Cancel
                 </b-button>
                 <b-button variant="primary" @click="ok()">
